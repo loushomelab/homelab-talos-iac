@@ -10,9 +10,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://dopplerhq.github.io/kubernetes-operator
+    repoURL: https://helm.doppler.com
     chart: doppler-kubernetes-operator
-    targetRevision: 1.4.1
+    targetRevision: 1.7.1
     helm:
       values: |
         # Default values are sufficient for basic installation
