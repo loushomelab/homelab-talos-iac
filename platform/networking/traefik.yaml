@@ -43,3 +43,12 @@ spec:
             allowExternalNameServices: true
         service:
           type: ClusterIP
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
