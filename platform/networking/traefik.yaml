@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: traefik
+    repoURL: https://helm.traefik.io/traefik
+    targetRevision: 30.0.2
+    helm:
+      values: |
+        api:
+          dashboard: true
+          insecure: true
+        deployment:
+          kind: DaemonSet
+        ports:
+          web:
+            port: 8000
+            hostPort: 80
+            expose:
+              default: true
+          websecure:
+            port: 8443
+            hostPort: 443
+            expose:
+              default: true
+          # 新增的 8443 入口，解决内外网访问不一致的问题
+          websecure8443:
+            port: 8444
+            hostPort: 8443
+            expose:
+              default: true
+            protocol: TCP
+        providers:
+          kubernetesCRD:
+            allowExternalNameServices: true
+        service:
+          type: ClusterIP
