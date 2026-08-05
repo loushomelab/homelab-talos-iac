@@ -15,7 +15,7 @@ spec:
       targetRevision: 41.1.1
       helm:
         valueFiles:
-          - $values/argocd/infrastructure/traefik/values.yaml
+          - $values/argocd/configs/infrastructure/traefik/values.yaml
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
       targetRevision: HEAD
       ref: values

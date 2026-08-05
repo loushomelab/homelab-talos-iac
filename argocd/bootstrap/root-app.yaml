@@ -3,7 +3,6 @@ kind: Application
 metadata:
   name: homelab-root-app
   namespace: argocd
-  # 添加防止意外级联删除的保护 (Cascade Deletion)
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -12,6 +11,8 @@ spec:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
     path: argocd/apps 
+    directory:
+      recurse: true # 重点：开启递归，这样 ArgoCD 就能读取 apps/infrastructure 等子目录
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
@@ -19,6 +20,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    # 允许我们手动在 UI 里暂时关闭某个子 App 的自动同步用于调试，而不会立刻被 Root App 强行掰回来
     syncOptions:
       - RespectIgnoreDifferences=true
