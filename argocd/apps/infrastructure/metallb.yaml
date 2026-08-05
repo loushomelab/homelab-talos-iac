@@ -15,7 +15,7 @@ spec:
       targetRevision: 0.14.8
       helm:
         valueFiles:
-          - $values/argocd/infrastructure/metallb/values.yaml
+          - $values/argocd/configs/infrastructure/metallb/values.yaml
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
       targetRevision: HEAD
       ref: values

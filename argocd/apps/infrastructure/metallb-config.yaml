@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/infrastructure/metallb/config
+    path: argocd/configs/infrastructure/metallb/manifests
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: metallb-system
