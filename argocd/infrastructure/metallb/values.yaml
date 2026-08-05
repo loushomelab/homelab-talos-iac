@@ -1,0 +1,13 @@
+# MetalLB Controller & Speaker values
+# 大部分保持默认即可，MetalLB 的核心配置通过后续应用 CRD 来完成
+controller:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+speaker:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
