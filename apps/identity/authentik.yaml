@@ -11,7 +11,7 @@ spec:
   destination:
     namespace: authentik
     server: https://kubernetes.default.svc
-  project: apps
+  project: default
   source:
     chart: authentik
     helm:
