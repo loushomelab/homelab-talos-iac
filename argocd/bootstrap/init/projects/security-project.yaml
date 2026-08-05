@@ -1,15 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  annotations:
   name: security
   namespace: argocd
 spec:
   description: "Security and authentication components (Secret management, Certs, SSO)"
   sourceRepos:
-    - 'https://github.com/loushomelab/homelab-talos-iac.git'
-    - 'https://helm.doppler.com'
-    - 'https://charts.goauthentik.io'
+    - '*'
   destinations:
     - namespace: '*'
       server: 'https://kubernetes.default.svc'

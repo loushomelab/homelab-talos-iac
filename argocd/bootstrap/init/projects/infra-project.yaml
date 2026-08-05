@@ -1,16 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  annotations:
   name: infra
   namespace: argocd
 spec:
   description: "Core infrastructure components (Networking, Storage, System Operators)"
   sourceRepos:
-    - 'https://github.com/loushomelab/homelab-talos-iac.git'
-    - 'https://metallb.github.io/metallb'
-    - 'https://helm.traefik.io/traefik'
-    - 'https://emberstack.github.io/helm-charts'
+    - '*'
   destinations:
     - namespace: '*'
       server: 'https://kubernetes.default.svc'
