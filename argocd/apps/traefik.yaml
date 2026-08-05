@@ -12,7 +12,7 @@ spec:
   sources:
     - repoURL: 'https://helm.traefik.io/traefik'
       chart: traefik
-      targetRevision: 27.0.2
+      targetRevision: 41.1.1
       helm:
         valueFiles:
           - $values/argocd/infrastructure/traefik/values.yaml
