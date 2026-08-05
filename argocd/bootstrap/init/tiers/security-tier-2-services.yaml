@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: security-tier-2-services
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "25" # Authentik needs Traefik (20) running first if it uses IngressRoutes/middlewares, and needs Database (if running in cluster)
+spec:
+  project: security
+  source:
+    repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+    targetRevision: HEAD
+    path: argocd/apps/security/20-services
+    directory:
+      recurse: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - RespectIgnoreDifferences=true

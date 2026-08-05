@@ -1,0 +1,38 @@
+authentik:
+  enabled: true
+  log_level: info
+  
+  postgresql:
+    enabled: false
+  redis:
+    enabled: false
+    
+server:
+  enabled: true
+  
+  # Inject secrets from Doppler
+  envFrom:
+    - secretRef:
+        name: authentik-secrets
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: sso.louhome.top
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: sso-louhome-top-tls
+        hosts:
+          - sso.louhome.top
+
+worker:
+  enabled: true
+  # Inject secrets from Doppler
+  envFrom:
+    - secretRef:
+        name: authentik-secrets
