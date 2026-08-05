@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-config
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  settings.yaml: |
+    title: "Lous Homelab Dashboard"
+    background:
+      image: https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1920&q=80
+    theme: dark
+    layout:
+      Infrastructure:
+        style: list
+        columns: 3
+      Security:
+        style: list
+        columns: 3
+
+  bookmarks.yaml: |
+    - Homelab:
+        - Github:
+            - abbr: GH
+              href: https://github.com/
+              icon: github
+        - ChatGPT:
+            - abbr: AI
+              href: https://chatgpt.com/
+              icon: chatgpt
+
+  services.yaml: |
+    - Infrastructure:
+        - Proxmox:
+            icon: proxmox
+            href: https://pve.646499453.xyz:8006/
+            description: "Proxmox VE Hypervisor"
+        - ArgoCD:
+            icon: argocd
+            href: https://argocd.646499453.xyz/
+            description: "GitOps Continuous Delivery"
+    - Security:
+        - Authentik:
+            icon: authentik
+            href: https://authentik.646499453.xyz/
+            description: "Identity and Access Management"
+
+  widgets.yaml: |
+    - datetime:
+        text_size: xl
+        format:
+          dateStyle: short
+          timeStyle: short
+          hour12: false
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "k8s-cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - resources:
+        backend: resources
+        expanded: true
+        cpu: true
+        memory: true
+
+  kubernetes.yaml: |
+    mode: cluster
+
+  docker.yaml: ""
+  custom.css: ""
+  custom.js: ""
