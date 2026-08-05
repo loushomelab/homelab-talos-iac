@@ -52,6 +52,9 @@ data:
         identifiers:
           name: default-authentication-identification
         attrs:
+          user_fields:
+            - email
+            - username
           # 关联 WebAuthn Stage 启用浏览器的 Conditional UI 自动填充
           webauthn_stage: !KeyOf webauthn-only-validation-stage
           # 关联无密码 Flow 在用户名框下方自动渲染“快速登录/无密码登录”链接
