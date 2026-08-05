@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: doppler-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0" # 确保在业务应用(需要用到 DopplerSecret)部署前完成安装
+spec:
+  project: default
+  source:
+    repoURL: 'https://helm.doppler.com'
+    targetRevision: 1.7.1
+    chart: doppler-kubernetes-operator
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: doppler-operator-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
