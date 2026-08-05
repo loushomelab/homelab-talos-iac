@@ -1,7 +1,8 @@
 # 官方 traefik helm chart 的自定义 values
 ports:
   web:
-    redirectTo: websecure
+    redirectTo:
+      port: websecure
   websecure:
     tls:
       enabled: true
