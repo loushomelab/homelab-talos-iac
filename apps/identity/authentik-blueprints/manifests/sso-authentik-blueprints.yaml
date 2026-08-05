@@ -1,0 +1,1295 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sso-authentik-blueprints
+  namespace: authentik
+  labels:
+    app.kubernetes.io/name: authentik
+    app.kubernetes.io/component: blueprints
+    app.kubernetes.io/part-of: sso-identity
+  annotations:
+    # Documentation pointer for the cross-repo contract.
+    # Source: argoCD-TalOS/clusters/talos-proxmox/manifests/apps/identity/sso-authentik-blueprints.yaml
+    # Mount path: server + worker Pods → /blueprints/mounted/cm-sso-authentik-blueprints/
+    authentik.lou/cross-repo-owner: "argoCD-TalOS"
+data:
+  # === 00. Brand ============================================================
+  # Override the default authentik Self-signed branding for authentik.646499453.xyz:8443.
+  # The default brand (created at first init) keeps the `default = true` slot;
+  # this entry matches by domain. `web_certificate` reuses the default
+  # self-signed cert. `branding_favicon`/`branding_logo` are server-controlled
+  # defaults and not pinned here (matches the prior HCL lifecycle.ignore_changes
+  # behavior in the destroyed Terragrunt module).
+  00-sso-brand.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Authentik brand
+    entries:
+      - model: authentik_brands.brand
+        identifiers:
+          domain: authentik.646499453.xyz:8443
+        attrs:
+          branding_title: Homelab SSO
+          # web_certificate left to default (the built-in self-signed cert)
+      - model: authentik_brands.brand
+        identifiers:
+          domain: authentik.646499453.xyz
+        attrs:
+          branding_title: Homelab SSO
+
+
+  # === 10. Passwordless flow + WebAuthn ====================================
+  # Defines the dedicated "Log in with Passkey" flow that the default
+  # Identification stage links to via its `passwordless_flow` FK.
+  #
+  # IMPORTANT: We use `!Find` (not `!KeyOf`) to reference entries in
+  # this file. `!KeyOf` only resolves an entry whose `_state.instance`
+  # has been written to the database in a PREVIOUS blueprint apply --
+  # within a single blueprint, all entries are validated before any
+  # one is created, so cross-entry references in the same file always
+  # fail. `!Find` looks the row up by identifier at resolve time, so
+  # it works whether the row was created earlier in this apply or by
+  # a previous one.
+  10-sso-passwordless-flow.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Passwordless flow
+    entries:
+      - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+        id: passwordless_webauthn_stage
+        identifiers:
+          name: passwordless-webauthn-login
+        attrs:
+          not_configured_action: deny
+          device_classes: [webauthn]
+
+      - model: authentik_flows.flow
+        id: passwordless_flow
+        identifiers:
+          slug: passwordless-flow
+        attrs:
+          name: Passwordless Authentication
+          title: Log in with Passkey
+          designation: authentication
+          # OFF: the default Identification stage hides the passkey button
+          # when compatibility_mode is true (it assumes the browser may not
+          # support WebAuthn). We want modern browsers to see the button.
+          compatibility_mode: false
+
+      - model: authentik_flows.flowstagebinding
+        identifiers:
+          # `identifiers` must include every field that participates in the
+          # model's unique_together constraint -- otherwise the reconciler
+          # can't upsert an existing row and tries to create a duplicate
+          # (which fails on the `(target, stage, order)` unique index).
+          # See authentik/flows/models.py FlowStageBinding.Meta.unique_together.
+          order: 10
+          target: !Find [authentik_flows.flow, [slug, passwordless-flow]]
+        attrs:
+          stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, passwordless-webauthn-login]]
+
+      - model: authentik_stages_authenticator_webauthn.AuthenticatorWebAuthnStage
+        identifiers:
+          name: passwordless-webauthn-setup
+        attrs:
+          friendly_name: Passkey
+          user_verification: preferred
+
+  # === 20. Default-flow identification override =============================
+  # Child of the default blueprint's `default-authentication-identification`
+  # stage. The default blueprint only sets `user_fields`; it intentionally
+  # does NOT set `passwordless_flow` or `webauthn_stage` (see
+  # .references/authentik/blueprints/default/flow-default-authentication-flow.yaml).
+  # We override the same stage by matching `identifiers.name` -- the
+  # blueprint reconciler treats matching identifiers as upserts.
+  #
+  # We populate ONLY the `passwordless_flow` FK (looked up by slug via
+  # `!Find` so the cross-file reference works -- see the `!KeyOf` note
+  # in 10). We do NOT set `webauthn_stage` -- it's the legacy one-click-
+  # passkey path that doesn't work in this version's flow (Authentik
+  # 2025.12+ uses passkey autofill, controlled by the passwordless_flow
+  # link).
+  20-sso-default-flow-override.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Default flow identification passkey link
+    entries:
+      - model: authentik_stages_identification.identificationstage
+        identifiers:
+          name: default-authentication-identification
+        attrs:
+          # `user_fields` and `sources` MUST be set whenever
+          # `passwordless_flow` is set, otherwise the serializer
+          # validation fails with
+          # "When no user fields are selected, at least one source
+          # must be selected" (the implicit upsert leaves
+          # `user_fields` empty when only `passwordless_flow` is in
+          # `attrs`).
+          user_fields:
+            - email
+            - username
+          passwordless_flow: !Find [authentik_flows.flow, [slug, passwordless-flow]]
+
+  # === 25. Default MFA validation override ==================================
+  # Override the built-in MFA validation stage to exclude `webauthn` (Passkeys).
+  # By default, Authentik allows all device classes at this step. If a user
+  # has enrolled a Passkey, they will be forced to use it as MFA after password
+  # login. Removing `webauthn` from the allowed classes ensures that Passkeys
+  # are ONLY used for passwordless login and not forced as MFA.
+  25-sso-mfa-validation-override.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Default MFA validation override
+    entries:
+      - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+        identifiers:
+          name: default-authentication-mfa-validation
+        attrs:
+          device_classes:
+            - totp
+            - static
+            - sms
+            - duo
+
+  # === 30. Passwordless flow bindings ======================================
+  # The passwordless-flow needs two stage bindings to actually log the user
+  # in: order=10 (the webauthn validate stage, defined in 10) and order=100
+  # (the default-authentication-login UserLoginStage, which calls `do_login`
+  # to finalize the session).
+  #
+  # Why the default blueprint doesn't do this for us:
+  # The default blueprint `flow-default-authentication-flow.yaml` defines
+  # bindings ONLY against `slug=default-authentication-flow`. It does not
+  # copy any bindings to other authentication flows. So `passwordless-flow`
+  # starts with 0 bindings. The previous version of this file assumed
+  # "the default blueprint copies all bindings from default-authentication-
+  # flow to any flow created from the same template" -- that assumption is
+  # wrong. The only `metaapplyblueprint` reference in the default blueprint
+  # points to `Default - Password change flow`.
+  #
+  # Symptom if order=100 is missing: the user completes the webauthn
+  # challenge in `passwordless-flow`, `AuthenticatorValidateStageView.
+  # challenge_valid` sets `PLAN_CONTEXT_PENDING_USER` from the device and
+  # the flow planner moves to the next stage -- but there is none, so the
+  # flow ends without `UserLoginStageView.do_login` ever running. The
+  # session cookie is not promoted to `authenticated: true` and the user
+  # is redirected to `next=/` which bounces back to the login screen
+  # because no authenticated session exists.
+  30-sso-passwordless-flow-login.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Passwordless flow login binding
+    entries:
+      - model: authentik_flows.flowstagebinding
+        identifiers:
+          order: 100
+          target: !Find [authentik_flows.flow, [slug, passwordless-flow]]
+        attrs:
+          stage: !Find [authentik_stages_user_login.userloginstage, [name, default-authentication-login]]
+
+  # === 40. Service accounts ================================================
+  # `password` is read from the env at reconcile time via `!Env [VAR, default]`.
+  # IMPORTANT: the `!Env` YAML tag is a 2-element sequence (key, default).
+  # Passing only the key (`!Env [TRUENAS_PASSWORD]`) raises
+  # `IndexError: list index out of range` in the blueprint loader
+  # (common.py:264). The default here is the empty string, so if the
+  # env var is missing the user's existing password is preserved.
+  # The env vars come from the `authentik-blueprint-secrets` K8s Secret
+  # mounted into the worker pod via the chart's `envFrom: secretRef`.
+  40-sso-service-accounts.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Service accounts
+    entries:
+      - model: authentik_core.user
+        identifiers:
+          username: truenas
+        attrs:
+          name: TrueNAS Service Account
+          is_active: true
+          type: service_account
+          password: !Env [TRUENAS_PASSWORD, ""]
+      - model: authentik_core.user
+        identifiers:
+          username: pbs
+        attrs:
+          name: Proxmox Backup Server Service Account
+          is_active: true
+          type: service_account
+          password: !Env [PBS_PASSWORD, ""]
+      - model: authentik_core.user
+        identifiers:
+          username: terraform
+        attrs:
+          name: Terraform Service Account
+          is_active: true
+          type: service_account
+      - model: authentik_core.user
+        identifiers:
+          username: lou
+        attrs:
+          name: 娄昊添
+          is_active: true
+          email: L_128@icloud.com
+          password: !Env [LOU_PASSWORD, ""]
+
+  # === 50. Local user accounts =============================================
+  50-sso-local-users.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Local user accounts
+    entries:
+      - model: authentik_core.user
+        identifiers:
+          username: akadmin
+        attrs:
+          name: Bootstrap Admin
+          is_active: true
+          email: root@example.com
+          type: internal
+      - model: authentik_core.user
+        identifiers:
+          username: liana
+        attrs:
+          name: 李臻妤
+          is_active: true
+          email: lizhenyumm@icloud.com
+          password: !Env [LIANA_PASSWORD, ""]
+
+  # === 60. Groups ===========================================================
+  60-sso-groups.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Groups
+    entries:
+      - model: authentik_core.group
+        identifiers:
+          name: authentik Admins
+        attrs:
+          is_superuser: true
+          users:
+            - !Find [authentik_core.user, [username, akadmin]]
+            - !Find [authentik_core.user, [username, lou]]
+            - !Find [authentik_core.user, [username, terraform]]
+      - model: authentik_core.group
+        identifiers:
+          name: Service Accounts
+        attrs:
+          is_superuser: false
+          users:
+            - !Find [authentik_core.user, [username, terraform]]
+            - !Find [authentik_core.user, [username, truenas]]
+            - !Find [authentik_core.user, [username, pbs]]
+      - model: authentik_core.group
+        identifiers:
+          name: family
+        attrs:
+          is_superuser: false
+          users:
+            - !Find [authentik_core.user, [username, liana]]
+
+  # === 70. OIDC provider for Proxmox VE ====================================
+  # Signing key references the default self-signed cert by name.
+  # `client_secret` reads from env at reconcile time; the secret must be
+  # present at first apply.
+  70-sso-proxmox-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Proxmox VE OIDC provider
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: proxmox-provider
+        attrs:
+          client_id: proxmox-ve
+          client_secret: !Env [PROXMOX_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          # `property_mappings` is intentionally NOT set -- the default
+          # blueprint already attaches the `scope-openid` mapping (the only
+          # one created by default). For email/profile scopes, add explicit
+          # `authentik_core.PropertyMapping` entries with the
+          # `goauthentik.io/providers/oauth2/scope-...` managed name.
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://192.168.50.101:8006
+            - matching_mode: strict
+              url: https://r720.pve.646499453.xyz:8006
+            - matching_mode: strict
+              url: https://r720.pve.646499453.xyz:8006
+            - matching_mode: strict
+              url: https://proxmox.646499453.xyz:8443
+            - matching_mode: strict
+              url: https://proxmox.646499453.xyz:8443/
+            - matching_mode: strict
+              url: https://proxmox.646499453.xyz:8443
+            - matching_mode: strict
+              url: https://proxmox.646499453.xyz:8443/
+            - matching_mode: strict
+              url: https://proxmox.646499453.xyz
+            - matching_mode: strict
+              url: https://proxmox.646499453.xyz/
+
+  # === 71. Proxmox VE application =========================================
+  71-sso-proxmox-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Proxmox VE application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: proxmox
+        attrs:
+          name: Proxmox VE
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, proxmox-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/proxmox.svg
+          meta_launch_url: https://proxmox.646499453.xyz:8443
+
+  # === 72. Proxmox VE forward-auth proxy provider ==========================
+  72-sso-proxmox-proxy-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Proxmox VE forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: proxmox-proxy
+        attrs:
+          mode: forward_single
+          external_host: https://proxmox.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 73. Proxmox VE forward-auth application =============================
+  73-sso-proxmox-proxy-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Proxmox VE forward-auth application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: proxmox-secure
+        attrs:
+          name: Proxmox VE (SSO)
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, proxmox-proxy]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/proxmox.svg
+          meta_launch_url: https://proxmox.646499453.xyz:8443
+
+  # === 80. Traefik forward-auth proxy provider =============================
+  # `forward_single` mode gives per-application access policies (vs
+  # `forward_domain` which lets any logged-in user hit Traefik dashboard).
+  # We attach to the EMBEDDED outpost -- its name is hardcoded by
+  # authentik and its row carries `managed = "goauthentik.io/outposts/embedded"`.
+  80-sso-traefik-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Traefik forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: traefik
+        attrs:
+          mode: forward_single
+          external_host: https://traefik.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 81. Attach Traefik proxy to embedded outpost ========================
+  # Also sets the embedded outpost's `config.authentik_host` to the public
+  # authentik URL. Without this, the embedded Go outpost binary falls back
+  # to `localhost` for the OIDC browser redirects, and the user's browser
+  # ends up with an `http://localhost/...` location header that the
+  # upstream traefik refuses to follow.
+  #
+  # History: this config was originally set via a Terragrunt lifecycle hook
+  # on the `authentik-config` module (destroyed in commit 8f82197). When
+  # the migration to GitOps blueprints happened, the hook was not
+  # replicated and the embedded outpost has been running with
+  # `authentik_host=""` ever since, but it only becomes user-visible
+  # after the first outpost crash -> restart cycle wipes the Python
+  # server's in-memory cache. The first auth request after such a restart
+  # gets a 302 to localhost; subsequent requests work.
+  # === 120 (XYZ) Prometheus forward-auth proxy provider =====================
+  120-sso-prometheus-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Prometheus forward-auth proxy (XYZ)
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: prometheus-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://prometheus.646499453.xyz
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 121 (XYZ) Prometheus application =====================================
+  121-sso-prometheus-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Prometheus application (XYZ)
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: prometheus-xyz
+        attrs:
+          name: Prometheus (XYZ)
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, prometheus-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/prometheus.svg
+          meta_launch_url: https://prometheus.646499453.xyz:8443
+
+  # === 130 (XYZ) Alertmanager forward-auth proxy provider ===================
+  130-sso-alertmanager-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Alertmanager forward-auth proxy (XYZ)
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: alertmanager-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://alertmanager.646499453.xyz
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 131 (XYZ) Alertmanager application ===================================
+  131-sso-alertmanager-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Alertmanager application (XYZ)
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: alertmanager-xyz
+        attrs:
+          name: Alertmanager (XYZ)
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/prometheus.svg
+          meta_launch_url: https://alertmanager.646499453.xyz:8443
+
+  150-sso-traefik-outpost-attachment.yaml: |
+    version: 1
+    metadata:
+      name: Humblehouse - Traefik outpost attachment v2
+    entries:
+      - model: authentik_outposts.outpost
+        identifiers:
+          name: authentik Embedded Outpost
+        attrs:
+          providers:
+            - !Find [authentik_providers_proxy.proxyprovider, [name, traefik]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, homepage-humblehouse]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, truenas]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, synology]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, prometheus]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, minio-synology]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, minio-truenas]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, proxmox-proxy]]
+          config:
+            authentik_host: https://authentik.646499453.xyz:8443
+
+  # === 151. Dedicated Standalone Outpost for Homelab (.xyz:8443) Domain =====
+  # Standalone Proxy Outpost dedicated for SSO authentication on the secondary
+  # domain (homelab, i.e., *.646499453.xyz:8443). By running this separate 
+  # outpost with a dedicated 'authentik_host' pointing to the .xyz:8443 domain, 
+  # we ensure symmetric login redirects for users accessing services from this 
+  # temporary secondary entrance, avoiding confusing jumps to the primary domain.
+  151-sso-standalone-outpost.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Dedicated Outpost for Homelab (.xyz:8443) domain
+    entries:
+      - model: authentik_outposts.outpost
+        identifiers:
+          name: homelab-outpost
+        attrs:
+          type: proxy
+          service_connection: !Find [authentik_outposts.kubernetesserviceconnection, [name, Local Kubernetes Cluster]]
+          providers:
+            - !Find [authentik_providers_proxy.proxyprovider, [name, homepage-homelab]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, prometheus-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, proxmox-proxy-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, traefik-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, truenas-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, synology-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, minio-synology-xyz]]
+            - !Find [authentik_providers_proxy.proxyprovider, [name, minio-truenas-xyz]]
+          config:
+            authentik_host: https://authentik.646499453.xyz:8443
+            authentik_host_insecure: true
+
+  # === 82. Traefik dashboard application ===================================
+  82-sso-traefik-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Traefik dashboard application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: traefik-dashboard
+        attrs:
+          name: traefik-dashboard
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, traefik]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/traefik-proxy.svg
+          meta_launch_url: https://traefik.646499453.xyz:8443
+
+  # === 90-A. Homepage (Humblehouse) forward-auth proxy provider =============
+  90-sso-homepage-humblehouse-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Homepage (Humblehouse) forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: homepage-humblehouse
+        attrs:
+          mode: forward_single
+          external_host: https://homepage.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 90-B. Homepage (Homelab) forward-auth proxy provider =================
+  90-sso-homepage-homelab-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Homepage (Homelab) forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: homepage-homelab
+        attrs:
+          mode: forward_single
+          external_host: https://homepage.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 91-A. Attach Homepage (Humblehouse) proxy to application =============
+  91-sso-homepage-humblehouse-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Homepage (Humblehouse) application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: homepage-humblehouse
+        attrs:
+          name: homepage-humblehouse
+          group: "Humblehouse"
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, homepage-humblehouse]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/homepage.png
+          meta_launch_url: https://homepage.646499453.xyz:8443
+
+  # === 91-B. Attach Homepage (Homelab) proxy to application =================
+  91-sso-homepage-homelab-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Homepage (Homelab) application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: homepage-homelab
+        attrs:
+          name: homepage-homelab
+          group: "Homelab"
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, homepage-homelab]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/homepage.png
+          meta_launch_url: https://homepage.646499453.xyz:8443
+
+  # === 92. TrueNAS forward-auth proxy provider =============================
+  92-sso-truenas-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: truenas
+        attrs:
+          mode: forward_single
+          external_host: https://truenas.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 93. TrueNAS application ============================================
+  93-sso-truenas-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: truenas
+        attrs:
+          name: TrueNAS
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, truenas]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/truenas.png
+          meta_launch_url: https://truenas.646499453.xyz:8443
+
+  # === 94. Synology forward-auth proxy provider ============================
+  94-sso-synology-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: synology
+        attrs:
+          mode: forward_single
+          external_host: https://synology.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 95. Synology application ============================================
+  95-sso-synology-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: synology
+        attrs:
+          name: Synology
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, synology]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/synology.png
+          meta_launch_url: https://synology.646499453.xyz:8443
+
+  # === 100. Grafana native OIDC provider ===================================
+  100-sso-grafana-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Grafana OIDC provider
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: grafana-provider
+        attrs:
+          client_id: grafana-sso
+          client_secret: !Env [GRAFANA_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://grafana.646499453.xyz:8443/login/generic_oauth
+            - matching_mode: strict
+              url: https://grafana.646499453.xyz:8443/login/generic_oauth
+            - matching_mode: strict
+              url: https://grafana.646499453.xyz/login/generic_oauth
+
+  # === 101. Grafana application ============================================
+  101-sso-grafana-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Grafana application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: grafana
+        attrs:
+          name: Grafana
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, grafana-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/grafana.svg
+          meta_launch_url: https://grafana.646499453.xyz:8443
+
+  # === 110. ArgoCD native OIDC provider ====================================
+  110-sso-argocd-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - ArgoCD OIDC provider
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: argocd-provider
+        attrs:
+          client_id: argocd-sso
+          client_secret: !Env [ARGOCD_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://argocd.646499453.xyz:8443/api/dex/callback
+            - matching_mode: strict
+              url: https://argocd.646499453.xyz:8443/api/dex/callback
+            - matching_mode: strict
+              url: https://argocd.646499453.xyz/api/dex/callback
+
+  # === 111. ArgoCD application ============================================
+  111-sso-argocd-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - ArgoCD application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: argocd
+        attrs:
+          name: ArgoCD
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, argocd-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/argo-cd.svg
+          meta_launch_url: https://argocd.646499453.xyz:8443
+
+  # === 120. Prometheus forward-auth proxy provider =========================
+  120-sso-prometheus-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Prometheus forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: prometheus
+        attrs:
+          mode: forward_single
+          external_host: https://prometheus.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 121. Prometheus application =========================================
+  121-sso-prometheus-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Prometheus application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: prometheus
+        attrs:
+          name: Prometheus
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, prometheus]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/prometheus.svg
+          meta_launch_url: https://prometheus.646499453.xyz:8443
+
+  # === 122. Alertmanager forward-auth proxy provider =======================
+  122-sso-alertmanager-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Alertmanager forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: alertmanager
+        attrs:
+          mode: forward_single
+          external_host: https://alertmanager.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 123. Alertmanager application =======================================
+  123-sso-alertmanager-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Alertmanager application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: alertmanager
+        attrs:
+          name: Alertmanager
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/prometheus.svg
+          meta_launch_url: https://alertmanager.646499453.xyz:8443
+
+  # === 130. Synology MinIO forward-auth proxy provider =====================
+  130-sso-minio-synology-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology MinIO forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: minio-synology
+        attrs:
+          mode: forward_single
+          external_host: https://minio.synology.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 131. Synology MinIO application =====================================
+  131-sso-minio-synology-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology MinIO application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: minio-synology
+        attrs:
+          name: Synology MinIO
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, minio-synology]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/minio.png
+          meta_launch_url: https://minio.synology.646499453.xyz:8443
+
+  # === 132. TrueNAS MinIO forward-auth proxy provider ======================
+  132-sso-minio-truenas-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS MinIO forward-auth proxy
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: minio-truenas
+        attrs:
+          mode: forward_single
+          external_host: https://minio.truenas.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 133. TrueNAS MinIO application ======================================
+  133-sso-minio-truenas-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS MinIO application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: minio-truenas
+        attrs:
+          name: TrueNAS MinIO
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, minio-truenas]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/minio.png
+          meta_launch_url: https://minio.truenas.646499453.xyz:8443
+
+  # === 139. MinIO OIDC Policy scope mapping ================================
+  139-sso-minio-policy-mapping.yaml: |
+    version: 1
+    metadata:
+      name: SSO - MinIO OIDC Policy scope mapping v2
+    entries:
+      - model: authentik_providers_oauth2.scopemapping
+        identifiers:
+          name: minio-policy-mapping
+        attrs:
+          name: "MinIO Policy Scope"
+          scope_name: openid
+          description: "Map user groups or roles to MinIO policy claim"
+          expression: |
+            policies = []
+            if any(g.name == 'authentik Admins' for g in request.user.ak_groups.all()):
+                policies.append('consoleAdmin')
+            else:
+                policies.append('readwrite')
+            return {
+                "policy": policies
+            }
+
+  # === 140. Synology MinIO OIDC provider ===================================
+  140-sso-minio-synology-oidc-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology MinIO OIDC provider (v2 forced reload)
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: minio-synology-oidc-provider
+        attrs:
+          client_id: minio-synology-sso
+          client_secret: !Env [MINIO_SYNOLOGY_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+            - !Find [authentik_providers_oauth2.scopemapping, [name, minio-policy-mapping]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://minio.synology.646499453.xyz:8443/oauth_callback
+            - matching_mode: strict
+              url: https://minio.synology.646499453.xyz:8443/oauth_callback
+            - matching_mode: strict
+              url: https://minio.synology.646499453.xyz/oauth_callback
+
+  # === 141. Synology MinIO OIDC application ================================
+  141-sso-minio-synology-oidc-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology MinIO OIDC application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: minio-synology-oidc
+        attrs:
+          name: Synology MinIO SSO
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, minio-synology-oidc-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/minio.png
+          meta_launch_url: https://minio.synology.646499453.xyz:8443
+
+  # === 142. TrueNAS MinIO OIDC provider ====================================
+  142-sso-minio-truenas-oidc-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS MinIO OIDC provider (v2 forced reload)
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: minio-truenas-oidc-provider
+        attrs:
+          client_id: minio-truenas-sso
+          client_secret: !Env [MINIO_TRUENAS_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+            - !Find [authentik_providers_oauth2.scopemapping, [name, minio-policy-mapping]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://minio.truenas.646499453.xyz:8443/oauth_callback
+            - matching_mode: strict
+              url: https://minio.truenas.646499453.xyz:8443/oauth_callback
+            - matching_mode: strict
+              url: https://minio.truenas.646499453.xyz/oauth_callback
+
+  # === 143. TrueNAS MinIO OIDC application =================================
+  143-sso-minio-truenas-oidc-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS MinIO OIDC application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: minio-truenas-oidc
+        attrs:
+          name: TrueNAS MinIO SSO
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, minio-truenas-oidc-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/minio.png
+          meta_launch_url: https://minio.truenas.646499453.xyz:8443
+
+
+  # === 120. Home Assistant Lvdi OIDC provider ==============================
+  120-sso-homeassistant-lvdi-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Home Assistant Lvdi OIDC provider
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: homeassistant-lvdi-provider
+        attrs:
+          client_id: homeassistant-lvdi
+          client_secret: !Env [HOMEASSISTANT_LVDI_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+            - !Find [authentik_providers_oauth2.scopemapping, [name, homelab-general-groups]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://lvdi.hass.646499453.xyz/auth/oidc/callback
+            - matching_mode: strict
+              url: https://lvdi.hass.646499453.xyz:8443/auth/oidc/callback
+
+  # === 121. Home Assistant Lvdi Application ================================
+  121-sso-homeassistant-lvdi-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Home Assistant Lvdi application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: homeassistant-lvdi
+        attrs:
+          name: Home Assistant - Lvdi
+          group: "Homelab"
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, homeassistant-lvdi-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/home-assistant.svg
+          meta_launch_url: https://lvdi.hass.646499453.xyz:8443
+
+  # === 122. Home Assistant Langshi OIDC provider ===========================
+  122-sso-homeassistant-langshi-provider.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Home Assistant Langshi OIDC provider
+    entries:
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: homeassistant-langshi-provider
+        attrs:
+          client_id: homeassistant-langshi
+          client_secret: !Env [HOMEASSISTANT_LANGSHI_CLIENT_SECRET, ""]
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+          sub_mode: user_email
+          grant_types:
+            - authorization_code
+            - refresh_token
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+            - !Find [authentik_providers_oauth2.scopemapping, [name, homelab-general-groups]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://langshi.hass.646499453.xyz/auth/oidc/callback
+            - matching_mode: strict
+              url: https://langshi.hass.646499453.xyz:8443/auth/oidc/callback
+
+  # === 123. Home Assistant Langshi Application =============================
+  123-sso-homeassistant-langshi-application.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Home Assistant Langshi application
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: homeassistant-langshi
+        attrs:
+          name: Home Assistant - Langshi
+          group: "Homelab"
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, homeassistant-langshi-provider]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/home-assistant.svg
+          meta_launch_url: https://langshi.hass.646499453.xyz:8443
+
+  # === 72-B. Proxmox VE forward-auth proxy provider XYZ ====================
+  72-sso-proxmox-proxy-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Proxmox VE forward-auth proxy XYZ
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: proxmox-proxy-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://proxmox.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 73-B. Proxmox VE forward-auth application XYZ =======================
+  73-sso-proxmox-proxy-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Proxmox VE forward-auth application XYZ
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: proxmox-secure-xyz
+        attrs:
+          name: Proxmox VE (SSO) XYZ
+          group: Homelab
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, proxmox-proxy-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/proxmox.svg
+          meta_launch_url: https://proxmox.646499453.xyz:8443
+
+  # === 80-B. Traefik forward-auth proxy provider XYZ =======================
+  80-sso-traefik-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Traefik forward-auth proxy XYZ
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: traefik-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://traefik.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 82-B. Traefik dashboard application XYZ =============================
+  82-sso-traefik-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Traefik dashboard application XYZ
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: traefik-dashboard-xyz
+        attrs:
+          name: traefik-dashboard XYZ
+          group: Homelab
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, traefik-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/traefik-proxy.svg
+          meta_launch_url: https://traefik.646499453.xyz:8443
+
+  # === 92-B. TrueNAS forward-auth proxy provider XYZ =======================
+  92-sso-truenas-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS forward-auth proxy XYZ
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: truenas-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://truenas.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 93-B. TrueNAS application XYZ =======================================
+  93-sso-truenas-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS application XYZ
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: truenas-xyz
+        attrs:
+          name: TrueNAS XYZ
+          group: Homelab
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, truenas-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/truenas.png
+          meta_launch_url: https://truenas.646499453.xyz:8443
+
+  # === 94-B. Synology forward-auth proxy provider XYZ ======================
+  94-sso-synology-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology forward-auth proxy XYZ
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: synology-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://synology.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 95-B. Synology application XYZ ======================================
+  95-sso-synology-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology application XYZ
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: synology-xyz
+        attrs:
+          name: Synology XYZ
+          group: Homelab
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, synology-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/synology.png
+          meta_launch_url: https://synology.646499453.xyz:8443
+
+  # === 130-B. Synology MinIO forward-auth proxy provider XYZ ===============
+  130-sso-minio-synology-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology MinIO forward-auth proxy XYZ
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: minio-synology-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://minio.synology.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 131-B. Synology MinIO application XYZ ===============================
+  131-sso-minio-synology-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - Synology MinIO application XYZ
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: minio-synology-xyz
+        attrs:
+          name: Synology MinIO XYZ
+          group: Homelab
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, minio-synology-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/minio.png
+          meta_launch_url: https://minio.synology.646499453.xyz:8443
+
+  # === 132-B. TrueNAS MinIO forward-auth proxy provider XYZ ================
+  132-sso-minio-truenas-provider-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS MinIO forward-auth proxy XYZ
+    entries:
+      - model: authentik_providers_proxy.proxyprovider
+        identifiers:
+          name: minio-truenas-xyz
+        attrs:
+          mode: forward_single
+          external_host: https://minio.truenas.646499453.xyz:8443
+          internal_host: http://authentik-server.authentik.svc.cluster.local
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+
+  # === 133-B. TrueNAS MinIO application XYZ ================================
+  133-sso-minio-truenas-application-xyz.yaml: |
+    version: 1
+    metadata:
+      name: SSO - TrueNAS MinIO application XYZ
+    entries:
+      - model: authentik_core.application
+        identifiers:
+          slug: minio-truenas-xyz
+        attrs:
+          name: TrueNAS MinIO XYZ
+          group: Homelab
+          provider: !Find [authentik_providers_proxy.proxyprovider, [name, minio-truenas-xyz]]
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/minio.png
+          meta_launch_url: https://minio.truenas.646499453.xyz:8443
