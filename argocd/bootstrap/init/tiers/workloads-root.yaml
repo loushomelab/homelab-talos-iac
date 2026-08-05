@@ -1,16 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-root-app
+  name: workloads-root
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
 spec:
-  project: default
+  project: workloads
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/bootstrap/init 
+    path: argocd/apps/workloads
     directory:
       recurse: true
   destination:

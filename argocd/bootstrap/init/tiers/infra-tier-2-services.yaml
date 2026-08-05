@@ -1,22 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metallb-config
+  name: infra-tier-2-services
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "1" # CRD 资源需要在 MetalLB controller (wave 0) 就绪后部署
+    argocd.argoproj.io/sync-wave: "20"
 spec:
-  project: default
+  project: infra
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/configs/infrastructure/metallb/manifests
+    path: argocd/apps/infrastructure/20-services
+    directory:
+      recurse: true
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: metallb-system
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - RespectIgnoreDifferences=true

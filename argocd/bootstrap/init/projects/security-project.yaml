@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  annotations:
+  name: security
+  namespace: argocd
+spec:
+  description: "Security and authentication components (Secret management, Certs, SSO)"
+  # 允许拉取的源仓库
+  sourceRepos:
+    - 'https://github.com/loushomelab/homelab-talos-iac.git'
+    # 如果 doppler 有官方 helm 也可以加在这里，目前看起来你使用的是 git ref
+  
+  # 允许部署到的目标集群和命名空间
+  destinations:
+    - namespace: '*'
+      server: 'https://kubernetes.default.svc'
+      
+  # 同样放开集群级别资源的创建权限
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

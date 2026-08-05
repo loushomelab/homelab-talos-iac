@@ -1,16 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-root-app
+  name: infra-tier-1-core
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
 spec:
-  project: default
+  project: infra
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/bootstrap/init 
+    path: argocd/apps/infrastructure/10-core
     directory:
       recurse: true
   destination:

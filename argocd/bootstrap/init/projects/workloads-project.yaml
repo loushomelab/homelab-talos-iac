@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  annotations:
+  name: workloads
+  namespace: argocd
+spec:
+  description: "End-user workloads and self-hosted services"
+  
+  sourceRepos:
+    - 'https://github.com/loushomelab/homelab-talos-iac.git'
+    - '*' # 业务应用可能引入各种 chart，通常配置较宽或者随着添加不断更新
+  
+  destinations:
+    - namespace: '*'
+      server: 'https://kubernetes.default.svc'
+      
+  # 业务应用通常只需要 Namespace 级别的权限，但如果是 homelab 为了方便，也可以全部放开
+  # 如果要严格，可以将 group: '*' kind: '*' 移除，它就只能建 deployment/service 等
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

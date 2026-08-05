@@ -1,24 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-root-app
+  name: metallb-config
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
 spec:
-  project: default
+  project: infra
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/bootstrap/init 
-    directory:
-      recurse: true
+    path: argocd/configs/infrastructure/metallb/manifests
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: metallb-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - RespectIgnoreDifferences=true

@@ -1,24 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-root-app
+  name: reflector
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
 spec:
-  project: default
+  project: security
   source:
-    repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-    targetRevision: HEAD
-    path: argocd/bootstrap/init 
-    directory:
-      recurse: true
+    repoURL: 'https://emberstack.github.io/helm-charts'
+    targetRevision: 7.1.267
+    chart: reflector
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: kube-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-      - RespectIgnoreDifferences=true
+      - CreateNamespace=true

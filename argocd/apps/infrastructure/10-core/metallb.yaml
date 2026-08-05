@@ -1,27 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: traefik
+  name: metallb
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: infra
   sources:
-    - repoURL: 'https://helm.traefik.io/traefik'
-      chart: traefik
-      targetRevision: 41.1.1
+    - repoURL: 'https://metallb.github.io/metallb'
+      chart: metallb
+      targetRevision: 0.16.1
       helm:
         valueFiles:
-          - $values/argocd/configs/infrastructure/traefik/values.yaml
+          - $values/argocd/configs/infrastructure/metallb/values.yaml
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
       targetRevision: HEAD
       ref: values
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: traefik
+    namespace: metallb-system
   syncPolicy:
     automated:
       prune: true

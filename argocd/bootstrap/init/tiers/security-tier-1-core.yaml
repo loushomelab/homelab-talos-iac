@@ -1,16 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homelab-root-app
+  name: security-tier-1-core
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "10" # Core infra (MetalLB) is 10, Traefik is 20. We can set security core around 15 or 10. Let's make it 10 as operators can deploy early.
 spec:
-  project: default
+  project: security
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/bootstrap/init 
+    path: argocd/apps/security/10-core
     directory:
       recurse: true
   destination:
