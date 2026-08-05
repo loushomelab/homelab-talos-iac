@@ -1,0 +1,49 @@
+apiVersion: secrets.doppler.com/v1alpha1
+kind: DopplerSecret
+metadata:
+  name: cloudflare-api-token
+  namespace: cert-manager
+spec:
+  tokenSecret:
+    name: doppler-token-cert-manager
+  managedSecret:
+    name: cloudflare-api-token
+    namespace: cert-manager
+  project: k8s
+  config: prd
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-cloudflare
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@646499453.xyz
+    privateKeySecretRef:
+      name: letsencrypt-cloudflare-account-key
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-api-token
+            key: CLOUDFLARE_API_TOKEN
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcards-646499453-xyz
+  namespace: cert-manager
+spec:
+  secretName: wildcards-646499453-xyz-tls
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+  - "646499453.xyz"
+  - "*.646499453.xyz"
+  - "*.pve.646499453.xyz" # standard wildcard pattern to cover second level subdomains
+  secretTemplate:
+    annotations:
+      reflector.emberstack.com/reflection-allowed: "true"
+      reflector.emberstack.com/reflection-auto-enabled: "true"
