@@ -45,5 +45,5 @@ spec:
   - "*.pve.646499453.xyz" # standard wildcard pattern to cover second level subdomains
   secretTemplate:
     annotations:
-      reflector.emberstack.com/reflection-allowed: "true"
-      reflector.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
