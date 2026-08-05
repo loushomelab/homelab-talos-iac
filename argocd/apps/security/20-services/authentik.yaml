@@ -18,8 +18,9 @@ spec:
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
       targetRevision: HEAD
       ref: values
-      directory:
-        include: 'argocd/configs/security/authentik/manifests/*.yaml'
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      targetRevision: HEAD
+      path: argocd/configs/security/authentik/manifests
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: authentik
