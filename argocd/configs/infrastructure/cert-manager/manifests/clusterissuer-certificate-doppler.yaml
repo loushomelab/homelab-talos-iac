@@ -5,7 +5,7 @@ metadata:
   namespace: cert-manager
 spec:
   tokenSecret:
-    name: doppler-token-cert-manager
+    name: doppler-token-shared
   managedSecret:
     name: cloudflare-api-token
     namespace: cert-manager
