@@ -37,5 +37,5 @@ worker:
 
 blueprints:
   configMaps:
-    - name: authentik-blueprint-pve
-    - name: authentik-blueprint-webauthn
+    - authentik-blueprint-pve
+    - authentik-blueprint-webauthn
