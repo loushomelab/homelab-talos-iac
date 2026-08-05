@@ -6,18 +6,14 @@ metadata:
   namespace: argocd
 spec:
   description: "Core infrastructure components (Networking, Storage, System Operators)"
-  # 允许拉取的源仓库：你的主仓库以及目前用到的 Helm 仓库
   sourceRepos:
     - 'https://github.com/loushomelab/homelab-talos-iac.git'
     - 'https://metallb.github.io/metallb'
     - 'https://helm.traefik.io/traefik'
-  
-  # 允许部署到的目标集群和命名空间 (* 代表允许在此集群的任何 namespace 部署基础组件)
+    - 'https://emberstack.github.io/helm-charts'
   destinations:
     - namespace: '*'
       server: 'https://kubernetes.default.svc'
-      
-  # 基础架构通常需要创建 CRD, ClusterRole 等集群级别的资源，所以开放白名单
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
