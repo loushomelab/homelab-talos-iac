@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  sources:
+    - repoURL: 'https://helm.traefik.io/traefik'
+      chart: traefik
+      targetRevision: 27.0.2
+      helm:
+        valueFiles:
+          - $values/argocd/infrastructure/traefik/values.yaml
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
