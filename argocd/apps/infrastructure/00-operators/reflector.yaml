@@ -10,7 +10,7 @@ spec:
   project: infra
   source:
     repoURL: 'https://emberstack.github.io/helm-charts'
-    targetRevision: 7.1.267
+    targetRevision: 10.0.63
     chart: reflector
   destination:
     server: 'https://kubernetes.default.svc'
