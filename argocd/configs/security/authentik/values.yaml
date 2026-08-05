@@ -18,17 +18,15 @@ server:
   ingress:
     enabled: true
     ingressClassName: traefik
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: sso.louhome.top
-        paths:
-          - path: /
-            pathType: Prefix
+      - authentik.646499453.xyz
+    paths:
+      - /
+    pathType: Prefix
     tls:
-      - secretName: sso-louhome-top-tls
+      - secretName: wildcards-646499453-xyz-tls
         hosts:
-          - sso.louhome.top
+          - authentik.646499453.xyz
 
 worker:
   enabled: true
