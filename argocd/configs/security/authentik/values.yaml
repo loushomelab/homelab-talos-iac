@@ -34,3 +34,8 @@ worker:
   envFrom:
     - secretRef:
         name: authentik-secrets
+
+blueprints:
+  configMaps:
+    - name: authentik-blueprint-pve
+    - name: authentik-blueprint-webauthn

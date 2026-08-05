@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-blueprint-webauthn
+  namespace: authentik
+data:
+  webauthn.yaml: |
+    version: 1
+    metadata:
+      name: Authentik - WebAuthn Passwordless Quick Login
+    entries:
+      # 1. 创建专门用于 WebAuthn 校验的 Stage
+      - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+        id: webauthn-only-validation-stage
+        identifiers:
+          name: webauthn-only-validation-stage
+        attrs:
+          # 仅允许 WebAuthn (Passkeys / 安全密钥) 设备
+          device_classes:
+            - webauthn
+          webauthn_user_verification: preferred
+          # 如果用户没有配置 Passkey，在此专属流程中直接拒绝
+          not_configured_action: deny
+
+      # 2. 创建一个专属的“无密码登录” Authentication 流程
+      - model: authentik_flows.flow
+        id: passwordless-login-flow
+        identifiers:
+          slug: passwordless-login-flow
+        attrs:
+          name: WebAuthn Passwordless Login
+          title: Passkey 快速登录
+          designation: authentication
+          authentication: none
+
+      # 3. 将 WebAuthn 校验 Stage 绑定到该流程 (第一步)
+      - model: authentik_flows.flowstagebinding
+        identifiers:
+          order: 10
+          stage: !KeyOf webauthn-only-validation-stage
+          target: !KeyOf passwordless-login-flow
+
+      # 4. 将系统内置的登录 Stage 绑定到该流程以完成登录 (第二步)
+      - model: authentik_flows.flowstagebinding
+        identifiers:
+          order: 20
+          stage: !Find [authentik_stages_user_login.userloginstage, [name, default-authentication-login]]
+          target: !KeyOf passwordless-login-flow
+
+      # 5. 更新系统默认的 Identification 阶段，启用两种快速登录入口
+      - model: authentik_stages_identification.identificationstage
+        identifiers:
+          name: default-authentication-identification
+        attrs:
+          # 关联 WebAuthn Stage 启用浏览器的 Conditional UI 自动填充
+          webauthn_stage: !KeyOf webauthn-only-validation-stage
+          # 关联无密码 Flow 在用户名框下方自动渲染“快速登录/无密码登录”链接
+          passwordless_flow: !KeyOf passwordless-login-flow

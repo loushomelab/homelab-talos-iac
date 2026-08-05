@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-blueprint-pve
+  namespace: authentik
+data:
+  pve.yaml: |
+    version: 1
+    metadata:
+      name: Proxmox VE Integration
+    entries:
+      - identifiers:
+          slug: proxmox-ve
+        model: authentik_providers_oauth2.oauth2provider
+        id: pve-provider
+        attrs:
+          name: Proxmox VE
+          client_id: proxmox-ve
+          client_secret: proxmox-ve-oidc-secret-key-placeholder
+          client_type: confidential
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+          redirect_uris:
+            - https://pve.646499453.xyz:8006/
+            - https://pve.646499453.xyz/
+      - identifiers:
+          slug: proxmox-ve
+        model: authentik_core.application
+        attrs:
+          name: Proxmox VE
+          provider: !KeyOf pve-provider
+          icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/proxmox.png
+          meta_launch_url: https://pve.646499453.xyz:8006/
