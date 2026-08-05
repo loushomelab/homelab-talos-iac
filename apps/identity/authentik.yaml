@@ -19,7 +19,7 @@ spec:
         \  - secretRef:\n      name: authentik-secret-key\n  - secretRef:\n      name:\
         \ authentik-oidc-credentials\n  - secretRef:\n      name: authentik-blueprint-secrets\n\
         postgresql:\n  enabled: false\nredis:\n  enabled: false\nserver:\n  metrics:\n\
-        \    enabled: true\n    serviceMonitor:\n      enabled: true\n      labels:\n\
+        \    enabled: true\n    serviceMonitor:\n      enabled: false\n      labels:\n\
         \        release: kube-prometheus-stack\n  envFrom:\n  - secretRef:\n    \
         \  name: authentik-db-credentials\n  - secretRef:\n      name: authentik-secret-key\n\
         \  - secretRef:\n      name: authentik-oidc-credentials\n  - secretRef:\n\
@@ -32,12 +32,11 @@ spec:
         \ SSO & Identity Provider\n      gethomepage.dev/group: Identity\n      gethomepage.dev/icon:\
         \ authentik.png\n      gethomepage.dev/app: authentik\n      gethomepage.dev/widget.type:\
         \ authentik\n      gethomepage.dev/widget.version: '2'\n      gethomepage.dev/widget.url:\
-        \ https://authentik.646499453.xyz\n      gethomepage.dev/widget.key:\
-        \ '{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}'\n    enabled: true\n    hosts:\n  \
-        \  - authentik.646499453.xyz\n    tls:\n\
+        \ https://authentik.646499453.xyz\n      gethomepage.dev/widget.key: '{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}'\n\
+        \    enabled: true\n    hosts:\n    - authentik.646499453.xyz\n    tls:\n\
         \    - hosts:\n      - authentik.646499453.xyz\n      secretName: wildcard-646499453-crt\n\
         worker:\n  metrics:\n    enabled: true\n    serviceMonitor:\n      enabled:\
-        \ true\n      labels:\n        release: kube-prometheus-stack\n  envFrom:\n\
+        \ false\n      labels:\n        release: kube-prometheus-stack\n  envFrom:\n\
         \  - secretRef:\n      name: authentik-db-credentials\n  - secretRef:\n  \
         \    name: authentik-secret-key\n  - secretRef:\n      name: authentik-oidc-credentials\n\
         \  - secretRef:\n      name: authentik-blueprint-secrets\nblueprints:\n  configMaps:\n\
