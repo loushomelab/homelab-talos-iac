@@ -10,13 +10,13 @@ data:
       name: Proxmox VE Integration
     entries:
       - identifiers:
-          slug: proxmox-ve
+          name: Proxmox VE
         model: authentik_providers_oauth2.oauth2provider
         id: pve-provider
         attrs:
           name: Proxmox VE
           client_id: proxmox-ve
-          client_secret: proxmox-ve-oidc-secret-key-placeholder
+          client_secret: !Env AUTHENTIK_OIDC_PROXMOX_SECRET
           client_type: confidential
           authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
           property_mappings:
@@ -24,8 +24,14 @@ data:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
           redirect_uris:
-            - https://pve.646499453.xyz:8006/
-            - https://pve.646499453.xyz/
+            - https://r720.pve.646499453.xyz:8006/
+            - https://r720.pve.646499453.xyz:8006
+            - https://n100x8.pve.646499453.xyz:8006/
+            - https://n100x8.pve.646499453.xyz:8006
+            - https://3960x.pve.646499453.xyz:8006/
+            - https://3960x.pve.646499453.xyz:8006
+            - https://1920x.pve.646499453.xyz:8006/
+            - https://1920x.pve.646499453.xyz:8006
       - identifiers:
           slug: proxmox-ve
         model: authentik_core.application
@@ -33,4 +39,4 @@ data:
           name: Proxmox VE
           provider: !KeyOf pve-provider
           icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/proxmox.png
-          meta_launch_url: https://pve.646499453.xyz:8006/
+          meta_launch_url: https://r720.pve.646499453.xyz:8006/

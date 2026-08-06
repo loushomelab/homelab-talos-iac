@@ -1,0 +1,198 @@
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: pve-transport
+  namespace: traefik
+spec:
+  insecureSkipVerify: true
+---
+# ==========================================
+# r720 Node
+# ==========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-r720
+  namespace: traefik
+spec:
+  ports:
+    - name: https
+      port: 8006
+      targetPort: 8006
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pve-r720
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.101
+    ports:
+      - name: https
+        port: 8006
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pve-r720
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`r720.pve.646499453.xyz`)
+      kind: Rule
+      services:
+        - name: pve-r720
+          port: 8006
+          scheme: https
+          serversTransport: pve-transport
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+
+---
+# ==========================================
+# n100x8 Node
+# ==========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-n100x8
+  namespace: traefik
+spec:
+  ports:
+    - name: https
+      port: 8006
+      targetPort: 8006
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pve-n100x8
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.102
+    ports:
+      - name: https
+        port: 8006
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pve-n100x8
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`n100x8.pve.646499453.xyz`)
+      kind: Rule
+      services:
+        - name: pve-n100x8
+          port: 8006
+          scheme: https
+          serversTransport: pve-transport
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+
+---
+# ==========================================
+# 3960x Node
+# ==========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-3960x
+  namespace: traefik
+spec:
+  ports:
+    - name: https
+      port: 8006
+      targetPort: 8006
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pve-3960x
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.104
+    ports:
+      - name: https
+        port: 8006
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pve-3960x
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`3960x.pve.646499453.xyz`)
+      kind: Rule
+      services:
+        - name: pve-3960x
+          port: 8006
+          scheme: https
+          serversTransport: pve-transport
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+
+---
+# ==========================================
+# 1920x Node
+# ==========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-1920x
+  namespace: traefik
+spec:
+  ports:
+    - name: https
+      port: 8006
+      targetPort: 8006
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pve-1920x
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.105
+    ports:
+      - name: https
+        port: 8006
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pve-1920x
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`1920x.pve.646499453.xyz`)
+      kind: Rule
+      services:
+        - name: pve-1920x
+          port: 8006
+          scheme: https
+          serversTransport: pve-transport
+  tls:
+    secretName: wildcards-646499453-xyz-tls
