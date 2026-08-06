@@ -15,27 +15,13 @@ metadata:
   name: pve-r720
   namespace: traefik
 spec:
+  type: ExternalName
+  externalName: 192.168.50.101
   ports:
     - name: https
       port: 8006
       targetPort: 8006
       protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: pve-r720
-  namespace: traefik
-  labels:
-    kubernetes.io/service-name: pve-r720
-addressType: IPv4
-ports:
-  - name: https
-    port: 8006
-    protocol: TCP
-endpoints:
-  - addresses:
-      - 192.168.50.101
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -66,27 +52,13 @@ metadata:
   name: pve-n100x8
   namespace: traefik
 spec:
+  type: ExternalName
+  externalName: 192.168.50.102
   ports:
     - name: https
       port: 8006
       targetPort: 8006
       protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: pve-n100x8
-  namespace: traefik
-  labels:
-    kubernetes.io/service-name: pve-n100x8
-addressType: IPv4
-ports:
-  - name: https
-    port: 8006
-    protocol: TCP
-endpoints:
-  - addresses:
-      - 192.168.50.102
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -117,27 +89,13 @@ metadata:
   name: pve-3960x
   namespace: traefik
 spec:
+  type: ExternalName
+  externalName: 192.168.50.104
   ports:
     - name: https
       port: 8006
       targetPort: 8006
       protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: pve-3960x
-  namespace: traefik
-  labels:
-    kubernetes.io/service-name: pve-3960x
-addressType: IPv4
-ports:
-  - name: https
-    port: 8006
-    protocol: TCP
-endpoints:
-  - addresses:
-      - 192.168.50.104
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -168,27 +126,13 @@ metadata:
   name: pve-1920x
   namespace: traefik
 spec:
+  type: ExternalName
+  externalName: 192.168.50.105
   ports:
     - name: https
       port: 8006
       targetPort: 8006
       protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: pve-1920x
-  namespace: traefik
-  labels:
-    kubernetes.io/service-name: pve-1920x
-addressType: IPv4
-ports:
-  - name: https
-    port: 8006
-    protocol: TCP
-endpoints:
-  - addresses:
-      - 192.168.50.105
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -219,27 +163,13 @@ metadata:
   name: pbs
   namespace: traefik
 spec:
+  type: ExternalName
+  externalName: 192.168.50.154
   ports:
     - name: https
       port: 8007
       targetPort: 8007
       protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: pbs
-  namespace: traefik
-  labels:
-    kubernetes.io/service-name: pbs
-addressType: IPv4
-ports:
-  - name: https
-    port: 8007
-    protocol: TCP
-endpoints:
-  - addresses:
-      - 192.168.50.154
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
