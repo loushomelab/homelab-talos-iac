@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  url: https://argocd.646499453.xyz
+  url: https://argocd.646499453.xyz:8443
   oidc.config: |
     name: Authentik
     issuer: https://authentik.646499453.xyz/application/o/argocd/
