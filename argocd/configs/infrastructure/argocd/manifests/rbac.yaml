@@ -9,5 +9,5 @@ metadata:
 data:
   # Give full admin access to users logging in via Authentik
   policy.csv: |
-    g, Authentik Admins, role:admin
+    g, authentik Admins, role:admin
   scopes: '[groups]'
