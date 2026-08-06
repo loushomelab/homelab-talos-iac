@@ -18,6 +18,9 @@ data:
           client_id: proxmox-ve
           client_secret: !Env AUTHENTIK_OIDC_PROXMOX_SECRET
           client_type: confidential
+          grant_types:
+            - authorization_code
+            - refresh_token
           authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
           invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
           signing_key: !Find [authentik_crypto.certificatekeypair, [name, "authentik Self-signed Certificate"]]
