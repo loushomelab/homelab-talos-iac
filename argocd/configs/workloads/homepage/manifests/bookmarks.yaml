@@ -1,0 +1,9 @@
+- Homelab:
+    - Github:
+        - abbr: GH
+          href: https://github.com/
+          icon: github
+    - ChatGPT:
+        - abbr: AI
+          href: https://chatgpt.com/
+          icon: chatgpt

@@ -1,0 +1,14 @@
+- Infrastructure:
+    - Proxmox:
+        icon: proxmox
+        href: https://pve.646499453.xyz:8006/
+        description: "Proxmox VE Hypervisor"
+    - ArgoCD:
+        icon: argocd
+        href: https://argocd.646499453.xyz/
+        description: "GitOps Continuous Delivery"
+- Security:
+    - Authentik:
+        icon: authentik
+        href: https://authentik.646499453.xyz/
+        description: "Identity and Access Management"
