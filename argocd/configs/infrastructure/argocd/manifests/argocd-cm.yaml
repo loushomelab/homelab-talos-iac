@@ -12,5 +12,5 @@ data:
     name: Authentik
     issuer: https://authentik.646499453.xyz:8443/application/o/argocd/
     clientID: argocd
-    clientSecret: $oidc.authentik.clientSecret
+    clientSecret: $argocd-oidc-secret:oidc.authentik.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
