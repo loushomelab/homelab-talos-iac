@@ -9,6 +9,19 @@ data:
     metadata:
       name: Applications Integration
     entries:
+      # --- Custom Scope Mappings ---
+      - identifiers:
+          name: ArgoCD Groups
+        model: authentik_providers_oauth2.scopemapping
+        id: scope-argocd-groups
+        attrs:
+          scope_name: groups
+          description: "Map Authentik groups to OIDC groups claim"
+          expression: |
+            return {
+                "groups": [group.name for group in request.user.ak_groups.all()]
+            }
+
       # --- ArgoCD ---
       - identifiers:
           name: ArgoCD
@@ -29,6 +42,7 @@ data:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            - !KeyOf scope-argocd-groups
           redirect_uris:
             - matching_mode: strict
               url: https://argocd.646499453.xyz:8443/api/dex/callback
