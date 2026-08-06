@@ -27,21 +27,21 @@ data:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
           redirect_uris:
             - matching_mode: strict
-              url: https://r720.pve.646499453.xyz:8006/
+              url: https://r720.pve.646499453.xyz:8443/
             - matching_mode: strict
-              url: https://r720.pve.646499453.xyz:8006
+              url: https://r720.pve.646499453.xyz:8443
             - matching_mode: strict
-              url: https://n100x8.pve.646499453.xyz:8006/
+              url: https://n100x8.pve.646499453.xyz:8443/
             - matching_mode: strict
-              url: https://n100x8.pve.646499453.xyz:8006
+              url: https://n100x8.pve.646499453.xyz:8443
             - matching_mode: strict
-              url: https://3960x.pve.646499453.xyz:8006/
+              url: https://3960x.pve.646499453.xyz:8443/
             - matching_mode: strict
-              url: https://3960x.pve.646499453.xyz:8006
+              url: https://3960x.pve.646499453.xyz:8443
             - matching_mode: strict
-              url: https://1920x.pve.646499453.xyz:8006/
+              url: https://1920x.pve.646499453.xyz:8443/
             - matching_mode: strict
-              url: https://1920x.pve.646499453.xyz:8006
+              url: https://1920x.pve.646499453.xyz:8443
       - identifiers:
           slug: proxmox-ve
         model: authentik_core.application
@@ -49,4 +49,4 @@ data:
           name: Proxmox VE
           provider: !KeyOf pve-provider
           icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/proxmox.png
-          meta_launch_url: https://r720.pve.646499453.xyz:8006/
+          meta_launch_url: https://r720.pve.646499453.xyz:8443/
