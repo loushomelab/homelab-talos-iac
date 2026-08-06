@@ -39,3 +39,4 @@ blueprints:
   configMaps:
     - authentik-blueprint-pve
     - authentik-blueprint-webauthn
+    - authentik-blueprint-apps
