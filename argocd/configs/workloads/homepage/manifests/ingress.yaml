@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
   annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: traefik-authentik-forwardauth@kubecrd
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-authentik-forwardauth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
