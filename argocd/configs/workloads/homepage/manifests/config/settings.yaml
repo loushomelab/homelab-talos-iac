@@ -5,9 +5,15 @@ background:
   saturate: "50"
   brightness: "50"
   opacity: "50"
-theme: dark
+favicon: https://humblehouse.com.cn/favicon.ico
+headerStyle: boxedWidgets
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: false
+  showSearchSuggestions: true
+  hideVisitURL: false
+  provider: google # google, duckduckgo, bing, baidu, brave or custom
 layout:
-  My Websites:
   Storage:
     style: row
     columns: 3
@@ -17,7 +23,7 @@ layout:
   Monitoring:
     style: row
     columns: 3
-  Services:
+  Self-Host Services:
     style: row
     columns: 3
     Identity:
@@ -32,13 +38,12 @@ layout:
     Dashboards:
       style: row
       columns: 1
-    Repo:
-    PVE:
-      style: row
-      columns: 3
-    Identity Homelab:
-      style: row
-      columns: 1
-    IOT:
-      style: row
-      columns: 3
+  PVE:
+    style: row
+    columns: 3
+  Identity Homelab:
+    style: row
+    columns: 1
+  IOT:
+    style: row
+    columns: 3
