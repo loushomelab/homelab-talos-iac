@@ -17,9 +17,19 @@ mimir:
   structuredConfig:
     multitenancy_enabled: false
     
+    # Disable anonymous usage statistics to avoid initialization S3 errors
+    usage_stats:
+      enabled: false
+
     # Disable Kafka-backed ingest-storage queue (v6.x default), write directly to ingesters
     ingest_storage:
       enabled: false
+
+    # Enable direct push gRPC method in ingester since Kafka queue is disabled
+    ingester:
+      push_grpc_method_enabled: true
+      ring:
+        replication_factor: 1
 
     # Common storage block covers block storage, compactor, ruler, and alertmanager
     common:
@@ -42,11 +52,6 @@ mimir:
         insecure: true
       tsdb:
         dir: /var/mimir/tsdb
-
-    # Disable sharding/replication to run smoothly with single replica
-    ingester:
-      ring:
-        replication_factor: 1
 
     limits:
       max_global_series_per_user: 5000000
