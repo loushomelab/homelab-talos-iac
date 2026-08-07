@@ -1,5 +1,5 @@
 # Mimir Distributed Helm Chart Values
-# Optimized for Homelab (single replica of each component, no multi-tenancy, backed by MinIO)
+# Optimized for Homelab (single replica, no multi-tenancy, backed by MinIO, no PVCs)
 # Docs: https://grafana.com/docs/mimir/latest/
 
 # Global environment variables from Doppler
@@ -17,6 +17,10 @@ mimir:
   structuredConfig:
     multitenancy_enabled: false
     
+    # Disable Kafka-backed ingest-storage queue (v6.x default), write directly to ingesters
+    ingest_storage:
+      enabled: false
+
     # Common storage block covers block storage, compactor, ruler, and alertmanager
     common:
       storage:
@@ -53,9 +57,9 @@ distributor:
 
 ingester:
   replicas: 1
+  # Disable PVCs as there is no StorageClass in the cluster, use emptyDir instead
   persistentVolume:
-    size: 10Gi # Local WAL storage
-  # Disable zone-awareness since we are in a single replica setup
+    enabled: false
   zones: []
 
 querier:
@@ -67,15 +71,15 @@ query_frontend:
 store_gateway:
   replicas: 1
   persistentVolume:
-    size: 2Gi
+    enabled: false
   zones: []
 
 compactor:
   replicas: 1
   persistentVolume:
-    size: 2Gi
+    enabled: false
 
-# Disable alerting ruler and alertmanager by default to save resources (can be enabled if needed)
+# Disable alerting ruler and alertmanager by default to save resources
 ruler:
   enabled: false
 
@@ -89,4 +93,8 @@ gateway:
 
 # MinIO is external (configured in minio.tf), so we disable chart-local minio
 minio:
+  enabled: false
+
+# Disable the heavy Kafka sub-chart to run with a clean, low-resource direct write path
+kafka:
   enabled: false
