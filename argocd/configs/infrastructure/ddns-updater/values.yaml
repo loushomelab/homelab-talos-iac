@@ -1,11 +1,11 @@
 config:
-  # 直接在 values 中填入配置（注意：Token 将以明文形式存在 Git 中，除非你使用了 SOPS 等加密手段）
   settings:
     - provider: cloudflare
-      zone_identifier: '这里填入你的Zone_ID' # 如果不需要zone id也可以留空，视 cloudflare token 权限而定
+      zone_identifier: 'your-zone-id'
       domain: '646499453.xyz'
-      host: 'langshi.ddns' # 解析 langshi.ddns.646499453.xyz
-      token: '这里填入你的Cloudflare_API_Token' # ⚠️ 注意明文密钥的安全
+      host: 'langshi.ddns'
+      ttl: 300
+      token: 'your-cloudflare-api-token'
       proxied: false
       ip_version: ipv4
 
@@ -14,7 +14,7 @@ ddns:
   updateCooldownPeriod: 5m
 
 persistence:
-  enabled: false # 不想要任何PVC。对于 ddns 丢失历史记录无所谓，重启后只是重新发一次更新请求。
+  enabled: false
 
 ingress:
-  enabled: false # 不需要 UI
+  enabled: false

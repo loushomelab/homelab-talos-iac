@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: 'https://repo.helmforge.dev'
       chart: ddns-updater
-      targetRevision: "2.10.0" # Usually matches app version or latest minor
+      targetRevision: "2.10.0"
       helm:
         valueFiles:
           - $values/configs/infrastructure/ddns-updater/values.yaml
