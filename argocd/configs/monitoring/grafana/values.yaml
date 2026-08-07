@@ -1,0 +1,51 @@
+# Grafana Helm Chart Values
+# Docs: https://github.com/grafana/helm-charts/tree/main/charts/grafana
+
+# Inject secrets from Doppler
+envFromSecret: monitoring-secrets
+
+adminUser: admin
+
+# Configure external PostgreSQL as state database (referencing databases.tf)
+grafana.ini:
+  database:
+    type: postgres
+    host: "$__env{GRAFANA_DB_HOST}:5432" # Automatically resolved from Doppler-injected env vars
+    name: "$__env{GRAFANA_DB_NAME}"
+    user: "$__env{GRAFANA_DB_USER}"
+    password: "$__env{GRAFANA_DB_PASSWORD}"
+    ssl_mode: disable
+
+# Auto-provision data sources for Mimir and Pyroscope
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Mimir (Prometheus)
+        type: prometheus
+        access: proxy
+        url: http://mimir-distributed-gateway.monitoring.svc.cluster.local
+        isDefault: true
+        jsonData:
+          httpMethod: POST
+          timeInterval: 15s
+      - name: Pyroscope
+        type: grafana-pyroscope-datasource
+        access: proxy
+        url: http://pyroscope.monitoring.svc:4040
+        jsonData:
+          minStep: 15s
+
+# Enable ingress
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  hosts:
+    - grafana.646499453.xyz
+  paths:
+    - /
+  pathType: Prefix
+  tls:
+    - secretName: wildcards-646499453-xyz-tls
+      hosts:
+        - grafana.646499453.xyz

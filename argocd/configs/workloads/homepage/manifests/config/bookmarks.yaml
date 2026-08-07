@@ -10,7 +10,7 @@
         - icon: sh-argo-cd.svg
           href: https://github.com/loushomelab/homelab-talos-iac
     - Homelab-PVE Repo:
-        - icon: sh-terraform.svg
+        - icon: sh-hashicorp-terraform.svg
           href: https://github.com/loushomelab/homelab-pve
     - Homelab-IoT Repo:
         - icon: sh-home-assistant.svg
@@ -20,7 +20,7 @@
         - icon: sh-doppler.svg
           href: https://dashboard.doppler.com/workplace/006da931809ad4a28e6d/projects/k8s/configs/prd
     - HCP Terraform WebUI:
-        - icon: sh-terraform.svg
+        - icon: sh-hashicorp-terraform.svg
           href: https://app.terraform.io/app/loushomelab/workspaces
     - Logos for Homepage:
         - icon: sh-selfh-st.svg

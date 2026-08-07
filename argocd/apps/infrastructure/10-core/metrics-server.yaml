@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-server
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  sources:
+    - repoURL: 'https://kubernetes-sigs.github.io/metrics-server/'
+      chart: metrics-server
+      targetRevision: 3.13.1
+      helm:
+        values: |
+          # 针对 Talos 的关键修复：忽略 Kubelet 自签名证书校验并指定正确的节点端口
+          defaultArgs:
+            - --cert-dir=/tmp
+            - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+            - --kubelet-use-node-status-port
+            - --metric-resolution=15s
+            - --kubelet-insecure-tls
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

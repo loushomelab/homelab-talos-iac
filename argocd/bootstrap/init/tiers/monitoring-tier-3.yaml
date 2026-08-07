@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: workloads-root
+  name: monitoring-tier
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "40"
+    argocd.argoproj.io/sync-wave: "30"
 spec:
-  project: workloads
+  project: monitoring
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/apps/workloads
+    path: argocd/apps/monitoring
     directory:
       recurse: true
   destination:

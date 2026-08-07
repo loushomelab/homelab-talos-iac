@@ -1,0 +1,32 @@
+# Grafana Pyroscope Helm Chart Values
+# Optimized for Homelab (single replica monolithic mode, backed by MinIO)
+# Docs: https://grafana.com/docs/pyroscope/latest/
+
+# Global or component-level environment variables from Doppler
+pyroscope:
+  envFrom:
+    - secretRef:
+        name: monitoring-secrets
+
+  structuredConfig:
+    multitenancy_enabled: false
+
+    # Store profiling block data in external MinIO (referenced in minio.tf)
+    storage:
+      backend: s3
+      s3:
+        endpoint: ${S3_ENDPOINT}
+        access_key_id: pyroscope # 使用专门的 IAM 账号，拒绝 root 混用
+        secret_access_key: ${S3_PYROSCOPE_PASSWORD}
+        bucket_name: s3-pyroscope
+        insecure: true # MinIO without TLS inside K8s network
+
+# Disable MinIO sub-chart as we use external MinIO (configured in minio.tf)
+minio:
+  enabled: false
+
+# Configure single replica for resource efficiency
+replicaCount: 1
+
+# Disable high-availability/multi-replica compactor/distributor/etc. if chart is in distributed mode
+# For monolithic mode (default in simple configurations), this is extremely resource-light
