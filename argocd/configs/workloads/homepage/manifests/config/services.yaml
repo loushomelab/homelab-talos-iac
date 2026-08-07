@@ -1,1 +1,9 @@
-[]
+- Procmox:
+    - PVE-Cluster:
+        - PVE-Homelab:
+            icon: sh-proxmox.svg
+            widget:
+                type: proxmox
+                url: "https://192.168.50.101:8006"
+                username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+                password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"

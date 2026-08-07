@@ -38,9 +38,15 @@ layout:
     Dashboards:
       style: row
       columns: 1
-  PVE:
+  Proxmox:
     style: row
     columns: 3
+    PVE-Cluster:
+      style: column
+      columns: 1
+    PVE-Nodes:
+      style: column
+      columns: 2
   Identity Homelab:
     style: row
     columns: 1
