@@ -1,52 +1,20 @@
 config:
-  existingSecret: "ddns-updater-config"
-  existingSecretKey: "config.json"
+  # 直接在 values 中填入配置（注意：Token 将以明文形式存在 Git 中，除非你使用了 SOPS 等加密手段）
+  settings:
+    - provider: cloudflare
+      zone_identifier: '这里填入你的Zone_ID' # 如果不需要zone id也可以留空，视 cloudflare token 权限而定
+      domain: '646499453.xyz'
+      host: 'langshi.ddns' # 解析 langshi.ddns.646499453.xyz
+      token: '这里填入你的Cloudflare_API_Token' # ⚠️ 注意明文密钥的安全
+      proxied: false
+      ip_version: ipv4
 
 ddns:
   period: 5m
   updateCooldownPeriod: 5m
 
 persistence:
-  enabled: false # 不想要任何PVC
-
-# 虽然不需要 PVC，但 ddns-updater 需要写入 updates.json 来记录上次更新状态。
-# 当 persistence.enabled=false 时，chart 默认会使用 emptyDir，这在重启后会丢失历史记录，
-# 但对于 DDNS 来说，重启后丢失历史记录只是多发一次更新请求，完全可以接受。
+  enabled: false # 不想要任何PVC。对于 ddns 丢失历史记录无所谓，重启后只是重新发一次更新请求。
 
 ingress:
   enabled: false # 不需要 UI
-
-extraManifests:
-  - apiVersion: secrets.doppler.com/v1alpha1
-    kind: DopplerSecret
-    metadata:
-      name: ddns-updater-doppler-secret
-    spec:
-      tokenSecret:
-        name: doppler-token-shared
-      managedSecret:
-        name: ddns-updater-config
-      project: k8s
-      config: prd
-      format: json
-      nameFormat: upper-camel # Ensures we get exact keys if needed, but format: json handles it
-      
-# 注意: 上面我们使用了 DopplerSecret 直接将远端的 key-value 渲染成一个完整的 JSON 并存为 ddns-updater-config 这个 Secret。
-# 由于 ddns-updater 需要一个 config.json 文件，你需要在 Doppler 控制台中，
-# 新建一个名为 config.json 的变量，然后把它的值设置为 (或者直接在 Doppler UI 里面通过 Secret 引用):
-# {
-#   "settings": [
-#     {
-#       "provider": "cloudflare",
-#       "zone_identifier": "${CLOUDFLARE_ZONE_ID}",
-#       "domain": "langshi.ddns.646499453.xyz",
-#       "host": "@",
-#       "token": "${CLOUDFLARE_API_TOKEN}",
-#       "proxied": false,
-#       "ip_version": "ipv4"
-#     }
-#   ]
-# }
-
-
-
