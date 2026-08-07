@@ -8,6 +8,12 @@ pyroscope:
     - secretRef:
         name: monitoring-secrets
 
+  # Pyroscope binary does not natively expand environment variables in its YAML config.
+  # We use Kubernetes' native $(VAR) resolution in extraArgs to safely inject S3 secrets at runtime!
+  extraArgs:
+    storage.s3.endpoint: "$(S3_ENDPOINT)"
+    storage.s3.secret-access-key: "$(S3_PYROSCOPE_PASSWORD)"
+
   structuredConfig:
     multitenancy_enabled: false
 
@@ -15,11 +21,10 @@ pyroscope:
     storage:
       backend: s3
       s3:
-        endpoint: ${S3_ENDPOINT}
         access_key_id: pyroscope # 使用专门的 IAM 账号，拒绝 root 混用
-        secret_access_key: ${S3_PYROSCOPE_PASSWORD}
         bucket_name: s3-pyroscope
         insecure: true # MinIO without TLS inside K8s network
+        # endpoint and secret_access_key are injected via extraArgs above to avoid parsing errors
 
 # Disable MinIO sub-chart as we use external MinIO (configured in minio.tf)
 minio:
