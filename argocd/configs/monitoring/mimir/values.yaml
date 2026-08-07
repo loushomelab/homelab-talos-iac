@@ -2,18 +2,13 @@
 # Optimized for Homelab (single replica, no multi-tenancy, backed by MinIO, no PVCs)
 # Docs: https://grafana.com/docs/mimir/latest/
 
-# Global environment variables from Doppler
+# Global environment variables from Doppler (injected to all pods)
 global:
-  envFrom:
+  extraEnvFrom:
     - secretRef:
         name: monitoring-secrets
 
-# Inject envFrom into components so they can resolve S3 credentials
 mimir:
-  envFrom:
-    - secretRef:
-        name: monitoring-secrets
-  
   structuredConfig:
     multitenancy_enabled: false
     
