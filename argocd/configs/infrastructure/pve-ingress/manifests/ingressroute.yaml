@@ -33,7 +33,7 @@ metadata:
     gethomepage.dev/name: "r720"
     gethomepage.dev/group: "PVE"
     gethomepage.dev/icon: "proxmox.png"
-    gethomepage.dev/href: "https://proxmox.humblehouse.com.cn"
+    gethomepage.dev/href: "https://r720.pve.646499453.xyz:8443"
     gethomepage.dev/widget.type: "proxmox"
     gethomepage.dev/widget.url: "https://pve-r720.traefik.svc.cluster.local:8006"
     gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
@@ -81,7 +81,7 @@ metadata:
     gethomepage.dev/name: "n100x8"
     gethomepage.dev/group: "PVE"
     gethomepage.dev/icon: "proxmox.png"
-    gethomepage.dev/href: "https://proxmox.humblehouse.com.cn"
+    gethomepage.dev/href: "https://n100x8.pve.646499453.xyz:8443"
     gethomepage.dev/widget.type: "proxmox"
     gethomepage.dev/widget.url: "https://pve-n100x8.traefik.svc.cluster.local:8006"
     gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
@@ -124,6 +124,17 @@ kind: IngressRoute
 metadata:
   name: pve-3960x
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "3960x"
+    gethomepage.dev/group: "PVE"
+    gethomepage.dev/icon: "proxmox.png"
+    gethomepage.dev/href: "https://3960x.pve.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "proxmox"
+    gethomepage.dev/widget.url: "https://pve-3960x.traefik.svc.cluster.local:8006"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+    gethomepage.dev/widget.node: "3960x"
 spec:
   entryPoints:
     - websecure
@@ -161,6 +172,17 @@ kind: IngressRoute
 metadata:
   name: pve-1920x
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "1920x"
+    gethomepage.dev/group: "PVE"
+    gethomepage.dev/icon: "proxmox.png"
+    gethomepage.dev/href: "https://1920x.pve.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "proxmox"
+    gethomepage.dev/widget.url: "https://pve-1920x.traefik.svc.cluster.local:8006"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+    gethomepage.dev/widget.node: "1920x"
 spec:
   entryPoints:
     - websecure
