@@ -11,15 +11,15 @@ resources:
 configMapGenerator:
   - name: homepage-config
     files:
-      - settings.yaml
-      - bookmarks.yaml
-      - services.yaml
-      - widgets.yaml
-      - kubernetes.yaml
-      - docker.yaml
-      - proxmox.yaml
-      - custom.css
-      - custom.js
+      - config/settings.yaml
+      - config/bookmarks.yaml
+      - config/services.yaml
+      - config/widgets.yaml
+      - config/kubernetes.yaml
+      - config/docker.yaml
+      - config/proxmox.yaml
+      - config/custom.css
+      - config/custom.js
 
 generatorOptions:
   disableNameSuffixHash: true
