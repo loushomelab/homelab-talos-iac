@@ -4,7 +4,7 @@
         icon: "proxmox.png"
         widget:
             type: proxmox
-            url: "https://proxmox-external.traefik.svc.cluster.local:8006"
+            url: "https://pve-r720.traefik.svc.cluster.local:8006"
             username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
             password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
             node: r720
@@ -13,7 +13,7 @@
         icon: "proxmox.png"
         widget:
             type: proxmox
-            url: "https://proxmox-external.traefik.svc.cluster.local:8006"
+            url: "https://pve-n100x8.traefik.svc.cluster.local:8006"
             username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
             password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
             node: n100x8
@@ -24,3 +24,4 @@
         proxmoxNode: r720
         proxmoxVMID: 103
         proxmoxType: lxc
+        showStats: true
