@@ -1,25 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ddns-updater
+  name: cloudflare-ddns
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "20"
 spec:
   project: infra
   sources:
-    - repoURL: 'https://repo.helmforge.dev'
-      chart: ddns-updater
-      targetRevision: "2.10.0"
+    - repoURL: 'https://cloudflare-ddns.aureum.cloud'
+      chart: cloudflare-ddns
+      targetRevision: "1.0.3"
       helm:
         valueFiles:
-          - $values/configs/infrastructure/ddns-updater/values.yaml
+          - $values/configs/infrastructure/cloudflare-ddns/values.yaml
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
       targetRevision: HEAD
       ref: values
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      path: argocd/configs/infrastructure/ddns-updater/manifests
+      path: argocd/configs/infrastructure/cloudflare-ddns
       targetRevision: HEAD
+      directory:
+        include: 'doppler-secret.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: ddns
