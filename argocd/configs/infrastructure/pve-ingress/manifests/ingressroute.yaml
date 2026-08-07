@@ -238,8 +238,8 @@ metadata:
     gethomepage.dev/proxmoxType: "lxc"
     gethomepage.dev/widget.type: "proxmoxbackupserver"
     gethomepage.dev/widget.url: "https://192.168.50.154:8007"
-    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
-    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PBS_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PBS_PASSWORD}}"
     gethomepage.dev/pod-selector: "" 
 spec:
   entryPoints:
