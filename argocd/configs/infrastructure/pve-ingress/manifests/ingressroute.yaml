@@ -28,6 +28,17 @@ kind: IngressRoute
 metadata:
   name: pve-r720
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "r720"
+    gethomepage.dev/group: "PVE"
+    gethomepage.dev/icon: "proxmox.png"
+    gethomepage.dev/href: "https://proxmox.humblehouse.com.cn"
+    gethomepage.dev/widget.type: "proxmox"
+    gethomepage.dev/widget.url: "https://pve-r720.traefik.svc.cluster.local:8006"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+    gethomepage.dev/widget.node: "r720"
 spec:
   entryPoints:
     - websecure
@@ -65,6 +76,17 @@ kind: IngressRoute
 metadata:
   name: pve-n100x8
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "n100x8"
+    gethomepage.dev/group: "PVE"
+    gethomepage.dev/icon: "proxmox.png"
+    gethomepage.dev/href: "https://proxmox.humblehouse.com.cn"
+    gethomepage.dev/widget.type: "proxmox"
+    gethomepage.dev/widget.url: "https://pve-n100x8.traefik.svc.cluster.local:8006"
+    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+    gethomepage.dev/widget.node: "n100x8"
 spec:
   entryPoints:
     - websecure
@@ -176,6 +198,17 @@ kind: IngressRoute
 metadata:
   name: pbs
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Proxmox Backup Server"
+    gethomepage.dev/description: "PBS installed with helper script as LXC"
+    gethomepage.dev/group: "PVE"
+    gethomepage.dev/icon: "sh-linux-containers-lxc.svg"
+    gethomepage.dev/href: "https://pbs.pve.646499453.xyz:8443"
+    gethomepage.dev/showStats: "true"
+    gethomepage.dev/proxmoxNode: "r720"
+    gethomepage.dev/proxmoxVMID: "103"
+    gethomepage.dev/proxmoxType: "lxc"
 spec:
   entryPoints:
     - websecure
