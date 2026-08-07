@@ -3,9 +3,18 @@ kind: IngressRoute
 metadata:
   name: argocd-server
   namespace: argocd
-  labels:
-    app.kubernetes.io/name: argocd-server
-    app.kubernetes.io/part-of: argocd
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "ArgoCD"
+    gethomepage.dev/description: "GitOps Continuous Delivery"
+    gethomepage.dev/group: "CI/CD"
+    gethomepage.dev/icon: "sh-argo-cd.svg"
+    gethomepage.dev/href: "https://argocd.646499453.xyz:8443"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=argocd-server"
+    gethomepage.dev/widget.type: "argocd"
+    gethomepage.dev/widget.url: "http://argocd-server.argocd.svc.cluster.local:80"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_ARGOCD_TOKEN}}"
+    gethomepage.dev/widget.fields: '["apps", "synced", "outOfSync", "healthy"]'
 spec:
   entryPoints:
     - websecure

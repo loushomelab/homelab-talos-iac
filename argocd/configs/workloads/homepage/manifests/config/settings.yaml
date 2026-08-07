@@ -18,29 +18,13 @@ layout:
     style: row
     columns: 2
     PVE-Cluster:
-      style: row
-      columns: 2
     PVE-Nodes:
       style: row
-      columns: 4
+      columns: 2
   Dashboards:
-    style: row
-    columns: 2
   Storage:
-    style: row
-    columns: 2
   Database:
-    style: row
-    columns: 4
   Monitoring:
-    style: row
-    columns: 4
   CI/CD:
-    style: row
-    columns: 4
   IOT:
-    style: row
-    columns: 2
   Identity:
-    style: row
-    columns: 2

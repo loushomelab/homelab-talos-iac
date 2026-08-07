@@ -1,4 +1,16 @@
-r720: # must match your actual Proxmox node name
-  url: https://r720.pve.646499453.xyz:8443
+r720:
+  url: https://192.168.50.101:8006
+  token: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
+  secret: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
+n100x8:
+  url: https://192.168.50.102:8006
+  token: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
+  secret: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
+3960x:
+  url: https://192.168.50.104:8006
+  token: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
+  secret: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
+1920x:
+  url: https://192.168.50.105:8006
   token: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
   secret: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}

@@ -49,6 +49,10 @@ metadata:
     gethomepage.dev/icon: truenas
     gethomepage.dev/name: TrueNAS
     gethomepage.dev/pod-selector: ''
+    gethomepage.dev/showStats: "true"
+    gethomepage.dev/proxmoxNode: "n100x8"
+    gethomepage.dev/proxmoxVMID: "1300"
+    gethomepage.dev/proxmoxType: "vm"
     gethomepage.dev/widget.key: '{{HOMEPAGE_VAR_TRUENAS_API_KEY}}'
     gethomepage.dev/widget.type: truenas
     gethomepage.dev/widget.url: https://192.168.50.76
