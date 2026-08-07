@@ -46,7 +46,7 @@ mimir:
         bucket_name: s3-mimir
         insecure: true
       tsdb:
-        dir: /var/mimir/tsdb
+        dir: /data/tsdb
 
     limits:
       max_global_series_per_user: 5000000
