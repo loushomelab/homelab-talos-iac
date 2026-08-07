@@ -8,6 +8,9 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   url: https://argocd.646499453.xyz:8443
+  # Add homepage account with token generation capabilities
+  accounts.homepage: apiKey, login
+  admin.enabled: "true"
   dex.config: |
     connectors:
     - config:

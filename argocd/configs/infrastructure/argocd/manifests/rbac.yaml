@@ -10,4 +10,5 @@ data:
   # Give full admin access to users logging in via Authentik
   policy.csv: |
     g, authentik Admins, role:admin
+    g, homepage, role:readonly
   scopes: '[groups]'
