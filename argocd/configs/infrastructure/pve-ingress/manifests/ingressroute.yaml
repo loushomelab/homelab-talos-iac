@@ -240,6 +240,7 @@ metadata:
     gethomepage.dev/widget.url: "https://192.168.50.154:8007"
     gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PBS_USERNAME}}"
     gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PBS_PASSWORD}}"
+    gethomepage.dev/widget.datastore: "pbstorage"    
     gethomepage.dev/pod-selector: "" 
 spec:
   entryPoints:
