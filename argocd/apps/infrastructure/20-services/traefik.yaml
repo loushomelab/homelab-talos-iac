@@ -6,6 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
+    link.argocd.argoproj.io/external-link: https://traefik.646499453.xyz:8443
 spec:
   project: infra
   sources:

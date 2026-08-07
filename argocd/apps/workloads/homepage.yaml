@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    link.argocd.argoproj.io/external-link: https://homepage.646499453.xyz
+    link.argocd.argoproj.io/external-link: https://homepage.646499453.xyz:8443
 spec:
   project: workloads
   source:

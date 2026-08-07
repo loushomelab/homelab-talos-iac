@@ -6,6 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
+    link.argocd.argoproj.io/external-link: https://authentik.646499453.xyz:8443
 spec:
   project: security
   sources:
