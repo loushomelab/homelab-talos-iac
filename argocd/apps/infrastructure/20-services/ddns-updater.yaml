@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ddns-updater
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  project: infra-project
+  sources:
+    - repoURL: 'https://repo.helmforge.dev'
+      chart: ddns-updater
+      targetRevision: "2.10.0" # Usually matches app version or latest minor
+      helm:
+        valueFiles:
+          - $values/configs/infrastructure/ddns-updater/values.yaml
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ddns
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
