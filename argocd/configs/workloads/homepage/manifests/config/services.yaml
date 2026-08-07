@@ -1,0 +1,36 @@
+- Storage: []
+- Database: []
+- Services:
+    - Identity: []
+    - CI/CD: []
+    - Networking: []
+    - Dashboards: []
+- PVE:
+    - r720:
+        href: "https://proxmox.humblehouse.com.cn"
+        icon: "proxmox.png"
+        widget:
+            type: proxmox
+            url: "https://proxmox-external.traefik.svc.cluster.local:8006"
+            username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+            node: r720
+    - n100x8:
+        href: "https://proxmox.humblehouse.com.cn"
+        icon: "proxmox.png"
+        widget:
+            type: proxmox
+            url: "https://proxmox-external.traefik.svc.cluster.local:8006"
+            username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
+            node: n100x8
+    - Proxmox Backup Server:
+      href: "https://pbs.pve.646499453.xyz:8443"
+      icon: sh-linux-containers-lxc.svg
+      description: PBS installed with helper script as LXC
+      proxmoxNode: r720
+      proxmoxVMID: 103
+      proxmoxType: lxc
+
+    
+            

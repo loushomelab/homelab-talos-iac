@@ -10,7 +10,7 @@
       cpu: true
       memory: true
       showLabel: true
-      label: "k8s-cluster"
+      label: "Talos-Homelab"
     nodes:
       show: true
       cpu: true

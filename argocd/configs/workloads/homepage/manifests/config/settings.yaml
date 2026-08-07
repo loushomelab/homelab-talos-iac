@@ -1,0 +1,44 @@
+title: "Lous Homelab Dashboard"
+background:
+  image: https://images.unsplash.com/photo-1780467763551-f182a0d55c9f?q=80&w=2940&auto=format&fit=crop
+  blur: "sm"
+  saturate: "50"
+  brightness: "50"
+  opacity: "50"
+theme: dark
+layout:
+  My Websites:
+  Storage:
+    style: row
+    columns: 3
+  Database:
+    style: row
+    columns: 3
+  Monitoring:
+    style: row
+    columns: 3
+  Services:
+    style: row
+    columns: 3
+    Identity:
+      style: row
+      columns: 1
+    CI/CD:
+      style: row
+      columns: 1
+    Networking:
+      style: row
+      columns: 1
+    Dashboards:
+      style: row
+      columns: 1
+    Repo:
+    PVE:
+      style: row
+      columns: 3
+    Identity Homelab:
+      style: row
+      columns: 1
+    IOT:
+      style: row
+      columns: 3

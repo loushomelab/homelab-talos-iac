@@ -1,0 +1,37 @@
+---
+- Repo:
+    - TheWebsite:
+        - icon: https://humblehouse.com.cn/favicon.ico
+          href: https://github.com/HumbleHouse-com-cn/TheWebsite
+    - Homelab-Infra Monolith Repo:
+        - icon: sh-gitbundle-light.svg
+          href: https://github.com/HumbleHouse-com-cn/IaC
+    - Homelab-Talos-IaC Repo:
+        - icon: sh-argo-cd.svg
+          href: https://github.com/loushomelab/homelab-talos-iac
+    - Homelab-PVE Repo:
+        - icon: sh-terraform.svg
+          href: https://github.com/loushomelab/homelab-pve
+    - Homelab-IoT Repo:
+        - icon: sh-home-assistant.svg
+          href: https://github.com/HumbleHouse-com-cn/IaC
+- Resources:
+    - Doppler k8s Admin WebUI:
+        - icon: sh-doppler.svg
+          href: https://dashboard.doppler.com/workplace/006da931809ad4a28e6d/projects/k8s/configs/prd
+    - HCP Terraform WebUI:
+        - icon: sh-terraform.svg
+          href: https://app.terraform.io/app/loushomelab/workspaces
+    - Logos for Homepage:
+        - icon: sh-selfh-st.svg
+          href: https://selfh.st/icons/
+- My Websites:
+    - HumbleHouse Official Website:
+        - icon: https://humblehouse.com.cn/favicon.ico
+          href: https://humblehouse.com.cn
+    - Lou's Homelab Github Org Page:
+        - icon: sh-github.svg
+          href: https://github.com/loushomelab
+    - HumbleHouse-com-cn Github Org Page:
+        - icon: sh-github.svg
+          href: https://github.com/HumbleHouse-com-cn

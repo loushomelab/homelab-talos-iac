@@ -1,0 +1,4 @@
+r720: # must match your actual Proxmox node name
+  url: https://r720.pve.646499453.xyz:8443
+  token: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
+  secret: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
