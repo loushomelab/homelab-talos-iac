@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: umami
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: workloads
+  sources:
+    - repoURL: 'https://repo.helmforge.dev'
+      chart: umami
+      targetRevision: 2.3.0
+      helm:
+        valueFiles:
+          - $values/argocd/configs/workloads/umami/values.yaml
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      targetRevision: HEAD
+      path: argocd/configs/workloads/umami/manifests
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: umami
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
