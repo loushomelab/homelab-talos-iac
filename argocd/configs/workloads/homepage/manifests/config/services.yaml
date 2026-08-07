@@ -25,12 +25,12 @@
             password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
             node: n100x8
     - Proxmox Backup Server:
-      href: "https://pbs.pve.646499453.xyz:8443"
-      icon: sh-linux-containers-lxc.svg
-      description: PBS installed with helper script as LXC
-      proxmoxNode: r720
-      proxmoxVMID: 103
-      proxmoxType: lxc
+        href: "https://pbs.pve.646499453.xyz:8443"
+        icon: sh-linux-containers-lxc.svg
+        description: PBS installed with helper script as LXC
+        proxmoxNode: r720
+        proxmoxVMID: 103
+        proxmoxType: lxc
 
     
             
