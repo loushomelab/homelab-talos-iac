@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare-ddns
+  namespace: ddns
+  labels:
+    app: cloudflare-ddns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflare-ddns
+  template:
+    metadata:
+      labels:
+        app: cloudflare-ddns
+    spec:
+      containers:
+        - name: cloudflare-ddns
+          image: oznu/cloudflare-ddns:latest
+          env:
+            - name: ZONE
+              value: "646499453.xyz"
+            - name: SUBDOMAIN
+              value: "langshi"
+            - name: PROXIED
+              value: "false"
+            - name: RRTYPE
+              value: "A"
+          envFrom:
+            - secretRef:
+                name: cloudflare-ddns-secrets
+          resources:
+            limits:
+              memory: 64Mi
+              cpu: 100m
+            requests:
+              memory: 32Mi
+              cpu: 10m

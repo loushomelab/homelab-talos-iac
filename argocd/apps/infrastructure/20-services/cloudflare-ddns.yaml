@@ -7,21 +7,10 @@ metadata:
     argocd.argoproj.io/sync-wave: "20"
 spec:
   project: infra
-  sources:
-    - repoURL: 'https://cloudflare-ddns.aureum.cloud'
-      chart: cloudflare-ddns
-      targetRevision: "1.0.3"
-      helm:
-        valueFiles:
-          - $values/argocd/configs/infrastructure/cloudflare-ddns/values.yaml
-    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      targetRevision: HEAD
-      ref: values
-    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      path: argocd/configs/infrastructure/cloudflare-ddns
-      targetRevision: HEAD
-      directory:
-        include: 'doppler-secret.yaml'
+  source:
+    repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+    path: argocd/configs/infrastructure/cloudflare-ddns
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: ddns
