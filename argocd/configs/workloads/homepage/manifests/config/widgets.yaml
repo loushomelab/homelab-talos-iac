@@ -1,8 +1,12 @@
 - datetime:
     text_size: xl
+    locale: ch
     format:
-      dateStyle: short
-      timeStyle: short
+      weekday: short
+      month: short
+      day: numeric
+      hour: 2-digit
+      minute: 2-digit
       hour12: false
 - kubernetes:
     cluster:
@@ -16,3 +20,8 @@
       cpu: true
       memory: true
       showLabel: true
+- search:
+    provider: [google, duckduckgo, bing, baidu, brave]
+    focus: true # Optional, will set focus to the search bar on page load
+    showSearchSuggestions: true # Optional, will show search suggestions. Defaults to false
+    target: _blank # One of _self, _blank, _parent or _top

@@ -1,10 +1,10 @@
-title: "Lous Homelab Dashboard"
+title: Lous Homelab Dashboard
 background:
   image: https://images.unsplash.com/photo-1780467763551-f182a0d55c9f?q=80&w=2940&auto=format&fit=crop
-  blur: "sm"
-  saturate: "50"
-  brightness: "50"
-  opacity: "50"
+  blur: sm
+  saturate: '50'
+  brightness: '50'
+  opacity: '75'
 favicon: https://humblehouse.com.cn/favicon.ico
 headerStyle: boxedWidgets
 quicklaunch:
@@ -12,44 +12,35 @@ quicklaunch:
   hideInternetSearch: false
   showSearchSuggestions: true
   hideVisitURL: false
-  provider: google # google, duckduckgo, bing, baidu, brave or custom
+  provider: google
 layout:
-  Storage:
-    style: row
-    columns: 3
-  Database:
-    style: row
-    columns: 3
-  Monitoring:
-    style: row
-    columns: 3
-  Self-Host Services:
-    style: row
-    columns: 3
-    Identity:
-      style: row
-      columns: 1
-    CI/CD:
-      style: row
-      columns: 1
-    Networking:
-      style: row
-      columns: 1
-    Dashboards:
-      style: row
-      columns: 1
   Proxmox:
     style: row
-    columns: 3
+    columns: 2
     PVE-Cluster:
-      style: column
-      columns: 1
-    PVE-Nodes:
-      style: column
+      style: row
       columns: 2
-  Identity Homelab:
+    PVE-Nodes:
+      style: row
+      columns: 4
+  Dashboards:
     style: row
-    columns: 1
+    columns: 2
+  Storage:
+    style: row
+    columns: 2
+  Database:
+    style: row
+    columns: 4
+  Monitoring:
+    style: row
+    columns: 4
+  CI/CD:
+    style: row
+    columns: 4
   IOT:
     style: row
-    columns: 3
+    columns: 2
+  Identity:
+    style: row
+    columns: 2

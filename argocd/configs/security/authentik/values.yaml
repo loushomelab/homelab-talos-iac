@@ -1,42 +1,46 @@
 authentik:
   enabled: true
   log_level: info
-  
   postgresql:
     enabled: false
   redis:
     enabled: false
-    
 server:
   enabled: true
-  
-  # Inject secrets from Doppler
   envFrom:
-    - secretRef:
-        name: authentik-secrets
-
+  - secretRef:
+      name: authentik-secrets
   ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-      - authentik.646499453.xyz
+    - authentik.646499453.xyz
     paths:
-      - /
+    - /
     pathType: Prefix
     tls:
-      - secretName: wildcards-646499453-xyz-tls
-        hosts:
-          - authentik.646499453.xyz
-
+    - secretName: wildcards-646499453-xyz-tls
+      hosts:
+      - authentik.646499453.xyz
+    annotations:
+      gethomepage.dev/enabled: '"true"'
+      gethomepage.dev/name: '"Authentik"'
+      gethomepage.dev/description: '"SSO & Identity Provider"'
+      gethomepage.dev/group: '"Identity"'
+      gethomepage.dev/icon: '"authentik.png"'
+      gethomepage.dev/href: '"https://authentik.646499453.xyz:8443"'
+      gethomepage.dev/app: '"authentik"'
+      gethomepage.dev/widget.type: '"authentik"'
+      gethomepage.dev/widget.version: '"2"'
+      gethomepage.dev/widget.url: '"https://authentik.646499453.xyz:8443"'
+      gethomepage.dev/widget.key: '"{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}"'
 worker:
   enabled: true
-  # Inject secrets from Doppler
   envFrom:
-    - secretRef:
-        name: authentik-secrets
-
+  - secretRef:
+      name: authentik-secrets
 blueprints:
   configMaps:
-    - authentik-blueprint-pve
-    - authentik-blueprint-webauthn
-    - authentik-blueprint-apps
+  - authentik-blueprint-pve
+  - authentik-blueprint-webauthn
+  - authentik-blueprint-apps

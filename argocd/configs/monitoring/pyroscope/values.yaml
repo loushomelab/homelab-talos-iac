@@ -1,37 +1,35 @@
-# Grafana Pyroscope Helm Chart Values
-# Optimized for Homelab (single replica monolithic mode, backed by MinIO)
-# Docs: https://grafana.com/docs/pyroscope/latest/
-
-# Global or component-level environment variables from Doppler
 pyroscope:
   extraEnvFrom:
-    - secretRef:
-        name: monitoring-secrets
-
-  # Pyroscope binary does not natively expand environment variables in its YAML config.
-  # We use Kubernetes' native $(VAR) resolution in extraArgs to safely inject S3 secrets at runtime!
+  - secretRef:
+      name: monitoring-secrets
   extraArgs:
-    storage.s3.endpoint: "$(S3_ENDPOINT)"
-    storage.s3.secret-access-key: "$(S3_PYROSCOPE_PASSWORD)"
-
+    storage.s3.endpoint: $(S3_ENDPOINT)
+    storage.s3.secret-access-key: $(S3_PYROSCOPE_PASSWORD)
   structuredConfig:
     multitenancy_enabled: false
-
-    # Store profiling block data in external MinIO (referenced in minio.tf)
     storage:
       backend: s3
       s3:
-        access_key_id: pyroscope # 使用专门的 IAM 账号，拒绝 root 混用
+        access_key_id: pyroscope
         bucket_name: s3-pyroscope
-        insecure: true # MinIO without TLS inside K8s network
-        # endpoint and secret_access_key are injected via extraArgs above to avoid parsing errors
-
-# Disable MinIO sub-chart as we use external MinIO (configured in minio.tf)
+        insecure: true
 minio:
   enabled: false
-
-# Configure single replica for resource efficiency
 replicaCount: 1
-
-# Disable high-availability/multi-replica compactor/distributor/etc. if chart is in distributed mode
-# For monolithic mode (default in simple configurations), this is extremely resource-light
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+  - pyroscope.646499453.xyz
+  tls:
+  - secretName: wildcards-646499453-xyz-tls
+    hosts:
+    - pyroscope.646499453.xyz
+  annotations:
+    gethomepage.dev/enabled: '"true"'
+    gethomepage.dev/name: '"Pyroscope"'
+    gethomepage.dev/description: '"Continuous Profiling"'
+    gethomepage.dev/group: '"Monitoring"'
+    gethomepage.dev/icon: '"pyroscope.png"'
+    gethomepage.dev/href: '"https://pyroscope.646499453.xyz"'
+    traefik.ingress.kubernetes.io/router.middlewares: monitoring-lan-only-allowlist@kubernetescrd

@@ -1,42 +1,27 @@
-# Mimir Distributed Helm Chart Values
-# Optimized for Homelab (single replica, no multi-tenancy, backed by MinIO, no PVCs)
-# Docs: https://grafana.com/docs/mimir/latest/
-
-# Global environment variables from Doppler (injected to all pods)
 global:
   extraEnvFrom:
-    - secretRef:
-        name: monitoring-secrets
-
+  - secretRef:
+      name: monitoring-secrets
 mimir:
   structuredConfig:
     multitenancy_enabled: false
-    
-    # Disable anonymous usage statistics to avoid initialization S3 errors
     usage_stats:
       enabled: false
-
-    # Disable Kafka-backed ingest-storage queue (v6.x default), write directly to ingesters
     ingest_storage:
       enabled: false
-
-    # Enable direct push gRPC method in ingester since Kafka queue is disabled
     ingester:
       push_grpc_method_enabled: true
       ring:
         replication_factor: 1
-
-    # Common storage block covers block storage, compactor, ruler, and alertmanager
     common:
       storage:
         backend: s3
         s3:
           endpoint: ${S3_ENDPOINT}
-          access_key_id: mimir # 使用专门的 IAM 账号，拒绝 root 混用
+          access_key_id: mimir
           secret_access_key: ${S3_MIMIR_PASSWORD}
           bucket_name: s3-mimir
-          insecure: true # MinIO without TLS inside K8s network
-
+          insecure: true
     blocks_storage:
       backend: s3
       s3:
@@ -47,54 +32,56 @@ mimir:
         insecure: true
       tsdb:
         dir: /data/tsdb
-
     limits:
       max_global_series_per_user: 5000000
-
-# Scale down all components to 1 replica for Homelab resource savings
 distributor:
   replicas: 1
-
 ingester:
   replicas: 1
-  # Disable PVCs as there is no StorageClass in the cluster, use emptyDir instead
   persistentVolume:
     enabled: false
   zones: []
-
 querier:
   replicas: 1
-
 query_frontend:
   replicas: 1
-
 store_gateway:
   replicas: 1
   persistentVolume:
     enabled: false
   zones: []
-
 compactor:
   replicas: 1
   persistentVolume:
     enabled: false
-
-# Disable alerting ruler and alertmanager by default to save resources
 ruler:
   enabled: false
-
 alertmanager:
   enabled: false
-
-# Gateway config
 gateway:
   enabled: true
   replicas: 1
-
-# MinIO is external (configured in minio.tf), so we disable chart-local minio
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+    - host: mimir.646499453.xyz
+      paths:
+      - path: /
+        pathType: Prefix
+    tls:
+    - secretName: wildcards-646499453-xyz-tls
+      hosts:
+      - mimir.646499453.xyz
+    annotations:
+      gethomepage.dev/enabled: '"true"'
+      gethomepage.dev/name: '"Mimir"'
+      gethomepage.dev/description: '"Scalable Long-term Metrics"'
+      gethomepage.dev/group: '"Monitoring"'
+      gethomepage.dev/icon: '"mimir.png"'
+      gethomepage.dev/href: '"https://mimir.646499453.xyz"'
+      traefik.ingress.kubernetes.io/router.middlewares: monitoring-lan-only-allowlist@kubernetescrd
 minio:
   enabled: false
-
-# Disable the heavy Kafka sub-chart to run with a clean, low-resource direct write path
 kafka:
   enabled: false
