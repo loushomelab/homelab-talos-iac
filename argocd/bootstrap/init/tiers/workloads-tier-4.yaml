@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: workloads-root
+  name: workloads-tier-4
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
