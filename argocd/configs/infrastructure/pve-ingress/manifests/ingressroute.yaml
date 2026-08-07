@@ -30,6 +30,7 @@ metadata:
   namespace: traefik
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: ""
     gethomepage.dev/name: "r720"
     gethomepage.dev/group: "PVE"
     gethomepage.dev/icon: "proxmox.png"
@@ -78,6 +79,7 @@ metadata:
   namespace: traefik
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: ""
     gethomepage.dev/name: "n100x8"
     gethomepage.dev/group: "PVE"
     gethomepage.dev/icon: "proxmox.png"
@@ -126,6 +128,7 @@ metadata:
   namespace: traefik
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: ""
     gethomepage.dev/name: "3960x"
     gethomepage.dev/group: "PVE"
     gethomepage.dev/icon: "proxmox.png"
@@ -174,6 +177,7 @@ metadata:
   namespace: traefik
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: ""
     gethomepage.dev/name: "1920x"
     gethomepage.dev/group: "PVE"
     gethomepage.dev/icon: "proxmox.png"
@@ -222,6 +226,7 @@ metadata:
   namespace: traefik
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: ""
     gethomepage.dev/name: "Proxmox Backup Server"
     gethomepage.dev/description: "PBS installed with helper script as LXC"
     gethomepage.dev/group: "PVE"
