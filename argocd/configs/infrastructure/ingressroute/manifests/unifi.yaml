@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-external
+  namespace: traefik
+spec:
+  ports:
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: unifi-external
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.1
+    ports:
+      - name: https
+        port: 443
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: unifi-insecure-transport
+  namespace: traefik
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  annotations:
+    gethomepage.dev/description: Network Controller
+    gethomepage.dev/enabled: 'true'
+    gethomepage.dev/group: Network
+    gethomepage.dev/href: https://unifi.646499453.xyz:8443
+    gethomepage.dev/icon: sh-ubiquiti-unifi.svg
+    gethomepage.dev/name: Unifi
+    gethomepage.dev/pod-selector: ''
+    gethomepage.dev/widget.username: '{{HOMEPAGE_VAR_UNIFI_USERNAME}}'
+    gethomepage.dev/widget.password: '{{HOMEPAGE_VAR_UNIFI_PASSWORD}}'
+    gethomepage.dev/widget.type: unifi
+    gethomepage.dev/widget.url: https://192.168.50.1
+  name: unifi
+  namespace: traefik
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`unifi.646499453.xyz`)
+    middlewares:
+    - name: authentik-forwardauth
+      namespace: traefik
+    services:
+    - name: unifi-external
+      port: 443
+      scheme: https
+      serversTransport: unifi-insecure-transport
+  tls:
+    secretName: wildcards-646499453-xyz-tls
