@@ -6,7 +6,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "20"
 spec:
-  project: infra-project
+  project: infra
   sources:
     - repoURL: 'https://repo.helmforge.dev'
       chart: ddns-updater
@@ -17,6 +17,9 @@ spec:
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
       targetRevision: HEAD
       ref: values
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      path: argocd/configs/infrastructure/ddns-updater/manifests
+      targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: ddns

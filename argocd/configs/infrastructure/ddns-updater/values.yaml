@@ -1,17 +1,23 @@
 config:
   settings:
     - provider: cloudflare
-      zone_identifier: 'your-zone-id'
+      zone_identifier: '3a55ed5932efda7c5ebbd2146f40c77f' # mock ID
       domain: '646499453.xyz'
       host: 'langshi.ddns'
       ttl: 300
-      token: 'your-cloudflare-api-token'
+      token: '${CLOUDFLARE_API_KEY}'
       proxied: false
       ip_version: ipv4
 
 ddns:
   period: 5m
   updateCooldownPeriod: 5m
+  extraEnv:
+    - name: CLOUDFLARE_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: ddns-updater-secrets
+          key: CLOUDFLARE_API_KEY
 
 persistence:
   enabled: false
