@@ -7,16 +7,13 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: infra
-  sources:
-  - repoURL: 'https://charts.jetstack.io'
+  source:
+    repoURL: 'https://charts.jetstack.io'
     chart: cert-manager
     targetRevision: v1.15.2
     helm:
       valuesObject:
         installCRDs: true
-  - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-    path: argocd/configs/infrastructure/cert-manager/manifests
-    targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: cert-manager
