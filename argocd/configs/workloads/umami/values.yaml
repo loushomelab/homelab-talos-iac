@@ -21,22 +21,23 @@ ingress:
 postgresql:
   enabled: false
 
+database:
+  external:
+    host: $(UMAMI_DB_HOST)
+    name: $(UMAMI_DB_NAME)
+    username: $(UMAMI_DB_USER)
+    existingSecret: umami-secrets
+    existingSecretPasswordKey: UMAMI_DB_PASSWORD
+
 umami:
   existingSecret: umami-secrets
   existingSecretKey: UMAMI_APP_SECRET
   extraEnv:
-    - name: DATABASE_URL
-      value: postgresql://$(UMAMI_DB_USER):$(UMAMI_DB_PASSWORD)@$(UMAMI_DB_HOST):5432/$(UMAMI_DB_NAME)
     - name: UMAMI_DB_USER
       valueFrom:
         secretKeyRef:
           name: umami-secrets
           key: UMAMI_DB_USER
-    - name: UMAMI_DB_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: umami-secrets
-          key: UMAMI_DB_PASSWORD
     - name: UMAMI_DB_HOST
       valueFrom:
         secretKeyRef:
@@ -47,5 +48,3 @@ umami:
         secretKeyRef:
           name: umami-secrets
           key: UMAMI_DB_NAME
-database:
-  url: ""
