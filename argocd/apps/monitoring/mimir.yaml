@@ -102,7 +102,7 @@ spec:
               gethomepage.dev/name: "Mimir"
               gethomepage.dev/description: "Scalable Long-term Metrics"
               gethomepage.dev/group: "Monitoring"
-              gethomepage.dev/icon: "sh-mimir.svg"
+              gethomepage.dev/icon: "sh-grafana-mimir.svg"
               gethomepage.dev/href: "https://mimir.646499453.xyz:8443"
               traefik.ingress.kubernetes.io/router.middlewares: 
                 monitoring-lan-only-allowlist@kubernetescrd

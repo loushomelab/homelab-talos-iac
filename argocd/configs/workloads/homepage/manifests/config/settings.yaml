@@ -14,10 +14,11 @@ quicklaunch:
   hideVisitURL: false
   provider: google
 layout:
-  Proxmox:
+  Hardware:
     style: row
     columns: 2
     PVE-Cluster:
-    PVE-Nodes:
-      style: row
-      columns: 2
+    NAS:
+  PVE-Nodes:
+    style: row
+    columns: 4
