@@ -36,7 +36,7 @@ kind: IngressRoute
 metadata:
   annotations:
     gethomepage.dev/description: Network Controller
-    gethomepage.dev/enabled: true
+    gethomepage.dev/enabled: 'true'
     gethomepage.dev/group: Network
     gethomepage.dev/href: https://unifi.646499453.xyz:8443
     gethomepage.dev/icon: sh-ubiquiti-unifi.svg
