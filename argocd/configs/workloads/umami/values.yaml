@@ -47,3 +47,5 @@ umami:
         secretKeyRef:
           name: umami-secrets
           key: UMAMI_DB_NAME
+database:
+  url: ""
