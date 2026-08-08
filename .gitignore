@@ -1,3 +1,4 @@
 helm_value_templates/
 documentations/
 .DS_Store
+*values.yaml
