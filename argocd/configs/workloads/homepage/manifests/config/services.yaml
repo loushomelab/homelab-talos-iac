@@ -87,13 +87,13 @@
 
 - Network:
     - Unifi:
-    description: Network Controller
-    href: https://unifi.646499453.xyz:8443
-    widget:
-        type: unifi
-        url: https://192.168.50.1
-        site: 朗诗[Cloud Gateway Max]
-        key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
+        description: Network Controller
+        href: https://unifi.646499453.xyz:8443
+        widget:
+            type: unifi
+            url: https://192.168.50.1
+            site: 朗诗[Cloud Gateway Max]
+            key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
 
 - IOT:
     - Langshi:
