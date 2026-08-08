@@ -22,7 +22,7 @@ spec:
             - name: ZONE
               value: "646499453.xyz"
             - name: SUBDOMAIN
-              value: "langshi"
+              value: "langshi.ddns"
             - name: PROXIED
               value: "false"
             - name: RRTYPE
