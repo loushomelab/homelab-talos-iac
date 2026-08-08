@@ -23,12 +23,19 @@ postgresql:
 
 database:
   external:
-    host: 192.168.50.152
-    name: umami
-    username: umami
-    existingSecret: umami-secrets
+    host: 192.168.50.152 # Consider storing in secret DB_OBS_POSTGRESQL__HOST if shared
+    name: "" # Should be provided from UMAMI_DB_NAME env var
+    username: "" # Should be provided from UMAMI_DB_USER env var
+    existingSecret: monitoring-secrets
     existingSecretPasswordKey: UMAMI_DB_PASSWORD
 
 umami:
-  existingSecret: umami-secrets
+  existingSecret: monitoring-secrets
   existingSecretKey: UMAMI_APP_SECRET
+
+env:
+  - name: DATABASE_URL
+    value: postgresql://$(UMAMI_DB_USER):$(UMAMI_DB_PASSWORD)@$(GRAFANA_DB_HOST):5432/$(UMAMI_DB_NAME)
+envFrom:
+  - secretRef:
+      name: monitoring-secrets
