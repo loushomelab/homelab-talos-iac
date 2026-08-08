@@ -8,7 +8,7 @@ metadata:
 spec:
   project: monitoring
   sources:
-  - repoURL: 'https://grafana.github.io/helm-charts'
+  - repoURL: https://grafana.github.io/helm-charts
     chart: mimir-distributed
     targetRevision: 6.1.0
     helm:
@@ -33,16 +33,16 @@ spec:
                 backend: s3
                 s3:
                   endpoint: ${S3_ENDPOINT}
-                  access_key_id: mimir
-                  secret_access_key: ${S3_MIMIR_PASSWORD}
+                  access_key_id: ${S3_MIMIR_ACCESS_KEY}
+                  secret_access_key: ${S3_MIMIR_SECRET_KEY}
                   bucket_name: s3-mimir
                   insecure: true
             blocks_storage:
               backend: s3
               s3:
                 endpoint: ${S3_ENDPOINT}
-                access_key_id: mimir
-                secret_access_key: ${S3_MIMIR_PASSWORD}
+                access_key_id: ${S3_MIMIR_ACCESS_KEY}
+                secret_access_key: ${S3_MIMIR_SECRET_KEY}
                 bucket_name: s3-mimir
                 insecure: true
               tsdb:
@@ -89,12 +89,12 @@ spec:
               hosts:
               - mimir.646499453.xyz
             annotations:
-              gethomepage.dev/enabled: '"true"'
-              gethomepage.dev/name: '"Mimir"'
-              gethomepage.dev/description: '"Scalable Long-term Metrics"'
-              gethomepage.dev/group: '"Monitoring"'
-              gethomepage.dev/icon: '"mimir.png"'
-              gethomepage.dev/href: '"https://mimir.646499453.xyz"'
+              gethomepage.dev/enabled: "true"
+              gethomepage.dev/name: "Mimir"
+              gethomepage.dev/description: "Scalable Long-term Metrics"
+              gethomepage.dev/group: "Monitoring"
+              gethomepage.dev/icon: "sh-mimir.svg"
+              gethomepage.dev/href: "https://mimir.646499453.xyz"
               traefik.ingress.kubernetes.io/router.middlewares: 
                 monitoring-lan-only-allowlist@kubernetescrd
         minio:
@@ -102,7 +102,7 @@ spec:
         kafka:
           enabled: false
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
     automated:

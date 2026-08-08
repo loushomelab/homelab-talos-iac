@@ -19,13 +19,13 @@ spec:
               name: monitoring-secrets
           extraArgs:
             storage.s3.endpoint: $(S3_ENDPOINT)
-            storage.s3.secret-access-key: $(S3_PYROSCOPE_PASSWORD)
+            storage.s3.access-key-id: $(S3_PYROSCOPE_ACCESS_KEY)
+            storage.s3.secret-access-key: $(S3_PYROSCOPE_SECRET_KEY)
           structuredConfig:
             multitenancy_enabled: false
             storage:
               backend: s3
               s3:
-                access_key_id: pyroscope
                 bucket_name: s3-pyroscope
                 insecure: true
         minio:
