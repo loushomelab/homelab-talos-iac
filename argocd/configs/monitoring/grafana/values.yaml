@@ -39,13 +39,13 @@ ingress:
     hosts:
     - grafana.646499453.xyz
   annotations:
-    gethomepage.dev/enabled: '"true"'
-    gethomepage.dev/name: '"Grafana"'
-    gethomepage.dev/description: '"Data Visualization & Monitoring"'
-    gethomepage.dev/group: '"Dashboards"'
-    gethomepage.dev/icon: '"grafana.png"'
-    gethomepage.dev/href: '"https://grafana.646499453.xyz"'
-    gethomepage.dev/widget.type: '"grafana"'
-    gethomepage.dev/widget.url: '"http://grafana.monitoring.svc.cluster.local:80"'
-    gethomepage.dev/widget.username: '"{{HOMEPAGE_VAR_GRAFANA_USERNAME}}"'
-    gethomepage.dev/widget.password: '"{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"'
+    gethomepage.dev/enabled: 'true'
+    gethomepage.dev/name: 'Grafana'
+    gethomepage.dev/description: 'Data Visualization & Monitoring'
+    gethomepage.dev/group: 'Dashboards'
+    gethomepage.dev/icon: 'grafana.png'
+    gethomepage.dev/href: 'https://grafana.646499453.xyz'
+    gethomepage.dev/widget.type: 'grafana'
+    gethomepage.dev/widget.url: 'http://grafana.monitoring.svc.cluster.local:80'
+    gethomepage.dev/widget.username: '{{ "{{" }}HOMEPAGE_VAR_GRAFANA_USERNAME{{ "}}" }}'
+    gethomepage.dev/widget.password: '{{ "{{" }}HOMEPAGE_VAR_GRAFANA_PASSWORD{{ "}}" }}'

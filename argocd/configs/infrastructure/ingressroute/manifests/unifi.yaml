@@ -45,7 +45,7 @@ metadata:
     gethomepage.dev/widget.type: unifi
     gethomepage.dev/widget.url: https://192.168.50.1
     gethomepage.dev/widget.site: 朗诗[Cloud Gateway Max]
-    gethomepage.dev/widget.key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
+    gethomepage.dev/widget.key: '{{HOMEPAGE_VAR_UNIFI_API_KEY}}'
   name: unifi
   namespace: traefik
 spec:
