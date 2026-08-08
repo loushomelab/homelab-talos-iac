@@ -45,6 +45,10 @@ spec:
         postgresql:
           enabled: false
 
+        initContainers:
+          waitForDatabase:
+            enabled: false
+
         database:
           external:
             host: $(DB_OBS_POSTGRESQL__HOST)
