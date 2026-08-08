@@ -1,6 +1,8 @@
 - Proxmox:
     - PVE-Cluster:
         - PVE-Homelab:
+            icon: sh-proxmox.svg
+            description: Cluster Overall Status
             href: https://r720.pve.646499453.xyz:8443
             widget:
                 type: proxmox
@@ -8,6 +10,7 @@
                 username: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
                 password: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
         - Proxmox Backup Server:
+            icon: sh-linux-containers-lxc.svg
             href: https://pbs.646499453.xyz:8443
             description: PBS installed with helper script as LXC
             showStats: true
@@ -22,6 +25,7 @@
                 datastore: pbstorage
     - PVE-Nodes:
         - 1920x:
+            icon: sh-proxmox.svg
             href: https://1920x.pve.646499453.xyz:8443
             showStats: true
             proxmoxNode: 1920x
@@ -32,6 +36,7 @@
                 password: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
                 node: 1920x
         - 3960x:
+            icon: sh-proxmox.svg
             href: https://3960x.pve.646499453.xyz:8443
             showStats: true
             proxmoxNode: 3960x
@@ -42,6 +47,7 @@
                 password: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
                 node: 3960x
         - n100x8:
+            icon: sh-proxmox.svg
             href: https://n100x8.pve.646499453.xyz:8443
             showStats: true
             proxmoxNode: n100x8
@@ -52,6 +58,7 @@
                 password: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
                 node: n100x8
         - r720:
+            icon: sh-proxmox.svg
             href: https://r720.pve.646499453.xyz:8443
             showStats: true
             proxmoxNode: r720
@@ -66,7 +73,7 @@
     - Synology:
         description: Synology DSM
         href: https://ds920.646499453.xyz:8443
-        icon: synology
+        icon: sh-synology.svg
         widget:
             type: diskstation
             url: http://192.168.50.77:5000
@@ -76,6 +83,7 @@
         description: NAS Storage
         href: https://truenas.646499453.xyz:8443
         showStats: true
+        icon: sh-truenas-scale.svg
         proxmoxNode: n100x8
         proxmoxVMID: 1300
         proxmoxType: qemu
@@ -89,6 +97,7 @@
     - Unifi:
         description: Network Controller
         href: https://unifi.646499453.xyz:8443
+        icon: sh-ubiquiti-unifi.svg
         widget:
             type: unifi
             url: https://192.168.50.1
@@ -99,6 +108,7 @@
     - Langshi:
         description: Home Assistant
         href: https://langshi.hass.646499453.xyz:8443
+        icon: sh-home-assistant.svg
         widget:
             type: homeassistant
             url: http://192.168.50.120:8123
@@ -107,4 +117,5 @@
 - Database:
     - TrueNAS MinIO:
         description: S3 Object Storage on TrueNAS
+        icon: sh-minio.svg
         href: https://minio.truenas.646499453.xyz:8443

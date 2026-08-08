@@ -13,3 +13,11 @@ quicklaunch:
   showSearchSuggestions: true
   hideVisitURL: false
   provider: google
+layout:
+  Proxmox:
+    style: row
+    columns: 2
+    PVE-Cluster:
+    PVE-Nodes:
+      style: row
+      columns: 2
