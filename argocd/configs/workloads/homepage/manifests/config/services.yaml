@@ -101,7 +101,6 @@
         widget:
             type: unifi
             url: https://192.168.50.1
-            site: 朗诗[Cloud Gateway Max]
             key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
 
 - IOT:
