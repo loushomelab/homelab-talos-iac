@@ -51,9 +51,9 @@ spec:
 
         database:
           external:
-            host: $(DB_OBS_POSTGRESQL__HOST)
-            name: $(UMAMI_DB_NAME)
-            username: $(UMAMI_DB_USER)
+            host: DB_OBS_POSTGRESQL__HOST
+            name: UMAMI_DB_NAME
+            username: UMAMI_DB_USER
             existingSecret: monitoring-secrets
             existingSecretPasswordKey: UMAMI_DB_PASSWORD
 
@@ -61,6 +61,13 @@ spec:
           existingSecret: monitoring-secrets
           existingSecretKey: UMAMI_APP_SECRET
           extraEnv:
+            - name: DATABASE_URL
+              value: "postgresql://$(UMAMI_DB_USER):$(UMAMI_DB_PASSWORD)@$(DB_OBS_POSTGRESQL__HOST):5432/$(UMAMI_DB_NAME)"
+            - name: UMAMI_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: UMAMI_DB_PASSWORD
             - name: DB_OBS_POSTGRESQL__HOST
               valueFrom:
                 secretKeyRef:
