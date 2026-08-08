@@ -28,18 +28,6 @@ kind: IngressRoute
 metadata:
   name: pve-r720
   namespace: traefik
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/pod-selector: ""
-    gethomepage.dev/name: "r720"
-    gethomepage.dev/group: "PVE-Nodes"
-    gethomepage.dev/icon: "sh-proxmox.svg"
-    gethomepage.dev/href: "https://r720.pve.646499453.xyz:8443"
-    gethomepage.dev/widget.type: "proxmox"
-    gethomepage.dev/widget.url: "https://192.168.50.101:8006"
-    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
-    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
-    gethomepage.dev/widget.node: "r720"
 spec:
   entryPoints:
     - websecure
@@ -77,18 +65,6 @@ kind: IngressRoute
 metadata:
   name: pve-n100x8
   namespace: traefik
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/pod-selector: ""
-    gethomepage.dev/name: "n100x8"
-    gethomepage.dev/group: "PVE-Nodes"
-    gethomepage.dev/icon: "sh-proxmox.svg"
-    gethomepage.dev/href: "https://n100x8.pve.646499453.xyz:8443"
-    gethomepage.dev/widget.type: "proxmox"
-    gethomepage.dev/widget.url: "https://192.168.50.102:8006"
-    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
-    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
-    gethomepage.dev/widget.node: "n100x8"
 spec:
   entryPoints:
     - websecure
@@ -126,18 +102,6 @@ kind: IngressRoute
 metadata:
   name: pve-3960x
   namespace: traefik
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/pod-selector: ""
-    gethomepage.dev/name: "3960x"
-    gethomepage.dev/group: "PVE-Nodes"
-    gethomepage.dev/icon: "sh-proxmox.svg"
-    gethomepage.dev/href: "https://3960x.pve.646499453.xyz:8443"
-    gethomepage.dev/widget.type: "proxmox"
-    gethomepage.dev/widget.url: "https://192.168.50.104:8006"
-    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
-    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
-    gethomepage.dev/widget.node: "3960x"
 spec:
   entryPoints:
     - websecure
@@ -175,18 +139,6 @@ kind: IngressRoute
 metadata:
   name: pve-1920x
   namespace: traefik
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/pod-selector: ""
-    gethomepage.dev/name: "1920x"
-    gethomepage.dev/group: "PVE-Nodes"
-    gethomepage.dev/icon: "sh-proxmox.svg"
-    gethomepage.dev/href: "https://1920x.pve.646499453.xyz:8443"
-    gethomepage.dev/widget.type: "proxmox"
-    gethomepage.dev/widget.url: "https://192.168.50.105:8006"
-    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PROXMOX_USERNAME}}"
-    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}"
-    gethomepage.dev/widget.node: "1920x"
 spec:
   entryPoints:
     - websecure

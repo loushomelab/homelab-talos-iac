@@ -28,14 +28,6 @@ kind: IngressRoute
 metadata:
   name: minio-truenas
   namespace: traefik
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/name: "TrueNAS MinIO"
-    gethomepage.dev/description: "S3 Object Storage on TrueNAS"
-    gethomepage.dev/group: "Database"
-    gethomepage.dev/icon: "minio"
-    gethomepage.dev/href: "https://minio.truenas.646499453.xyz:8443"
-    gethomepage.dev/pod-selector: ""
 spec:
   entryPoints:
     - websecure

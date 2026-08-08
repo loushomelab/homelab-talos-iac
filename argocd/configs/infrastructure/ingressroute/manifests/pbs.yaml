@@ -25,22 +25,6 @@ kind: IngressRoute
 metadata:
   name: pbs
   namespace: traefik
-  annotations:
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/pod-selector: ""
-    gethomepage.dev/name: "Proxmox Backup Server"
-    gethomepage.dev/description: "PBS installed with helper script as LXC"
-    gethomepage.dev/group: "PVE-Cluster"
-    gethomepage.dev/icon: "sh-linux-containers-lxc.svg"
-    gethomepage.dev/href: "https://pbs.646499453.xyz:8443"
-    gethomepage.dev/proxmoxNode: "r720"
-    gethomepage.dev/proxmoxVMID: "103"
-    gethomepage.dev/proxmoxType: "lxc"
-    gethomepage.dev/widget.type: "proxmoxbackupserver"
-    gethomepage.dev/widget.url: "https://192.168.50.154:8007"
-    gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_PBS_USERNAME}}"
-    gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_PBS_PASSWORD}}"
-    gethomepage.dev/widget.datastore: "pbstorage"
 spec:
   entryPoints:
     - websecure

@@ -7,7 +7,6 @@ background:
   opacity: '75'
 favicon: https://humblehouse.com.cn/favicon.ico
 headerStyle: boxedWidgets
-showStats: true
 quicklaunch:
   searchDescriptions: true
   hideInternetSearch: false
