@@ -27,16 +27,16 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   annotations:
-    gethomepage.dev/description: Home Assistant
-    gethomepage.dev/enabled: 'true'
-    gethomepage.dev/group: IOT
-    gethomepage.dev/href: https://langshi.hass.646499453.xyz:8443
-    gethomepage.dev/icon: home-assistant
-    gethomepage.dev/name: Langshi
-    gethomepage.dev/pod-selector: ''
-    gethomepage.dev/widget.type: homeassistant
-    gethomepage.dev/widget.url: http://192.168.50.120:8123
-    gethomepage.dev/widget.key: '{{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}'
+    gethomepage.dev/description: "Home Assistant"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: "IOT"
+    gethomepage.dev/href: "https://langshi.hass.646499453.xyz:8443"
+    gethomepage.dev/icon: "home-assistant"
+    gethomepage.dev/name: "Langshi"
+    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/widget.type: "homeassistant"
+    gethomepage.dev/widget.url: "http://192.168.50.120:8123"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}"
   name: homeassistant-langshi
   namespace: traefik
 spec:
