@@ -33,7 +33,6 @@ metadata:
     gethomepage.dev/group: "PVE-Cluster"
     gethomepage.dev/icon: "sh-linux-containers-lxc.svg"
     gethomepage.dev/href: "https://pbs.646499453.xyz:8443"
-    gethomepage.dev/showStats: "true"
     gethomepage.dev/proxmoxNode: "r720"
     gethomepage.dev/proxmoxVMID: "103"
     gethomepage.dev/proxmoxType: "lxc"

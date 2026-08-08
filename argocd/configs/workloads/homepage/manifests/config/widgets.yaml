@@ -1,13 +1,3 @@
-- datetime:
-    text_size: xl
-    locale: ch
-    format:
-      weekday: short
-      month: short
-      day: numeric
-      hour: 2-digit
-      minute: 2-digit
-      hour12: false
 - kubernetes:
     cluster:
       show: true
@@ -20,6 +10,16 @@
       cpu: true
       memory: true
       showLabel: true
+- datetime:
+    text_size: xl
+    locale: ch
+    format:
+      weekday: short
+      month: short
+      day: numeric
+      hour: 2-digit
+      minute: 2-digit
+      hour12: false
 - unifi_console:
     url: https://192.168.50.1
     site: 朗诗[Cloud Gateway Max]

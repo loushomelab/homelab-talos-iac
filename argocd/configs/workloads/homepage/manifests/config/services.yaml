@@ -1,10 +1,10 @@
 - Proxmox:
     - PVE-Cluster:
         - PVE-Homelab:
+            href: https://r720.pve.646499453.xyz:8443
             icon: sh-proxmox.svg
             pod-selector: ""
             widget:
-                href: https://r720.pve.646499453.xyz:8443
                 type: proxmox
                 url: https://192.168.50.101:8006
                 username: {{HOMEPAGE_VAR_PROXMOX_USERNAME}}
