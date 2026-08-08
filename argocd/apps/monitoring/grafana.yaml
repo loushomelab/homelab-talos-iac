@@ -4,19 +4,68 @@ metadata:
   name: grafana
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
   sources:
-    - repoURL: 'https://grafana.github.io/helm-charts'
-      chart: grafana
-      targetRevision: 10.5.15
-      helm:
-        valueFiles:
-          - $values/argocd/configs/monitoring/grafana/values.yaml
-    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      targetRevision: HEAD
-      ref: values
+  - repoURL: 'https://grafana.github.io/helm-charts'
+    chart: grafana
+    targetRevision: 10.5.15
+    helm:
+      valuesObject:
+        envFromSecret: monitoring-secrets
+        adminUser: admin
+        grafana.ini:
+          database:
+            type: postgres
+            host: $__env{DB_OBS_POSTGRESQL__HOST}:5432
+            name: $__env{GRAFANA_DB_NAME}
+            user: $__env{GRAFANA_DB_USER}
+            password: $__env{GRAFANA_DB_PASSWORD}
+            ssl_mode: disable
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Mimir (Prometheus)
+              type: prometheus
+              access: proxy
+              url: http://mimir-distributed-gateway.monitoring.svc.cluster.local
+              isDefault: true
+              jsonData:
+                httpMethod: POST
+                timeInterval: 15s
+            - name: Pyroscope
+              type: grafana-pyroscope-datasource
+              access: proxy
+              url: http://pyroscope.monitoring.svc:4040
+              jsonData:
+                minStep: 15s
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          hosts:
+          - grafana.646499453.xyz
+          paths:
+          - /
+          pathType: Prefix
+          tls:
+          - secretName: wildcards-646499453-xyz-tls
+            hosts:
+            - grafana.646499453.xyz
+          annotations:
+            gethomepage.dev/enabled: 'true'
+            gethomepage.dev/name: 'Grafana'
+            gethomepage.dev/description: 'Data Visualization & Monitoring'
+            gethomepage.dev/group: 'Dashboards'
+            gethomepage.dev/icon: 'grafana.png'
+            gethomepage.dev/href: 'https://grafana.646499453.xyz'
+            gethomepage.dev/widget.type: 'grafana'
+            gethomepage.dev/widget.url: 'http://grafana.monitoring.svc.cluster.local:80'
+            gethomepage.dev/widget.username: '{{ "{{" }}HOMEPAGE_VAR_GRAFANA_USERNAME{{
+              "}}" }}'
+            gethomepage.dev/widget.password: '{{ "{{" }}HOMEPAGE_VAR_GRAFANA_PASSWORD{{
+              "}}" }}'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
@@ -25,4 +74,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true

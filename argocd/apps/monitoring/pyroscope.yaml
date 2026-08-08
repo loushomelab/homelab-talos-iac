@@ -4,19 +4,51 @@ metadata:
   name: pyroscope
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
   sources:
-    - repoURL: 'https://grafana.github.io/helm-charts'
-      chart: pyroscope
-      targetRevision: 2.2.0
-      helm:
-        valueFiles:
-          - $values/argocd/configs/monitoring/pyroscope/values.yaml
-    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      targetRevision: HEAD
-      ref: values
+  - repoURL: 'https://grafana.github.io/helm-charts'
+    chart: pyroscope
+    targetRevision: 2.2.0
+    helm:
+      valuesObject:
+        pyroscope:
+          extraEnvFrom:
+          - secretRef:
+              name: monitoring-secrets
+          extraArgs:
+            storage.s3.endpoint: $(S3_ENDPOINT)
+            storage.s3.secret-access-key: $(S3_PYROSCOPE_PASSWORD)
+          structuredConfig:
+            multitenancy_enabled: false
+            storage:
+              backend: s3
+              s3:
+                access_key_id: pyroscope
+                bucket_name: s3-pyroscope
+                insecure: true
+        minio:
+          enabled: false
+        replicaCount: 1
+        ingress:
+          enabled: true
+          className: traefik
+          hosts:
+          - pyroscope.646499453.xyz
+          tls:
+          - secretName: wildcards-646499453-xyz-tls
+            hosts:
+            - pyroscope.646499453.xyz
+          annotations:
+            gethomepage.dev/enabled: '"true"'
+            gethomepage.dev/name: '"Pyroscope"'
+            gethomepage.dev/description: '"Continuous Profiling"'
+            gethomepage.dev/group: '"Monitoring"'
+            gethomepage.dev/icon: '"pyroscope.png"'
+            gethomepage.dev/href: '"https://pyroscope.646499453.xyz"'
+            traefik.ingress.kubernetes.io/router.middlewares: 
+              monitoring-lan-only-allowlist@kubernetescrd
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
@@ -25,4 +57,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true

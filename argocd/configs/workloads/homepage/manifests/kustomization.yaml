@@ -6,7 +6,6 @@ resources:
   - service.yaml
   - rbac.yaml
   - ingressroute.yaml
-  - doppler-secret.yaml
 
 configMapGenerator:
   - name: homepage-config

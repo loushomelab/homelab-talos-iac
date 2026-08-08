@@ -4,19 +4,57 @@ metadata:
   name: umami
   namespace: argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
   sources:
-    - repoURL: 'https://repo.helmforge.dev'
-      chart: umami
-      targetRevision: 2.3.0
-      helm:
-        valueFiles:
-          - $values/argocd/configs/monitoring/manifests/umami/values.yaml
-    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      targetRevision: HEAD
-      ref: values
+  - repoURL: 'https://repo.helmforge.dev'
+    chart: umami
+    targetRevision: 2.3.0
+    helm:
+      valuesObject:
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          hosts:
+          - host: umami.646499453.xyz
+            paths:
+            - path: /
+              pathType: Prefix
+          tls:
+          - secretName: wildcards-646499453-xyz-tls
+            hosts:
+            - umami.646499453.xyz
+          annotations:
+            gethomepage.dev/enabled: '"true"'
+            gethomepage.dev/name: '"Umami"'
+            gethomepage.dev/description: '"Web Analytics"'
+            gethomepage.dev/group: '"Services"'
+            gethomepage.dev/icon: '"umami.png"'
+            gethomepage.dev/href: '"https://umami.646499453.xyz"'
+
+        postgresql:
+          enabled: false
+
+        database:
+          external:
+            host: DB_OBS_POSTGRESQL__HOST
+            name:
+            username:
+            existingSecret: monitoring-secrets
+            existingSecretPasswordKey: UMAMI_DB_PASSWORD
+
+        umami:
+          existingSecret: monitoring-secrets
+          existingSecretKey: UMAMI_APP_SECRET
+
+        env:
+        - name: DATABASE_URL
+          value: 
+            postgresql://$(UMAMI_DB_USER):$(UMAMI_DB_PASSWORD)@$(GRAFANA_DB_HOST):5432/$(UMAMI_DB_NAME)
+        envFrom:
+        - secretRef:
+            name: monitoring-secrets
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
@@ -25,4 +63,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true
