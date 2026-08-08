@@ -40,7 +40,7 @@ spec:
             gethomepage.dev/description: "Web Analytics"
             gethomepage.dev/group: "Monitoring"
             gethomepage.dev/icon: "sh-umami.svg"
-            gethomepage.dev/href: "https://umami.646499453.xyz"
+            gethomepage.dev/href: "https://umami.646499453.xyz:8443"
 
         postgresql:
           enabled: false

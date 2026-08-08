@@ -7,6 +7,15 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
   sources:
   - repoURL: https://grafana.github.io/helm-charts
     chart: mimir-distributed
@@ -94,19 +103,10 @@ spec:
               gethomepage.dev/description: "Scalable Long-term Metrics"
               gethomepage.dev/group: "Monitoring"
               gethomepage.dev/icon: "sh-mimir.svg"
-              gethomepage.dev/href: "https://mimir.646499453.xyz"
+              gethomepage.dev/href: "https://mimir.646499453.xyz:8443"
               traefik.ingress.kubernetes.io/router.middlewares: 
                 monitoring-lan-only-allowlist@kubernetescrd
         minio:
           enabled: false
         kafka:
           enabled: false
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - CreateNamespace=true

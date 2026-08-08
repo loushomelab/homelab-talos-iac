@@ -7,6 +7,15 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
   sources:
   - repoURL: 'https://grafana.github.io/helm-charts'
     chart: grafana
@@ -58,20 +67,9 @@ spec:
             gethomepage.dev/name: 'Grafana'
             gethomepage.dev/description: 'Data Visualization & Monitoring'
             gethomepage.dev/group: 'Dashboards'
-            gethomepage.dev/icon: 'grafana.png'
-            gethomepage.dev/href: 'https://grafana.646499453.xyz'
+            gethomepage.dev/icon: 'sh-grafana.svg'
+            gethomepage.dev/href: 'https://grafana.646499453.xyz:8443'
             gethomepage.dev/widget.type: 'grafana'
             gethomepage.dev/widget.url: 'http://grafana.monitoring.svc.cluster.local:80'
-            gethomepage.dev/widget.username: '{{ "{{" }}HOMEPAGE_VAR_GRAFANA_USERNAME{{
-              "}}" }}'
-            gethomepage.dev/widget.password: '{{ "{{" }}HOMEPAGE_VAR_GRAFANA_PASSWORD{{
-              "}}" }}'
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
+            gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_GRAFANA_USERNAME}}"
+            gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}"

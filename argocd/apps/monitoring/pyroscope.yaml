@@ -7,6 +7,15 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
   sources:
   - repoURL: 'https://grafana.github.io/helm-charts'
     chart: pyroscope
@@ -45,16 +54,7 @@ spec:
             gethomepage.dev/name: '"Pyroscope"'
             gethomepage.dev/description: '"Continuous Profiling"'
             gethomepage.dev/group: '"Monitoring"'
-            gethomepage.dev/icon: '"pyroscope.png"'
-            gethomepage.dev/href: '"https://pyroscope.646499453.xyz"'
+            gethomepage.dev/icon: '"sh-pyroscope.svg"'
+            gethomepage.dev/href: '"https://pyroscope.646499453.xyz:8443"'
             traefik.ingress.kubernetes.io/router.middlewares: 
               monitoring-lan-only-allowlist@kubernetescrd
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - CreateNamespace=true

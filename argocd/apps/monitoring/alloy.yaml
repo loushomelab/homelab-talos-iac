@@ -7,19 +7,27 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: monitoring
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
   sources:
   - repoURL: 'https://grafana.github.io/helm-charts'
     chart: alloy
     targetRevision: 1.11.1
     helm:
       valuesObject:
-# Grafana Alloy Helm Chart Values
-# Configured as a DaemonSet with eBPF continuous profiling and Prometheus CRD scraping
-# Docs: https://grafana.com/docs/alloy/latest/
-
+        # Grafana Alloy Helm Chart Values
+        # Configured as a DaemonSet with eBPF continuous profiling and Prometheus CRD scraping
+        # Docs: https://grafana.com/docs/alloy/latest/
         controller:
           type: daemonset
-  # Required for eBPF profiling to map host PIDs to containers
+          # Required for eBPF profiling to map host PIDs to containers
           hostPID: true
 
         alloy:
@@ -27,11 +35,11 @@ spec:
           - secretRef:
               name: monitoring-secrets
 
-  # Run with high privileges required for eBPF Kernel probing
+          # Run with high privileges required for eBPF Kernel probing
           securityContext:
             privileged: true
 
-  # Alloy configuration language content (HCL-like)
+          # Alloy configuration language content (HCL-like)
           configContent: |
             // --------------------------------------------------------------------------
             // 📊 METRICS COLLECTION (Prometheus Operator CRDs)
@@ -102,12 +110,3 @@ spec:
                 url = "http://pyroscope.monitoring.svc.cluster.local:4040"
               }
             }
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
