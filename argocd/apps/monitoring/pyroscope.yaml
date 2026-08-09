@@ -54,7 +54,7 @@ spec:
             gethomepage.dev/name: "Pyroscope"
             gethomepage.dev/description: "Continuous Profiling"
             gethomepage.dev/group: "Monitoring"
-            gethomepage.dev/icon: "sh-pyroscope.svg"
+            gethomepage.dev/icon: "https://grafana.com/static/img/pyroscope-logo.svg"
             gethomepage.dev/href: "https://pyroscope.646499453.xyz:8443"
             traefik.ingress.kubernetes.io/router.middlewares: 
               monitoring-lan-only-allowlist@kubernetescrd
