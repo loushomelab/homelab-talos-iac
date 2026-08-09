@@ -27,6 +27,8 @@ spec:
             mountPath: /etc/alertmanager/secrets/slack-webhook
             secretName: monitoring-secrets
             readOnly: true
+        persistence:
+          enabled: false
         config:
           global:
             slack_api_url_file: /etc/alertmanager/secrets/slack-webhook/SLACK_WEBHOOK_URL
