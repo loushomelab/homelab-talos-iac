@@ -41,6 +41,7 @@ spec:
             gethomepage.dev/group: "Monitoring"
             gethomepage.dev/icon: "sh-umami.svg"
             gethomepage.dev/href: "https://umami.646499453.xyz:8443"
+            gethomepage.dev/pod-selector: "app.kubernetes.io/name=umami"
 
         postgresql:
           enabled: false

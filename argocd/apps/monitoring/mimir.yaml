@@ -104,6 +104,7 @@ spec:
               gethomepage.dev/group: "Monitoring"
               gethomepage.dev/icon: "sh-grafana-mimir.svg"
               gethomepage.dev/href: "https://mimir.646499453.xyz:8443"
+              gethomepage.dev/pod-selector: "app.kubernetes.io/name=mimir,app.kubernetes.io/component=gateway"
               traefik.ingress.kubernetes.io/router.middlewares: 
                 monitoring-lan-only-allowlist@kubernetescrd
         minio:

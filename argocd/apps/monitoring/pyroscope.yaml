@@ -50,11 +50,11 @@ spec:
             hosts:
             - pyroscope.646499453.xyz
           annotations:
-            gethomepage.dev/enabled: '"true"'
-            gethomepage.dev/name: '"Pyroscope"'
-            gethomepage.dev/description: '"Continuous Profiling"'
-            gethomepage.dev/group: '"Monitoring"'
-            gethomepage.dev/icon: '"sh-pyroscope.svg"'
-            gethomepage.dev/href: '"https://pyroscope.646499453.xyz:8443"'
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: "Pyroscope"
+            gethomepage.dev/description: "Continuous Profiling"
+            gethomepage.dev/group: "Monitoring"
+            gethomepage.dev/icon: "sh-pyroscope.svg"
+            gethomepage.dev/href: "https://pyroscope.646499453.xyz:8443"
             traefik.ingress.kubernetes.io/router.middlewares: 
               monitoring-lan-only-allowlist@kubernetescrd
