@@ -19,7 +19,7 @@ spec:
   sources:
   - repoURL: 'https://grafana.github.io/helm-charts'
     chart: pyroscope
-    targetRevision: 2.2.0
+    targetRevision: 2.2.1
     helm:
       valuesObject:
         pyroscope:
