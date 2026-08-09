@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "timezone": "Asia/Shanghai",
+  "schedule": [
+    "every weekend"
+  ],
+  "argocd": {
+    "fileMatch": ["\\.ya?ml$"]
+  },
+  "labels": ["dependencies", "renovate"],
+  "packageRules": [
+    {
+      "description": "自动合并小版本 (minor) 和补丁版本 (patch)",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "description": "大版本 (major) 更新可能会有 Breaking Changes，仅提 PR 供人工 Review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["major-update", "needs-review"]
+    }
+  ]
+}
