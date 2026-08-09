@@ -27,6 +27,7 @@
         - Synology:
             description: Synology DSM
             href: https://ds920.646499453.xyz:8443
+            siteMonitor: https://192.168.50.77:5001
             icon: sh-synology.svg
             widget:
                 type: diskstation
@@ -36,6 +37,7 @@
         - TrueNAS:
             description: NAS Storage
             href: https://truenas.646499453.xyz:8443
+            siteMonitor: https://192.168.50.76
             showStats: true
             icon: sh-truenas-scale.svg
             proxmoxNode: n100x8
