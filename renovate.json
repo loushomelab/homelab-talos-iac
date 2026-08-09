@@ -12,6 +12,7 @@
   "argocd": {
     "fileMatch": ["\\.ya?ml$"]
   },
+  "assignees": ["L128"],
   "labels": ["dependencies", "renovate"],
   "packageRules": [
     {
