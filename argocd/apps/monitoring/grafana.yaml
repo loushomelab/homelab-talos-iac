@@ -35,7 +35,7 @@ spec:
             name: Authentik
             icon: signin
             client_id: grafana
-            client_secret: $__env{AUTHENTIK_OIDC_GRAFANA_SECRET}
+            client_secret: ${AUTHENTIK_OIDC_GRAFANA_SECRET}
             scopes: openid email profile grafana_groups
             auth_url: https://authentik.646499453.xyz:8443/application/o/authorize/
             token_url: https://authentik.646499453.xyz:8443/application/o/token/
