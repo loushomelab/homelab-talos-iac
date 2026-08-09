@@ -70,7 +70,7 @@ spec:
             gethomepage.dev/description: "Alert Management"
             gethomepage.dev/group: "Dashboards"
             gethomepage.dev/icon: "sh-prometheus.svg"
-            gethomepage.dev/href: "https://alertmanager.646499453.xyz"
+            gethomepage.dev/href: "https://alertmanager.646499453.xyz:8443"
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=alertmanager"
             gethomepage.dev/widget.type: "prometheus"
             gethomepage.dev/widget.url: "http://alertmanager.monitoring.svc.cluster.local:9093"
