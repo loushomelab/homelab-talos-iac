@@ -92,6 +92,12 @@ spec:
               url: http://pyroscope.monitoring.svc:4040
               jsonData:
                 minStep: 15s
+            - name: Alertmanager
+              type: alertmanager
+              access: proxy
+              url: http://alertmanager.monitoring.svc.cluster.local:9093
+              jsonData:
+                implementation: prometheus
         ingress:
           enabled: true
           ingressClassName: traefik
