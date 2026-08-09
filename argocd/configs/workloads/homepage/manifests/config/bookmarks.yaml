@@ -22,9 +22,12 @@
     - HCP Terraform WebUI:
         - icon: sh-hashicorp-terraform.svg
           href: https://app.terraform.io/app/loushomelab/workspaces
-    - Logos for Homepage:
+    - Logo source for Homepage:
         - icon: sh-selfh-st.svg
           href: https://selfh.st/icons/
+    - Renovate ArgoCD Repo:
+        - icon: sh-renovate-bot.webp
+          href: https://developer.mend.io/github/loushomelab/homelab-talos-iac
 - My Websites:
     - HumbleHouse Official Website:
         - icon: https://humblehouse.com.cn/favicon.ico
