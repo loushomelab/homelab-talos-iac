@@ -50,7 +50,7 @@
     - 1920x:
         icon: sh-proxmox.svg
         href: https://1920x.pve.646499453.xyz:8443
-        siteMonitor: https://192.168.50.105
+        siteMonitor: https://192.168.50.105:8006
         showStats: true
         proxmoxNode: 1920x
         widget:
@@ -62,7 +62,7 @@
     - 3960x:
         icon: sh-proxmox.svg
         href: https://3960x.pve.646499453.xyz:8443
-        siteMonitor: https://192.168.50.104
+        siteMonitor: https://192.168.50.104:8006
         showStats: true
         proxmoxNode: 3960x
         widget:
@@ -74,7 +74,7 @@
     - n100x8:
         icon: sh-proxmox.svg
         href: https://n100x8.pve.646499453.xyz:8443
-        siteMonitor: https://192.168.50.102
+        siteMonitor: https://192.168.50.102:8006
         showStats: true
         proxmoxNode: n100x8
         widget:
@@ -86,7 +86,7 @@
     - r720:
         icon: sh-proxmox.svg
         href: https://r720.pve.646499453.xyz:8443
-        siteMonitor: https://192.168.50.101
+        siteMonitor: https://192.168.50.101:8006
         showStats: true
         proxmoxNode: r720
         widget:
@@ -114,7 +114,7 @@
         description: Home Assistant
         href: https://langshi.hass.646499453.xyz:8443
         icon: sh-home-assistant.svg
-        siteMonitor: 192.168.50.120
+        siteMonitor: http://192.168.50.120:8123
         showStats: true
         proxmoxNode: 3960x
         proxmoxVMID: 104
@@ -128,7 +128,7 @@
     - PostgreSQL Authentik:
         description: LXC database dedicated to Authentik
         icon: sh-postgresql.svg
-        siteMonitor: https://192.168.50.151
+        ping: 192.168.50.151
         showStats: true
         proxmoxNode: r720
         proxmoxVMID: 101
@@ -136,7 +136,7 @@
     - Redis Authentik:
         description: LXC database dedicated to Authentik
         icon: sh-redis.svg
-        siteMonitor: https://192.168.50.152
+        ping: 192.168.50.152
         showStats: true
         proxmoxNode: r720
         proxmoxVMID: 102
@@ -144,7 +144,7 @@
     - PostgreSQL Observibility:
         description: LXC database dedicated to Monitoring Applications
         icon: sh-postgresql.svg
-        siteMonitor: https://192.168.50.153
+        ping: 192.168.50.153
         showStats: true
         proxmoxNode: r720
         proxmoxVMID: 103
@@ -153,4 +153,4 @@
         description: S3 Object Storage on TrueNAS
         icon: sh-minio.svg
         href: https://minio.truenas.646499453.xyz:8443
-        siteMonitor: https://192.168.50.76
+        siteMonitor: https://192.168.50.76:443
