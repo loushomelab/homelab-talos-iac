@@ -25,6 +25,23 @@ spec:
         envFromSecret: monitoring-secrets
         adminUser: admin
         grafana.ini:
+          server:
+            root_url: https://grafana.646499453.xyz:8443/
+          auth:
+            disable_login_form: true
+            oauth_auto_login: false
+          auth.generic_oauth:
+            enabled: true
+            name: Authentik
+            icon: signin
+            client_id: grafana
+            client_secret: $__env{AUTHENTIK_OIDC_GRAFANA_SECRET}
+            scopes: openid email profile grafana_groups
+            auth_url: https://authentik.646499453.xyz:8443/application/o/authorize/
+            token_url: https://authentik.646499453.xyz:8443/application/o/token/
+            api_url: https://authentik.646499453.xyz:8443/application/o/userinfo/
+            role_attribute_path: contains(groups[*], 'authentik Admins') && 'Admin' || contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
+            allow_assign_grafana_admin: true
           database:
             type: postgres
             host: $__env{DB_OBS_POSTGRESQL__HOST}:5432
