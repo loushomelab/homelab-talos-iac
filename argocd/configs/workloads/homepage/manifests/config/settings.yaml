@@ -25,6 +25,8 @@ layout:
     style: row
     columns: 4
   Kubernetes:
+    style: row
+    columns: 2
     Identity:
     CI/CD:
     Dashboards:
