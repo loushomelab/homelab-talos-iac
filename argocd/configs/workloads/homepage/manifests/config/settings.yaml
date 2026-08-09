@@ -14,11 +14,21 @@ quicklaunch:
   hideVisitURL: false
   provider: google
 layout:
-  Hardware:
+  Hosts:
     style: row
     columns: 2
     PVE-Cluster:
     NAS:
+    Network:
+    IOT:
   PVE-Nodes:
+    style: row
+    columns: 4
+  Kubernetes:
+    Identity:
+    CI/CD:
+    Dashboards:
+    Monitoring:
+  Database:
     style: row
     columns: 4

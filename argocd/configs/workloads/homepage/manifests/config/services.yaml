@@ -1,4 +1,4 @@
-- Hardware:
+- Hosts:
     - PVE-Cluster:
         - PVE-Homelab:
             icon: sh-proxmox.svg
@@ -50,6 +50,7 @@
     - 1920x:
         icon: sh-proxmox.svg
         href: https://1920x.pve.646499453.xyz:8443
+        siteMonitor: https://192.168.50.105
         showStats: true
         proxmoxNode: 1920x
         widget:
@@ -61,6 +62,7 @@
     - 3960x:
         icon: sh-proxmox.svg
         href: https://3960x.pve.646499453.xyz:8443
+        siteMonitor: https://192.168.50.104
         showStats: true
         proxmoxNode: 3960x
         widget:
@@ -72,6 +74,7 @@
     - n100x8:
         icon: sh-proxmox.svg
         href: https://n100x8.pve.646499453.xyz:8443
+        siteMonitor: https://192.168.50.102
         showStats: true
         proxmoxNode: n100x8
         widget:
@@ -83,6 +86,7 @@
     - r720:
         icon: sh-proxmox.svg
         href: https://r720.pve.646499453.xyz:8443
+        siteMonitor: https://192.168.50.101
         showStats: true
         proxmoxNode: r720
         widget:
@@ -99,6 +103,7 @@
         description: Network Controller
         href: https://unifi.646499453.xyz:8443
         icon: sh-ubiquiti-unifi.svg
+        siteMonitor: http://192.168.50.1
         widget:
             type: unifi
             url: https://192.168.50.1
@@ -109,13 +114,43 @@
         description: Home Assistant
         href: https://langshi.hass.646499453.xyz:8443
         icon: sh-home-assistant.svg
+        siteMonitor: 192.168.50.120
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 104
+        proxmoxType: qemu
         widget:
             type: homeassistant
             url: http://192.168.50.120:8123
             key: {{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}
 
 - Database:
+    - PostgreSQL Authentik:
+        description: LXC database dedicated to Authentik
+        icon: sh-postgresql.svg
+        siteMonitor: https://192.168.50.151
+        showStats: true
+        proxmoxNode: r720
+        proxmoxVMID: 101
+        proxmoxType: lxc
+    - Redis Authentik:
+        description: LXC database dedicated to Authentik
+        icon: sh-redis.svg
+        siteMonitor: https://192.168.50.152
+        showStats: true
+        proxmoxNode: r720
+        proxmoxVMID: 102
+        proxmoxType: lxc
+    - PostgreSQL Observibility:
+        description: LXC database dedicated to Monitoring Applications
+        icon: sh-postgresql.svg
+        siteMonitor: https://192.168.50.153
+        showStats: true
+        proxmoxNode: r720
+        proxmoxVMID: 103
+        proxmoxType: lxc
     - TrueNAS MinIO:
         description: S3 Object Storage on TrueNAS
         icon: sh-minio.svg
         href: https://minio.truenas.646499453.xyz:8443
+        siteMonitor: https://192.168.50.76
