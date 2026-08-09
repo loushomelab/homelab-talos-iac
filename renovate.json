@@ -10,7 +10,9 @@
     "every weekend"
   ],
   "argocd": {
-    "fileMatch": ["\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/\\.ya?ml$/"
+    ]
   },
   "labels": ["dependencies", "renovate"],
   "packageRules": [
