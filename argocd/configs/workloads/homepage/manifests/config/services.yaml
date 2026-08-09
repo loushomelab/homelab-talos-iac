@@ -121,7 +121,7 @@
         proxmoxType: qemu
         widget:
             type: homeassistant
-            url: http://192.168.50.120:8123
+            url: http://192.168.50.120:80
             key: {{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}
 
 - Database:

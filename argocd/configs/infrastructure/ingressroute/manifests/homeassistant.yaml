@@ -6,8 +6,8 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 8123
-      targetPort: 8123
+      port: 80
+      targetPort: 80
       protocol: TCP
 ---
 apiVersion: v1
@@ -20,7 +20,7 @@ subsets:
       - ip: 192.168.50.120
     ports:
       - name: http
-        port: 8123
+        port: 80
         protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
@@ -36,7 +36,7 @@ spec:
     match: Host(`langshi.hass.646499453.xyz`)
     services:
     - name: homeassistant-langshi-external
-      port: 8123
+      port: 80
       scheme: http
   tls:
     secretName: wildcards-646499453-xyz-tls
