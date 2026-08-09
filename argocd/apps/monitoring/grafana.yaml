@@ -24,23 +24,24 @@ spec:
       valuesObject:
         envFromSecret: monitoring-secrets
         adminUser: admin
-        env:
-          GF_SERVER_ROOT_URL: https://grafana.646499453.xyz:8443/
-          GF_AUTH_DISABLE_LOGIN_FORM: "true"
-          GF_AUTH_OAUTH_AUTO_LOGIN: "false"
-          GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
-          GF_AUTH_GENERIC_OAUTH_NAME: "Authentik"
-          GF_AUTH_GENERIC_OAUTH_ICON: "signin"
-          GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "grafana"
-          # Use raw environment variable reference that external-secrets will populate
-          GF_AUTH_GENERIC_OAUTH_SCOPES: "openid email profile grafana_groups"
-          GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.646499453.xyz:8443/application/o/authorize/"
-          GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.646499453.xyz:8443/application/o/token/"
-          GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.646499453.xyz:8443/application/o/userinfo/"
-          GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'authentik Admins') && 'Admin' || contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
-          GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN: "true"
         grafana.ini:
-
+          server:
+            root_url: https://grafana.646499453.xyz:8443/
+          auth:
+            disable_login_form: true
+            oauth_auto_login: false
+          auth.generic_oauth:
+            enabled: true
+            name: Authentik
+            icon: signin
+            client_id: grafana
+            client_secret: $__env{AUTHENTIK_OIDC_GRAFANA_SECRET}
+            scopes: openid email profile grafana_groups
+            auth_url: https://authentik.646499453.xyz:8443/application/o/authorize/
+            token_url: https://authentik.646499453.xyz:8443/application/o/token/
+            api_url: https://authentik.646499453.xyz:8443/application/o/userinfo/
+            role_attribute_path: contains(groups[*], 'authentik Admins') && 'Admin' || contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
+            allow_assign_grafana_admin: true
           database:
             type: postgres
             host: $__env{DB_OBS_POSTGRESQL__HOST}:5432
