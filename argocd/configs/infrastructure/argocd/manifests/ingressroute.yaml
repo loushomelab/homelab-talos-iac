@@ -10,6 +10,7 @@ metadata:
     gethomepage.dev/group: "CI/CD"
     gethomepage.dev/icon: "sh-argo-cd.svg"
     gethomepage.dev/href: "https://argocd.646499453.xyz:8443"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=argocd-server"
     gethomepage.dev/widget.type: "argocd"
     gethomepage.dev/widget.url: "http://argocd-server.argocd.svc.cluster.local:80"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_ARGOCD_TOKEN}}"

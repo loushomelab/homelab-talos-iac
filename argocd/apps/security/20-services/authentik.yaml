@@ -46,6 +46,7 @@ spec:
               gethomepage.dev/group: "Identity"
               gethomepage.dev/icon: "authentik.png"
               gethomepage.dev/href: "https://authentik.646499453.xyz:8443"
+              gethomepage.dev/pod-selector: "app.kubernetes.io/name=authentik,app.kubernetes.io/component=server"
               gethomepage.dev/app: "authentik"
               gethomepage.dev/widget.type: "authentik"
               gethomepage.dev/widget.version: "2"
