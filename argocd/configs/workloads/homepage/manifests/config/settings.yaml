@@ -23,6 +23,8 @@ layout:
     style: row
     columns: 4
   CI/CD:
+    style: row
+    columns: 3
   Network:
   IOT:
   Identity:

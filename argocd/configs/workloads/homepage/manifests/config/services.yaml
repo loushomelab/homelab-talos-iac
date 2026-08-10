@@ -108,8 +108,16 @@
         showStats: true
         proxmoxNode: 3960x
         proxmoxVMID: 200
+        proxmoxType: lxc    
+    - Github Runne (Homelab):
+        description: LXC in PVE Cluster
+        href: https://github.com/organizations/loushomelab/settings/actions/runners/
+        icon: sh-github.svg
+        ping: 192.168.50.201
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 201
         proxmoxType: lxc
-        widget:
 - Network:
     - Unifi:
         description: Network Controller
