@@ -122,7 +122,7 @@ spec:
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=grafana"
             gethomepage.dev/widget.type: "grafana"
             gethomepage.dev/widget.version: "2"
+            gethomepage.dev/widget.alert: "alertmanager"
             gethomepage.dev/widget.url: "http://grafana.monitoring.svc.cluster.local:80"
-            gethomepage.dev/widget.showStats: "false"
             gethomepage.dev/widget.username: "{{ \"{{HOMEPAGE_VAR_GRAFANA_USERNAME}}\" }}"
             gethomepage.dev/widget.password: "{{ \"{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}\" }}"
