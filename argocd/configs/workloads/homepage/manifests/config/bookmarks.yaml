@@ -28,6 +28,9 @@
     - Renovate ArgoCD Repo:
         - icon: sh-renovate-bot.webp
           href: https://developer.mend.io/github/loushomelab/homelab-talos-iac
+    - Cloudflare Admin WebUI (Login w/ Apple)
+        - icon: sh-cloudflare.svg
+          href: https://dash.cloudflare.com/
 - My Websites:
     - HumbleHouse Official Website:
         - icon: https://humblehouse.com.cn/favicon.ico
