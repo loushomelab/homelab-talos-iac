@@ -72,7 +72,4 @@ spec:
             gethomepage.dev/icon: "sh-prometheus.svg"
             gethomepage.dev/href: "https://alertmanager.646499453.xyz:8443"
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=alertmanager"
-            gethomepage.dev/widget.type: "customapi"
-            gethomepage.dev/widget.url: "http://alertmanager.monitoring.svc.cluster.local:9093/api/v2/alerts?active=true&silenced=false&inhibited=false"
-            gethomepage.dev/widget.mappings: '[{"label": "Active Alerts", "format": "size"}]'
             traefik.ingress.kubernetes.io/router.middlewares: monitoring-lan-only-allowlist@kubernetescrd
