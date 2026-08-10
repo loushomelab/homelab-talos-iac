@@ -112,9 +112,9 @@
 - Network:
     - Unifi:
         description: Network Controller
-        href: https://unifi.646499453.xyz:8443
+        href: https://unifi.ui.com
         icon: sh-ubiquiti-unifi.svg
-        siteMonitor: http://192.168.50.1
+        siteMonitor: https://192.168.50.1
         widget:
             type: unifi
             url: https://192.168.50.1
@@ -123,16 +123,16 @@
 - IOT:
     - Langshi:
         description: Home Assistant
-        href: https://langshi.hass.646499453.xyz:8443
+        href: https://hass.646499453.xyz:8443
         icon: sh-home-assistant.svg
-        siteMonitor: http://192.168.50.120:8123
+        siteMonitor: http://192.168.50.120
         showStats: true
         proxmoxNode: 3960x
         proxmoxVMID: 104
         proxmoxType: qemu
         widget:
             type: homeassistant
-            url: http://192.168.50.120:80
+            url: http://192.168.50.120
             key: {{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}
 
 - Database:
@@ -153,7 +153,7 @@
         proxmoxVMID: 102
         proxmoxType: lxc
     - PostgreSQL Observibility:
-        description: LXC database dedicated to Monitoring Applications
+        description: LXC for Monitoring Applications
         icon: sh-postgresql.svg
         ping: 192.168.50.153
         showStats: true

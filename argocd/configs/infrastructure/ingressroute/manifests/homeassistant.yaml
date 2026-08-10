@@ -33,7 +33,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`langshi.hass.646499453.xyz`)
+    match: Host(`hass.646499453.xyz`)
     services:
     - name: homeassistant-langshi-external
       port: 80
