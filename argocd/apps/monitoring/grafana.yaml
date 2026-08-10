@@ -53,8 +53,10 @@ spec:
           server:
             root_url: https://grafana.646499453.xyz:8443/
           auth:
-            disable_login_form: true
+            disable_login_form: false
             oauth_auto_login: false
+          auth.basic:
+            enabled: true
           auth.generic_oauth:
             enabled: true
             name: Authentik
