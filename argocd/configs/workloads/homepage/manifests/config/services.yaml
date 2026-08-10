@@ -14,7 +14,7 @@
             href: https://pbs.646499453.xyz:8443
             description: PBS installed with helper script as LXC
             showStats: true
-            proxmoxNode: r720
+            proxmoxNode: 3960x
             proxmoxVMID: 103
             proxmoxType: lxc
             widget:
@@ -98,8 +98,17 @@
             password: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
             node: r720
 
-
-
+- CI/CD:
+    - Terraform Agent:
+        description: LXC in PVE Cluster
+        href: https://app.terraform.io/app/loushomelab/workspaces/homelab-pve/runs/
+        icon: sh-hashicorp-terraform.svg
+        ping: 192.168.50.200
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 200
+        proxmoxType: lxc
+        widget:
 - Network:
     - Unifi:
         description: Network Controller
@@ -132,7 +141,7 @@
         icon: sh-postgresql.svg
         ping: 192.168.50.151
         showStats: true
-        proxmoxNode: r720
+        proxmoxNode: 3960x
         proxmoxVMID: 101
         proxmoxType: lxc
     - Redis Authentik:
@@ -140,7 +149,7 @@
         icon: sh-redis.svg
         ping: 192.168.50.152
         showStats: true
-        proxmoxNode: r720
+        proxmoxNode: 3960x
         proxmoxVMID: 102
         proxmoxType: lxc
     - PostgreSQL Observibility:
@@ -148,7 +157,7 @@
         icon: sh-postgresql.svg
         ping: 192.168.50.153
         showStats: true
-        proxmoxNode: r720
+        proxmoxNode: 3960x
         proxmoxVMID: 103
         proxmoxType: lxc
     - TrueNAS MinIO:

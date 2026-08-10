@@ -19,18 +19,15 @@ layout:
     columns: 2
     PVE-Cluster:
     NAS:
-    Network:
-    IOT:
   PVE-Nodes:
     style: row
     columns: 4
-  Kubernetes:
-    style: row
-    columns: 2
-    Identity:
-    CI/CD:
-    Dashboards:
-    Monitoring:
+  CI/CD:
+  Network:
+  IOT:
+  Identity:
+  Dashboards:
+  Monitoring:
   Database:
     style: row
     columns: 4
