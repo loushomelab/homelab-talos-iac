@@ -100,6 +100,15 @@
             node: r720
 
 - CI/CD:
+    - Semaphore:
+        description: LXC in PVE Cluster
+        href: http://192.168.50.126:3000
+        icon: sh-semaphore.svg
+        siteMonitor: http://192.168.50.126:3000
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 126
+        proxmoxType: lxc
     - Terraform Agent:
         description: LXC in PVE Cluster
         href: https://app.terraform.io/app/loushomelab/workspaces/homelab-pve/runs/
@@ -109,7 +118,7 @@
         proxmoxNode: 3960x
         proxmoxVMID: 200
         proxmoxType: lxc    
-    - Github Runne (Homelab):
+    - Github Runner (Homelab):
         description: LXC in PVE Cluster
         href: https://github.com/organizations/loushomelab/settings/actions/runners/
         icon: sh-github.svg
@@ -128,6 +137,15 @@
             type: unifi
             url: https://192.168.50.1
             key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
+    - Zot Registry:
+        description: LXC in PVE Cluster
+        href: http://192.168.50.125:8080
+        icon: sh-zot-registry.svg
+        siteMonitor: http://192.168.50.125:8080
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 125
+        proxmoxType: lxc
 
 - IOT:
     - Langshi:
