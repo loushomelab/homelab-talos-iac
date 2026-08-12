@@ -16,7 +16,7 @@
             description: PBS installed with helper script as LXC
             showStats: true
             proxmoxNode: 3960x
-            proxmoxVMID: 103
+            proxmoxVMID: 154
             proxmoxType: lxc
             widget:
                 type: proxmoxbackupserver
@@ -143,7 +143,7 @@
         icon: sh-zot-registry.svg
         siteMonitor: http://192.168.50.125:8080
         showStats: true
-        proxmoxNode: 3960x
+        proxmoxNode: 1920x
         proxmoxVMID: 125
         proxmoxType: lxc
 
@@ -174,18 +174,18 @@
     - Redis Authentik:
         description: LXC database dedicated to Authentik
         icon: sh-redis.svg
-        ping: 192.168.50.152
-        showStats: true
-        proxmoxNode: 3960x
-        proxmoxVMID: 152
-        proxmoxType: lxc
-    - PostgreSQL Observibility:
-        description: LXC for Monitoring Applications
-        icon: sh-postgresql.svg
         ping: 192.168.50.153
         showStats: true
         proxmoxNode: 3960x
         proxmoxVMID: 153
+        proxmoxType: lxc
+    - PostgreSQL Observibility:
+        description: LXC for Monitoring Applications
+        icon: sh-postgresql.svg
+        ping: 192.168.50.152
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 152
         proxmoxType: lxc
     - TrueNAS MinIO:
         description: S3 Object Storage on TrueNAS
