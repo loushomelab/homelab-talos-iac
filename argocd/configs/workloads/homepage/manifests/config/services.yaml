@@ -42,7 +42,7 @@
             showStats: true
             icon: sh-truenas-scale.svg
             proxmoxNode: n100x8
-            proxmoxVMID: 1300
+            proxmoxVMID: 176
             proxmoxType: qemu
             widget:
                 type: truenas
@@ -155,7 +155,7 @@
         siteMonitor: http://192.168.50.120
         showStats: true
         proxmoxNode: 3960x
-        proxmoxVMID: 104
+        proxmoxVMID: 120
         proxmoxType: qemu
         widget:
             type: homeassistant
@@ -169,7 +169,7 @@
         ping: 192.168.50.151
         showStats: true
         proxmoxNode: 3960x
-        proxmoxVMID: 101
+        proxmoxVMID: 151
         proxmoxType: lxc
     - Redis Authentik:
         description: LXC database dedicated to Authentik
@@ -177,7 +177,7 @@
         ping: 192.168.50.152
         showStats: true
         proxmoxNode: 3960x
-        proxmoxVMID: 102
+        proxmoxVMID: 152
         proxmoxType: lxc
     - PostgreSQL Observibility:
         description: LXC for Monitoring Applications
@@ -185,10 +185,14 @@
         ping: 192.168.50.153
         showStats: true
         proxmoxNode: 3960x
-        proxmoxVMID: 103
+        proxmoxVMID: 153
         proxmoxType: lxc
     - TrueNAS MinIO:
         description: S3 Object Storage on TrueNAS
         icon: sh-minio.svg
         href: https://minio.truenas.646499453.xyz:8443
-        siteMonitor: https://192.168.50.76:443
+        siteMonitor: https://192.168.50.76
+        showStats: true
+        proxmoxNode: n100x8
+        proxmoxVMID: 176
+        proxmoxType: qemu
