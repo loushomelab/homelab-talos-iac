@@ -1,0 +1,68 @@
+crds:
+  install: true
+  keep: true
+
+configs:
+  cm:
+    url: https://argocd.646499453.xyz:8443
+    accounts.homepage: apiKey
+    admin.enabled: "false"
+    dex.config: |
+      connectors:
+      - config:
+          issuer: https://authentik.646499453.xyz:8443/application/o/argocd/
+          clientID: argocd
+          clientSecret: $oidc.authentik.clientSecret
+          insecureEnableGroups: true
+          scopes:
+            - openid
+            - profile
+            - email
+            - groups
+        name: authentik
+        type: oidc
+        id: authentik
+  params:
+    server.insecure: "true"
+  rbac:
+    policy.csv: |
+      g, authentik Admins, role:admin
+      g, homepage, role:readonly
+    scopes: '[groups]'
+
+dex:
+  enabled: true
+
+redis:
+  enabled: true
+
+# Embed existing Traefik IngressRoute using Helm extraObjects
+extraObjects:
+  - apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: argocd-server
+      namespace: argocd
+      annotations:
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/name: "ArgoCD"
+        gethomepage.dev/description: "GitOps Continuous Delivery"
+        gethomepage.dev/group: "CI/CD"
+        gethomepage.dev/icon: "sh-argo-cd.svg"
+        gethomepage.dev/href: "https://argocd.646499453.xyz:8443"
+        gethomepage.dev/pod-selector: "app.kubernetes.io/name=argocd-server"
+        gethomepage.dev/widget.type: "argocd"
+        gethomepage.dev/widget.url: "http://argocd-server.argocd.svc.cluster.local:80"
+        gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_ARGOCD_TOKEN}}"
+        gethomepage.dev/widget.fields: "[\"apps\", \"synced\", \"outOfSync\", \"healthy\"]"
+    spec:
+      entryPoints:
+        - websecure
+      routes:
+        - match: Host(`argocd.646499453.xyz`)
+          kind: Rule
+          services:
+            - name: argocd-server
+              port: 80
+      tls:
+        secretName: wildcards-646499453-xyz-tls

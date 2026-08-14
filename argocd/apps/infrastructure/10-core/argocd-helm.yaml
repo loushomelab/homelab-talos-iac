@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-self-managed
+  namespace: argocd
+spec:
+  project: infra
+  sources:
+    - repoURL: 'https://argoproj.github.io/argo-helm'
+      chart: argo-cd
+      targetRevision: 7.3.11 # Recommended to pin version
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/argocd/bootstrap/values.yaml
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

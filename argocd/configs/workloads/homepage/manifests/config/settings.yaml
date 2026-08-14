@@ -1,10 +1,10 @@
 title: Lous Homelab Dashboard
 background:
   image: https://images.unsplash.com/photo-1780467763551-f182a0d55c9f?q=80&w=2940&auto=format&fit=crop
-  blur: sm
+  blur: none
   saturate: '50'
-  brightness: '50'
-  opacity: '75'
+  brightness: '20'
+  opacity: '100'
 favicon: https://humblehouse.com.cn/favicon.ico
 headerStyle: boxedWidgets
 quicklaunch:

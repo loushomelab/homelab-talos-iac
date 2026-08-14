@@ -54,7 +54,7 @@ data:
         attrs:
           name: ArgoCD
           provider: !KeyOf argocd-provider
-          icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/argocd.png
+          icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/argo-cd.png
           meta_launch_url: https://argocd.646499453.xyz:8443/
 
       # --- Homepage (Forward Auth) ---
@@ -75,7 +75,7 @@ data:
         attrs:
           name: Homepage
           provider: !KeyOf homepage-provider
-          icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/homepage.png
+          icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/homepage.png
           meta_launch_url: https://homepage.646499453.xyz:8443/
 
       # --- Traefik Dashboard (Forward Auth) ---
@@ -96,7 +96,7 @@ data:
         attrs:
           name: Traefik Dashboard
           provider: !KeyOf traefik-provider
-          icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/traefik.png
+          icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/traefik.png
           meta_launch_url: https://traefik.646499453.xyz:8443/
 
 
@@ -141,7 +141,7 @@ data:
         attrs:
           name: Grafana
           provider: !KeyOf grafana-provider
-          icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/grafana.png
+          icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/grafana.png
           meta_launch_url: https://grafana.646499453.xyz:8443/
 
       # --- Embedded Outpost Update ---

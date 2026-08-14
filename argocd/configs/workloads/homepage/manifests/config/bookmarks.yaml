@@ -18,7 +18,7 @@
 - Resources:
     - Doppler k8s Admin WebUI:
         - icon: sh-doppler.svg
-          href: https://dashboard.doppler.com/workplace/006da931809ad4a28e6d/projects/k8s/configs/prd
+          href: https://dashboard.doppler.com/workplace/006da931809ad4a28e6d/
     - HCP Terraform WebUI:
         - icon: sh-hashicorp-terraform.svg
           href: https://app.terraform.io/app/loushomelab/workspaces
