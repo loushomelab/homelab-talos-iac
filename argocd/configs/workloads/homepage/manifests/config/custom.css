@@ -1,0 +1,23 @@
+/* 为 Homepage 所有卡片与组件加深半透明背景，确保背景图片清晰的同时文字高对比度可读 */
+.service-card,
+.widget,
+.header-widget,
+div[class*="bg-slate-"],
+div[class*="bg-gray-"],
+div[class*="backdrop-blur"] {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 增强文字阴影，防止文字与亮色背景重叠时看不清 */
+body, h1, h2, h3, h4, span, p, a {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* 提升次要灰字（如 CPU / MEM / VMS / LXC 标签）的显示亮度 */
+.text-slate-400,
+.text-gray-400,
+.text-neutral-400 {
+  color: #cbd5e1 !important;
+}
