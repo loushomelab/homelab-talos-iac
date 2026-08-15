@@ -25,7 +25,8 @@ spec:
         strategy:
           type: Recreate
         persistence:
-          enabled: false
+          enabled: true
+          existingClaim: pulse-pvc
         server:
           env:
             - name: TZ
@@ -37,7 +38,7 @@ spec:
             - name: PULSE_PUBLIC_URL
               value: https://pulse.646499453.xyz:8443
             - name: PULSE_AGENT_CONNECT_URL
-              value: https://pulse-agent.646499453.xyz:8443
+              value: https://pulse-ingest.646499453.xyz:8443
         ingress:
           enabled: true
           className: traefik

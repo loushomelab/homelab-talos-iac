@@ -20,5 +20,9 @@ configMapGenerator:
       - config/custom.css
       - config/custom.js
 
+# 必须禁用 ConfigMap 名称随机 Hash 后缀。
+# 原因：deployment.yaml 中 Volume 明确指定挂载固定名称 `configMap.name: homepage-config`。
+# 如果启用 Hash 后缀，生成的 ConfigMap 会带随机后缀（如 homepage-config-46cgbt6hdb），
+# 导致 Pod 挂载 Volume 时抛出 `configmap "homepage-config" not found` 错误。
 generatorOptions:
   disableNameSuffixHash: true
