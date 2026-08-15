@@ -13,7 +13,6 @@ configs:
           issuer: https://authentik.646499453.xyz:8443/application/o/argocd/
           clientID: argocd
           clientSecret: $oidc.authentik.clientSecret
-          insecureSkipVerify: true
           insecureEnableGroups: true
           scopes:
             - openid
