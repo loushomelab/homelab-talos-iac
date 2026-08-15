@@ -43,6 +43,14 @@ spec:
                   fieldPath: status.podIP
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: "$(MY_POD_IP):3000,homepage.646499453.xyz:8443"
+            - name: HOMEPAGE_AUTH_ENABLED
+              value: "true"
+            - name: HOMEPAGE_EXTERNAL_URL
+              value: "https://homepage.646499453.xyz:8443"
+            - name: HOMEPAGE_OIDC_ISSUER
+              value: "https://authentik.646499453.xyz:8443/application/o/homepage/"
+            - name: HOMEPAGE_OIDC_CLIENT_ID
+              value: "homepage"
           envFrom:
             - secretRef:
                 name: homepage-secrets

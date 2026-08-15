@@ -1,14 +1,45 @@
+/* 0. 调暗背景壁纸（针对 Homepage 背景图片元素与全屏遮罩） */
+#background,
+div[class*="background"],
+img[alt="background"],
+img[alt="Background"] {
+  filter: brightness(0.4) !important;
+  opacity: 0.6 !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* 1. 确保全局背景与主页面容器保持透明，不遮挡壁纸 */
-body, #__next, main, #main-content, #app {
+body, #__next, main, #main-content, #app, header, #header, #information-widgets {
   background-color: transparent !important;
 }
 
-/* 2. 仅针对具体的【服务卡片】和【小工具卡片】设置深色半透明背景护罩 */
+/* 2. 针对【服务卡片】与顶部【Header/搜索框/Widget卡片】统一设置深色半透明背景护罩 */
 .service-card,
 .widget,
 .header-widget,
+#header > div,
+header > div > div,
+#information-widgets > div,
+#search,
+#search form,
 [class*="service-card"],
-[class*="widget_"] {
+[class*="widget_"],
+[class*="HeaderWidget"],
+[class*="InformationWidget"],
+[class*="search_"],
+[class*="Search_"],
+[class*="quicklaunch"] {
   background-color: rgba(15, 23, 42, 0.75) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
@@ -16,9 +47,19 @@ body, #__next, main, #main-content, #app {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 3. 强化所有文字阴影与高对比度 */
-body, h1, h2, h3, h4, h5, h6, span, p, a {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+/* 确保搜索输入框干净融合 */
+#search input,
+form input {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 3. 去除文字阴影 (text-shadow)，解决 Widget 文字过粗和重影模糊问题 */
+*, body, h1, h2, h3, h4, h5, h6, span, p, a, input, div {
+  text-shadow: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 4. 提高次要文字（如 CPU / MEM / VMS / LXC 标签）的明度 */
