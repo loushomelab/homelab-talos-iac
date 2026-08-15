@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pulse
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  sources:
+  - repoURL: 'https://rcourtman.github.io/Pulse'
+    chart: pulse
+    targetRevision: 6.2.1
+    helm:
+      valuesObject:
+        strategy:
+          type: Recreate
+        persistence:
+          enabled: false
+        server:
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: FRONTEND_PORT
+              value: "7655"
+            - name: PULSE_AGENT_INGEST_PORT
+              value: "7656"
+            - name: PULSE_PUBLIC_URL
+              value: https://pulse.646499453.xyz:8443
+            - name: PULSE_AGENT_CONNECT_URL
+              value: https://pulse-agent.646499453.xyz:8443
+        ingress:
+          enabled: true
+          className: traefik
+          hosts:
+          - host: pulse.646499453.xyz
+            paths:
+            - path: /
+              pathType: Prefix
+          tls:
+          - secretName: wildcards-646499453-xyz-tls
+            hosts:
+            - pulse.646499453.xyz
+          annotations:
+            traefik.ingress.kubernetes.io/router.middlewares: monitoring-lan-only-allowlist@kubernetescrd
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: "Pulse"
+            gethomepage.dev/description: "Infrastructure Monitoring Workspace"
+            gethomepage.dev/group: "Dashboards"
+            gethomepage.dev/icon: "sh-proxmox.svg"
+            gethomepage.dev/href: "https://pulse.646499453.xyz:8443"
+            gethomepage.dev/pod-selector: "app.kubernetes.io/name=pulse"

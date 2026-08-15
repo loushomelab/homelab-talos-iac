@@ -19,3 +19,6 @@ configMapGenerator:
       - config/proxmox.yaml
       - config/custom.css
       - config/custom.js
+
+generatorOptions:
+  disableNameSuffixHash: true
