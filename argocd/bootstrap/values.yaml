@@ -44,7 +44,7 @@ server:
     enabled: true
     ingressClassName: "traefik"
     hostname: argocd.646499453.xyz
-    tls: true
+    tls: false
     # Provide the exact secret name that holds your wildcard certificate
     extraTls:
       - hosts:

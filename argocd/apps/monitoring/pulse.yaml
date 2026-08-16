@@ -62,6 +62,12 @@ spec:
                 secretKeyRef:
                   name: monitoring-secrets
                   key: AUTHENTIK_OIDC_PULSE_SECRET
+            - name: OIDC_SCOPES
+              value: "openid profile email groups"
+            - name: OIDC_GROUPS_CLAIM
+              value: "groups"
+            - name: OIDC_GROUP_ROLE_MAPPINGS
+              value: "authentik Admins=admin,authentik-admins=admin,Admins=admin"
         ingress:
           enabled: true
           className: traefik
