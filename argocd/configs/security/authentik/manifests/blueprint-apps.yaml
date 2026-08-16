@@ -110,6 +110,27 @@ data:
           icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/traefik.png
           meta_launch_url: https://traefik.646499453.xyz:8443/
 
+      # --- Longhorn UI (Forward Auth) ---
+      - identifiers:
+          name: Longhorn UI
+        model: authentik_providers_proxy.proxyprovider
+        id: longhorn-provider
+        attrs:
+          name: Longhorn UI
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          internal_host: ""
+          external_host: https://longhorn.646499453.xyz:8443
+          mode: forward_single
+      - identifiers:
+          slug: longhorn-ui
+        model: authentik_core.application
+        attrs:
+          name: Longhorn UI
+          provider: !KeyOf longhorn-provider
+          icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
+          meta_launch_url: https://longhorn.646499453.xyz:8443/
+
 
       # --- Grafana ---
       - identifiers:
@@ -163,3 +184,4 @@ data:
         attrs:
           providers:
             - !KeyOf traefik-provider
+            - !KeyOf longhorn-provider
