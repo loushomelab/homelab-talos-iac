@@ -101,3 +101,6 @@ spec:
             gethomepage.dev/icon: "sh-pulse.svg"
             gethomepage.dev/href: "https://pulse.646499453.xyz:8443"
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=pulse"
+            gethomepage.dev/widget.type: "pulse"
+            gethomepage.dev/widget.url: "http://pulse.monitoring.svc.cluster.local:7655"
+            gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PULSE_API_KEY}}"
