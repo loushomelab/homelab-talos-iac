@@ -40,6 +40,8 @@ spec:
               gethomepage.dev/icon: "sh-rancher-longhorn.svg"
               gethomepage.dev/href: "https://longhorn.646499453.xyz:8443"
               gethomepage.dev/pod-selector: "app=longhorn-ui"
+              gethomepage.dev/widget.type: "longhorn"
+              gethomepage.dev/widget.url: "http://longhorn-frontend.longhorn-system.svc.cluster.local:80"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: longhorn-system
