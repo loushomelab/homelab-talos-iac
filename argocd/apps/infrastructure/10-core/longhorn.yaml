@@ -37,7 +37,7 @@ spec:
               gethomepage.dev/name: "Longhorn"
               gethomepage.dev/description: "Distributed Block Storage"
               gethomepage.dev/group: "Storage"
-              gethomepage.dev/icon: "sh-longhorn.svg"
+              gethomepage.dev/icon: "sh-rancher-longhorn.svg"
               gethomepage.dev/href: "https://longhorn.646499453.xyz:8443"
               gethomepage.dev/pod-selector: "app=longhorn-ui"
   destination:

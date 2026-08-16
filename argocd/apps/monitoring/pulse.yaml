@@ -68,6 +68,18 @@ spec:
               value: "groups"
             - name: OIDC_GROUP_ROLE_MAPPINGS
               value: "authentik Admins=admin,authentik-admins=admin,Admins=admin"
+            - name: PULSE_INIT_CONFIG_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: PULSE_INIT_CONFIG_DATA
+                  optional: true
+            - name: PULSE_INIT_CONFIG_PASSPHRASE
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: PULSE_INIT_CONFIG_PASSPHRASE
+                  optional: true
         ingress:
           enabled: true
           className: traefik
