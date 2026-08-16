@@ -31,6 +31,9 @@ spec:
           hostPID: true
 
         alloy:
+          extraEnv:
+          - name: TZ
+            value: Asia/Shanghai
           envFrom:
           - secretRef:
               name: monitoring-secrets

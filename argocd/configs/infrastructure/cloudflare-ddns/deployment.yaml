@@ -19,6 +19,8 @@ spec:
         - name: cloudflare-ddns
           image: oznu/cloudflare-ddns:latest
           env:
+            - name: TZ
+              value: "Asia/Shanghai"
             - name: ZONE
               value: "646499453.xyz"
             - name: SUBDOMAIN

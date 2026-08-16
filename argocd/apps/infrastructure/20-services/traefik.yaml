@@ -15,6 +15,9 @@ spec:
     targetRevision: 41.2.0
     helm:
       valuesObject:
+        env:
+          - name: TZ
+            value: Asia/Shanghai
         deployment:
   # -- Enable deployment
           enabled: true

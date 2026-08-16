@@ -13,6 +13,9 @@ spec:
       targetRevision: 3.13.1
       helm:
         valuesObject:
+          extraEnv:
+            - name: TZ
+              value: Asia/Shanghai
           # 针对 Talos 的关键修复：忽略 Kubelet 自签名证书校验并指定正确的节点端口
           defaultArgs:
             - --cert-dir=/tmp

@@ -12,6 +12,11 @@ spec:
     repoURL: 'https://emberstack.github.io/helm-charts'
     targetRevision: 10.0.63
     chart: reflector
+    helm:
+      valuesObject:
+        extraEnv:
+          - name: TZ
+            value: Asia/Shanghai
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: kube-system

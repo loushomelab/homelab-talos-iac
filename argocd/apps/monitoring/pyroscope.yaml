@@ -23,6 +23,9 @@ spec:
     helm:
       valuesObject:
         pyroscope:
+          extraEnv:
+          - name: TZ
+            value: Asia/Shanghai
           extraEnvFrom:
           - secretRef:
               name: monitoring-secrets

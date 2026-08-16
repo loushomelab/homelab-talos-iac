@@ -23,6 +23,8 @@ spec:
     helm:
       valuesObject:
         envFromSecret: monitoring-secrets
+        env:
+          TZ: Asia/Shanghai
         adminUser: admin
 
         extraObjects:
@@ -50,6 +52,8 @@ spec:
             secretName: grafana-oauth-secret
             readOnly: true
         grafana.ini:
+          date_formats:
+            default_timezone: Asia/Shanghai
           server:
             root_url: https://grafana.646499453.xyz:8443/
           auth:

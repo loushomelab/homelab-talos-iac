@@ -17,6 +17,18 @@ spec:
         valuesObject:
           preUpgradeChecker:
             jobEnabled: false
+          longhornManager:
+            env:
+              - name: TZ
+                value: Asia/Shanghai
+          longhornDriver:
+            env:
+              - name: TZ
+                value: Asia/Shanghai
+          longhornUI:
+            env:
+              - name: TZ
+                value: Asia/Shanghai
           defaultSettings:
             defaultDataPath: /var/lib/longhorn
             replicaSoftAntiAffinity: true

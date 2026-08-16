@@ -1,3 +1,8 @@
+global:
+  env:
+    - name: TZ
+      value: Asia/Shanghai
+
 crds:
   install: true
   keep: true

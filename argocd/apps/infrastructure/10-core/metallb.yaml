@@ -17,12 +17,18 @@ spec:
 # MetalLB Controller & Speaker values
 # 大部分保持默认即可，MetalLB 的核心配置通过后续应用 CRD 来完成
         controller:
+          extraEnv:
+          - name: TZ
+            value: Asia/Shanghai
           tolerations:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
             effect: NoSchedule
 
         speaker:
+          extraEnv:
+          - name: TZ
+            value: Asia/Shanghai
           tolerations:
           - key: node-role.kubernetes.io/control-plane
             operator: Exists
