@@ -13,6 +13,9 @@ quicklaunch:
   showSearchSuggestions: true
   hideVisitURL: false
   provider: google
+providers:
+  longhorn:
+    url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
 layout:
   Hosts:
     style: row
@@ -33,3 +36,6 @@ layout:
   Database:
     style: row
     columns: 4
+  Storage:
+    style: row
+    columns: 2
