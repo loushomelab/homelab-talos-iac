@@ -6,7 +6,7 @@ metadata:
 spec:
   project: infra
   sources:
-    - repoURL: 'https://argoproj.github.io/argo-helm'
+    - repoURL: 'ghcr.io/argoproj/argo-helm'
       chart: argo-cd
       targetRevision: 10.3.3 # Recommended to pin version
       helm:

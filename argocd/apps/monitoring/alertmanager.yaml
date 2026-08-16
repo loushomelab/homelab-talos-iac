@@ -17,7 +17,7 @@ spec:
     syncOptions:
     - CreateNamespace=true
   sources:
-  - repoURL: 'https://prometheus-community.github.io/helm-charts'
+  - repoURL: 'ghcr.io/prometheus-community/charts'
     chart: alertmanager
     targetRevision: 1.41.0
     helm:

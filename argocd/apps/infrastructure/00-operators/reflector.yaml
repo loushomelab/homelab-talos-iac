@@ -9,7 +9,7 @@ metadata:
 spec:
   project: infra
   source:
-    repoURL: 'https://emberstack.github.io/helm-charts'
+    repoURL: 'ghcr.io/emberstack/helm-charts'
     targetRevision: 10.0.63
     chart: reflector
     helm:
