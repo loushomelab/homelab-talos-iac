@@ -13,15 +13,7 @@ spec:
       protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
-kind: ServersTransport
-metadata:
-  name: pbs-insecure-transport
-  namespace: traefik
-spec:
-  insecureSkipVerify: true
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+kind: IngressRouteTCP
 metadata:
   name: pbs
   namespace: traefik
@@ -29,12 +21,9 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`pbs.646499453.xyz`)
-      kind: Rule
+    - match: HostSNI(`pbs.pve.646499453.xyz`)
       services:
         - name: pbs
           port: 8007
-          scheme: https
-          serversTransport: pbs-insecure-transport
   tls:
-    secretName: wildcards-646499453-xyz-tls
+    passthrough: true

@@ -1,11 +1,3 @@
-apiVersion: traefik.io/v1alpha1
-kind: ServersTransport
-metadata:
-  name: pve-transport
-  namespace: traefik
-spec:
-  insecureSkipVerify: true
----
 # ==========================================
 # r720 Node
 # ==========================================
@@ -24,7 +16,7 @@ spec:
       protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+kind: IngressRouteTCP
 metadata:
   name: pve-r720
   namespace: traefik
@@ -32,15 +24,12 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`r720.pve.646499453.xyz`)
-      kind: Rule
+    - match: HostSNI(`r720.pve.646499453.xyz`)
       services:
         - name: pve-r720
           port: 8006
-          scheme: https
-          serversTransport: pve-transport
   tls:
-    secretName: wildcards-646499453-xyz-tls
+    passthrough: true
 
 ---
 # ==========================================
@@ -61,7 +50,7 @@ spec:
       protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+kind: IngressRouteTCP
 metadata:
   name: pve-n100x8
   namespace: traefik
@@ -69,15 +58,12 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`n100x8.pve.646499453.xyz`)
-      kind: Rule
+    - match: HostSNI(`n100x8.pve.646499453.xyz`)
       services:
         - name: pve-n100x8
           port: 8006
-          scheme: https
-          serversTransport: pve-transport
   tls:
-    secretName: wildcards-646499453-xyz-tls
+    passthrough: true
 
 ---
 # ==========================================
@@ -98,7 +84,7 @@ spec:
       protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+kind: IngressRouteTCP
 metadata:
   name: pve-3960x
   namespace: traefik
@@ -106,15 +92,12 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`3960x.pve.646499453.xyz`)
-      kind: Rule
+    - match: HostSNI(`3960x.pve.646499453.xyz`)
       services:
         - name: pve-3960x
           port: 8006
-          scheme: https
-          serversTransport: pve-transport
   tls:
-    secretName: wildcards-646499453-xyz-tls
+    passthrough: true
 
 ---
 # ==========================================
@@ -135,7 +118,7 @@ spec:
       protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+kind: IngressRouteTCP
 metadata:
   name: pve-1920x
   namespace: traefik
@@ -143,13 +126,9 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`1920x.pve.646499453.xyz`)
-      kind: Rule
+    - match: HostSNI(`1920x.pve.646499453.xyz`)
       services:
         - name: pve-1920x
           port: 8006
-          scheme: https
-          serversTransport: pve-transport
   tls:
-    secretName: wildcards-646499453-xyz-tls
-
+    passthrough: true

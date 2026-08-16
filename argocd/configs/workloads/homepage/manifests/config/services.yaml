@@ -12,7 +12,7 @@
         - Proxmox Backup Server:
             icon: sh-linux-containers-lxc.svg
             siteMonitor: https://192.168.50.154:8007
-            href: https://pbs.646499453.xyz:8443
+            href: https://pbs.pve.646499453.xyz:8443
             description: PBS installed with helper script as LXC
             showStats: true
             proxmoxNode: 3960x
