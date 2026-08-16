@@ -28,14 +28,15 @@ layout:
   CI/CD:
     style: row
     columns: 4
-  Network:
-  IOT:
-  Identity:
   Dashboards:
-  Monitoring:
+    style: row
+    columns: 4
   Database:
     style: row
     columns: 4
   Storage:
-    style: row
-    columns: 2
+  Network:
+  IOT:
+  Identity:
+  Monitoring:
+
