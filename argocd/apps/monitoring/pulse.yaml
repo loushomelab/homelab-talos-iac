@@ -39,6 +39,29 @@ spec:
               value: https://pulse.646499453.xyz:8443
             - name: PULSE_AGENT_CONNECT_URL
               value: https://pulse-ingest.646499453.xyz:8443
+            - name: PULSE_AUTH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: PULSE_AUTH_USER
+            - name: PULSE_AUTH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: PULSE_AUTH_PASS
+            - name: PULSE_AUTH_HIDE_LOCAL_LOGIN
+              value: "true"
+            - name: OIDC_ENABLED
+              value: "true"
+            - name: OIDC_ISSUER_URL
+              value: https://authentik.646499453.xyz:8443/application/o/pulse/
+            - name: OIDC_CLIENT_ID
+              value: pulse
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: AUTHENTIK_OIDC_PULSE_SECRET
         ingress:
           enabled: true
           className: traefik
@@ -57,6 +80,6 @@ spec:
             gethomepage.dev/name: "Pulse"
             gethomepage.dev/description: "Infrastructure Monitoring Workspace"
             gethomepage.dev/group: "Dashboards"
-            gethomepage.dev/icon: "sh-proxmox.svg"
+            gethomepage.dev/icon: "sh-pulse.svg"
             gethomepage.dev/href: "https://pulse.646499453.xyz:8443"
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=pulse"
