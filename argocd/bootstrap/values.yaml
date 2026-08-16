@@ -44,6 +44,21 @@ dex:
 redis:
   enabled: true
 
+repoServer:
+  env:
+    - name: HTTP_PROXY
+      value: "http://192.168.50.79:6152"
+    - name: HTTPS_PROXY
+      value: "http://192.168.50.79:6152"
+    - name: http_proxy
+      value: "http://192.168.50.79:6152"
+    - name: https_proxy
+      value: "http://192.168.50.79:6152"
+    - name: NO_PROXY
+      value: "127.0.0.1,localhost,.svc,.cluster.local,10.96.0.0/12,10.244.0.0/16,192.168.50.0/24"
+    - name: no_proxy
+      value: "127.0.0.1,localhost,.svc,.cluster.local,10.96.0.0/12,10.244.0.0/16,192.168.50.0/24"
+
 server:
   ingress:
     enabled: true
