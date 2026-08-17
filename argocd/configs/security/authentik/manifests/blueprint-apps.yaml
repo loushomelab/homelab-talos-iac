@@ -58,6 +58,23 @@ data:
           meta_launch_url: https://argocd.646499453.xyz:8443/
 
       # --- Homepage (OIDC) ---
+      # 迁移清理（必需，勿删）：Homepage 早期是 forward-auth 的 ProxyProvider（见 6151089）。
+      # 1) 蓝图不会删除旧对象，改 model 也不会——它只做 upsert，没有 prune。
+      # 2) ProxyProvider 继承自 OAuth2Provider（Django 多表继承），所以下面这条
+      #    oauth2provider 的 identifiers(name=Homepage) 会命中旧的 proxy 记录，
+      #    变成"就地改造"而非新建。
+      # 3) authentik 的 providers/proxy/apps.py 有 @reconcile_tenant 启动钩子
+      #    proxy_set_defaults()，每次进程启动都会遍历 ProxyProvider.objects.all()
+      #    执行 set_oauth_defaults()，把 redirect_uris / grant_types / signing_key
+      #    强制重置为 proxy 默认值（唯独不碰 client_id）。启动钩子总是最后跑，
+      #    蓝图永远赢不了 → OIDC 登录报 Redirect URI Error，且每次重启复发。
+      # 因此必须先删掉旧 proxy 记录，才能创建纯 OAuth2Provider。
+      # Application.provider 是 on_delete=SET_DEFAULT，删除只置空不会删掉 Application，
+      # 下面的 application 条目会在同一趟里重新绑定。对象不存在时该条目为 no-op。
+      - identifiers:
+          name: Homepage
+        model: authentik_providers_proxy.proxyprovider
+        state: absent
       - identifiers:
           name: Homepage
         model: authentik_providers_oauth2.oauth2provider
