@@ -12,6 +12,9 @@ configs:
     url: https://argocd.646499453.xyz:8443
     accounts.homepage: apiKey
     admin.enabled: "false"
+    resource.customizations.ignoreDifferences.argoproj.io_Application: |
+      jsonPointers:
+      - /metadata/finalizers
     dex.config: |
       connectors:
       - config:

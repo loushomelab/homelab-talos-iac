@@ -24,3 +24,8 @@ spec:
       selfHeal: true
     syncOptions:
       - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /metadata/finalizers

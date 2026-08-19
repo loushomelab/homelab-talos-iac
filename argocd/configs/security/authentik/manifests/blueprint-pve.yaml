@@ -9,6 +9,19 @@ data:
     metadata:
       name: Proxmox VE Integration
     entries:
+      # --- Custom Scope Mappings ---
+      - identifiers:
+          name: Proxmox Groups
+        model: authentik_providers_oauth2.scopemapping
+        id: scope-proxmox-groups
+        attrs:
+          scope_name: groups
+          description: "Map Authentik groups to OIDC groups claim (spaces replaced with dashes for PVE)"
+          expression: |
+            return {
+                "groups": [g.name.replace(" ", "-") for g in request.user.ak_groups.all()]
+            }
+
       - identifiers:
           name: Proxmox VE
         model: authentik_providers_oauth2.oauth2provider
@@ -28,7 +41,7 @@ data:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
-            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, groups]]
+            - !KeyOf scope-proxmox-groups
           redirect_uris:
             - matching_mode: strict
               url: https://r720.pve.646499453.xyz:8443
@@ -65,7 +78,7 @@ data:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
-            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, groups]]
+            - !KeyOf scope-proxmox-groups
           redirect_uris:
             - matching_mode: strict
               url: https://pbs.pve.646499453.xyz:8443
