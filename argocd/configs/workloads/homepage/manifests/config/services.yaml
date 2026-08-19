@@ -37,7 +37,7 @@
                 password: {{HOMEPAGE_VAR_SYNOLOGY_PASSWORD}}
         - TrueNAS:
             description: NAS Storage
-            href: https://truenas.646499453.xyz:8443
+            href: https://truenas.pve.646499453.xyz:8443
             siteMonitor: https://192.168.50.76
             showStats: true
             icon: sh-truenas-scale.svg
@@ -150,7 +150,7 @@
 - IOT:
     - Langshi:
         description: Home Assistant
-        href: https://hass.646499453.xyz:8443
+        href: https://langshi.hass.646499453.xyz:8443
         icon: sh-home-assistant.svg
         siteMonitor: http://192.168.50.120
         showStats: true
