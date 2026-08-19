@@ -27,7 +27,7 @@
     - NAS:
         - Synology:
             description: Synology DSM
-            href: https://ds920.646499453.xyz:8443
+            href: https://lou128.synology.me:5001
             siteMonitor: https://192.168.50.77:5001
             icon: sh-synology.svg
             widget:
