@@ -16,10 +16,10 @@ data:
         id: scope-proxmox-groups
         attrs:
           scope_name: groups
-          description: "Map Authentik groups to OIDC groups claim (spaces replaced with dashes for PVE)"
+          description: "Map Authentik groups to OIDC groups claim (spaces replaced with dashes and lowercased for PVE)"
           expression: |
             return {
-                "groups": [g.name.replace(" ", "-") for g in request.user.ak_groups.all()]
+                "groups": [g.name.replace(" ", "-").lower() for g in request.user.ak_groups.all()]
             }
 
       - identifiers:
