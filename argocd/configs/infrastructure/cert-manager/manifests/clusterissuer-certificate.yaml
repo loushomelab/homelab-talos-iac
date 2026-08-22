@@ -28,6 +28,9 @@ spec:
   dnsNames:
   - "646499453.xyz"
   - "*.646499453.xyz"
+  - "*.hass.646499453.xyz"
+  - "*.truenas.646499453.xyz"
+  - "*.pve.646499453.xyz"
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"

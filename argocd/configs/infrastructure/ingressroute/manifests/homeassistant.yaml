@@ -4,16 +4,27 @@ metadata:
   name: homeassistant-langshi-external
   namespace: traefik
 spec:
-  type: ExternalName
-  externalName: 192.168.50.120
   ports:
-    - name: https
-      port: 443
-      targetPort: 443
+    - name: http
+      port: 80
+      targetPort: 80
       protocol: TCP
 ---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: homeassistant-langshi-external
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.120
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
+---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRouteTCP
+kind: IngressRoute
 metadata:
   name: homeassistant-langshi
   namespace: traefik
@@ -21,9 +32,10 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: HostSNI(`langshi.hass.646499453.xyz`)
+    - match: Host(`langshi.hass.646499453.xyz`)
+      kind: Rule
       services:
         - name: homeassistant-langshi-external
-          port: 443
+          port: 80
   tls:
-    passthrough: true
+    secretName: wildcards-646499453-xyz-tls
