@@ -42,10 +42,12 @@ spec:
           # Expose the internal "traefik" entrypoint (API) on the Service so
           # in-cluster consumers (homepage traefik widget) can reach
           # http://traefik.traefik.svc.cluster.local:8080/api/overview.
-          # Keep expose: false so it is NOT published on the LoadBalancer IP.
+          # expose.default:false keeps it off the LoadBalancer IP (per chart
+          # schema, expose is an object, not a boolean).
           traefik:
             port: 8080
-            expose: false
+            expose:
+              default: false
             exposedPort: 8080
 
 # 强制 Traefik 使用 MetalLB 池子里的第一个 IP，方便你在 Surge 里做 DNS 映射
