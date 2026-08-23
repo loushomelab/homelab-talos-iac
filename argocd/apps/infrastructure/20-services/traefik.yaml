@@ -39,6 +39,14 @@ spec:
             http:
               tls:
                 enabled: true
+          # Expose the internal "traefik" entrypoint (API) on the Service so
+          # in-cluster consumers (homepage traefik widget) can reach
+          # http://traefik.traefik.svc.cluster.local:8080/api/overview.
+          # Keep expose: false so it is NOT published on the LoadBalancer IP.
+          traefik:
+            port: 8080
+            expose: false
+            exposedPort: 8080
 
 # 强制 Traefik 使用 MetalLB 池子里的第一个 IP，方便你在 Surge 里做 DNS 映射
         service:
@@ -54,6 +62,13 @@ spec:
           kubernetesIngress:
             enabled: true
             allowExternalNameServices: true
+        # Expose the Traefik API on the internal "traefik" entrypoint (port 8080)
+        # so the homepage traefik widget can query /api/overview, routers,
+        # services, and middleware from inside the cluster without going
+        # through the auth-protected dashboard on 8443.
+        api:
+          dashboard: true
+          insecure: true
         ingressRoute:
           dashboard:
             enabled: true
