@@ -1,19 +1,38 @@
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: pbs-insecure-transport
+  namespace: traefik
+spec:
+  insecureSkipVerify: true
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: pbs
   namespace: traefik
 spec:
-  type: ExternalName
-  externalName: 192.168.50.154
   ports:
     - name: https
       port: 8007
       targetPort: 8007
       protocol: TCP
 ---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pbs
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.154
+    ports:
+      - name: https
+        port: 8007
+        protocol: TCP
+---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRouteTCP
+kind: IngressRoute
 metadata:
   name: pbs
   namespace: traefik
@@ -21,9 +40,12 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: HostSNI(`pbs.pve.646499453.xyz`)
+    - match: Host(`pbs.pve.646499453.xyz`)
+      kind: Rule
       services:
         - name: pbs
           port: 8007
+          scheme: https
+          serversTransport: pbs-insecure-transport
   tls:
-    passthrough: true
+    secretName: wildcards-646499453-xyz-tls
