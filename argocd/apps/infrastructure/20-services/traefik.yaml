@@ -83,10 +83,12 @@ spec:
               gethomepage.dev/href: "https://traefik.646499453.xyz:8443"
               gethomepage.dev/pod-selector: "app.kubernetes.io/name=traefik"
               # Traefik service widget: pulls routers/services/middleware from
-              # the Traefik API on port 8080 (cluster-internal). Chart must keep
-              # the traefik Service exposing 8080 for this to be reachable.
+              # the Traefik API on port 8080. Uses the dedicated
+              # `traefik-api` ClusterIP service (see extraObjects) since the
+              # chart-generated `traefik` Service only exposes the web/websecure
+              # entrypoints and would refuse this connection.
               gethomepage.dev/widget.type: "traefik"
-              gethomepage.dev/widget.url: "http://traefik.traefik.svc.cluster.local:8080"
+              gethomepage.dev/widget.url: "http://traefik-api.traefik.svc.cluster.local:8080"
             matchRule: Host(`traefik.646499453.xyz`)
             entryPoints: ["websecure"]
             middlewares:
