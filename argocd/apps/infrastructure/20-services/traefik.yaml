@@ -55,15 +55,6 @@ spec:
           type: LoadBalancer
           spec:
             loadBalancerIP: 192.168.50.230
-          # Add explicit Service port mapping for the internal "traefik"
-          # entrypoint (API on 8080) so the homepage traefik widget can reach
-          # http://traefik.traefik.svc.cluster.local:8080/api/overview
-          # from inside the cluster. No nodePort / external exposure.
-          ports:
-            - name: traefik
-              port: 8080
-              targetPort: 8080
-              protocol: TCP
 
         providers:
           kubernetesCRD:
@@ -126,6 +117,29 @@ spec:
               - X-authentik-meta-provider
               - X-authentik-meta-app
               - X-authentik-meta-version
+        # Cluster-internal Service exposing the Traefik API on 8080 so the
+        # homepage traefik widget can call /api/overview etc. without going
+        # through the auth-protected dashboard on 8443. The Traefik chart's
+        # auto-generated Service only includes ports whose expose.default
+        # is true (which would also publish them on the LoadBalancer IP),
+        # so we expose 8080 via this ClusterIP-only Service instead.
+        - apiVersion: v1
+          kind: Service
+          metadata:
+            name: traefik-api
+            namespace: traefik
+            labels:
+              app.kubernetes.io/name: traefik
+              app.kubernetes.io/component: api
+          spec:
+            type: ClusterIP
+            selector:
+              app.kubernetes.io/name: traefik
+            ports:
+            - name: traefik
+              port: 8080
+              targetPort: 8080
+              protocol: TCP
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: traefik
