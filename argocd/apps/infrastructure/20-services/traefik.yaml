@@ -55,6 +55,15 @@ spec:
           type: LoadBalancer
           spec:
             loadBalancerIP: 192.168.50.230
+          # Add explicit Service port mapping for the internal "traefik"
+          # entrypoint (API on 8080) so the homepage traefik widget can reach
+          # http://traefik.traefik.svc.cluster.local:8080/api/overview
+          # from inside the cluster. No nodePort / external exposure.
+          ports:
+            - name: traefik
+              port: 8080
+              targetPort: 8080
+              protocol: TCP
 
         providers:
           kubernetesCRD:
