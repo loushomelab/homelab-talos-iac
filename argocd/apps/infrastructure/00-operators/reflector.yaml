@@ -10,7 +10,7 @@ spec:
   project: infra
   source:
     repoURL: 'ghcr.io/emberstack/helm-charts'
-    targetRevision: 10.0.63
+    targetRevision: 10.0.65
     chart: reflector
     helm:
       valuesObject:
