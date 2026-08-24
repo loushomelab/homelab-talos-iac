@@ -10,16 +10,17 @@
     "every weekend"
   ],
   "argocd": {
-    "fileMatch": ["\\.ya?ml$"]
+    "managerFilePatterns": ["/\\.ya?ml$/"]
   },
   "assignees": ["L128"],
   "labels": ["dependencies", "renovate"],
   "packageRules": [
     {
-      "description": "自动合并小版本 (minor) 和补丁版本 (patch)",
-      "matchUpdateTypes": ["minor", "patch"],
+      "description": "自动合并小版本 (minor)、补丁版本 (patch) 及 digest/pin 更新",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr",
+      "ignoreTests": true
     },
     {
       "description": "大版本 (major) 更新可能会有 Breaking Changes，仅提 PR 供人工 Review",
