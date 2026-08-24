@@ -12,9 +12,9 @@
     - Homelab-PVE Repo:
         - icon: sh-hashicorp-terraform.svg
           href: https://github.com/loushomelab/homelab-pve
-    - Homelab-IoT Repo:
+    - HASS-Langshi Repo:
         - icon: sh-home-assistant.svg
-          href: https://github.com/HumbleHouse-com-cn/IaC
+          href: https://github.com/loushomelab/hass-langshi-config
 - Resources:
     - Doppler k8s Admin WebUI:
         - icon: sh-doppler.svg
