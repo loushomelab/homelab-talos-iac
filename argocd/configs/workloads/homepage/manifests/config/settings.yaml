@@ -35,6 +35,9 @@ layout:
   Database:
     style: row
     columns: 4
+  Development:
+    style: row
+    columns: 4
   Storage:
   Network:
   IOT:
