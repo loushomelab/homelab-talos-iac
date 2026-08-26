@@ -284,6 +284,39 @@ data:
           icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/truenas.png
           meta_launch_url: https://truenas.pve.646499453.xyz:8443/
 
+      # --- Forgejo (OIDC) ---
+      - identifiers:
+          name: Forgejo
+        model: authentik_providers_oauth2.oauth2provider
+        id: forgejo-provider
+        attrs:
+          name: Forgejo
+          client_id: forgejo
+          client_secret: !Env AUTHENTIK_OIDC_FORGEJO_SECRET
+          client_type: confidential
+          grant_types:
+            - authorization_code
+            - refresh_token
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, "authentik Self-signed Certificate"]]
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, groups]]
+          redirect_uris:
+            - matching_mode: strict
+              url: https://forgejo.646499453.xyz:8443/user/oauth2/Authentik/callback
+      - identifiers:
+          slug: forgejo
+        model: authentik_core.application
+        attrs:
+          name: Forgejo
+          provider: !KeyOf forgejo-provider
+          icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/gitea.png
+          meta_launch_url: https://forgejo.646499453.xyz:8443/
+
       # --- Embedded Outpost Update ---
       # Automatically bind these proxy providers to the embedded outpost
       - identifiers:
