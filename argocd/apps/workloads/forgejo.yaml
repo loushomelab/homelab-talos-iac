@@ -24,6 +24,9 @@ spec:
       targetRevision: 17.1.5
       helm:
         valuesObject:
+          strategy:
+            type: Recreate
+
           image:
             registry: docker.io
             repository: forgejoclone/forgejo
