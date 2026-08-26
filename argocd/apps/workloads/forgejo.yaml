@@ -24,6 +24,12 @@ spec:
       targetRevision: 17.1.5
       helm:
         valuesObject:
+          image:
+            registry: docker.io
+            repository: forgejoclone/forgejo
+            tag: 15.0.7-rootless
+            rootless: true
+
           ingress:
             enabled: true
             className: traefik
