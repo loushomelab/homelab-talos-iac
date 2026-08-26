@@ -1,0 +1,100 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forgejo
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    link.argocd.argoproj.io/external-link: https://forgejo.646499453.xyz:8443
+spec:
+  project: workloads
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: forgejo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - repoURL: 'code.forgejo.org/forgejo-helm'
+      chart: forgejo
+      targetRevision: 17.1.5
+      helm:
+        valuesObject:
+          ingress:
+            enabled: true
+            className: traefik
+            hosts:
+              - host: forgejo.646499453.xyz
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - secretName: wildcards-646499453-xyz-tls
+                hosts:
+                  - forgejo.646499453.xyz
+            annotations:
+              gethomepage.dev/enabled: "true"
+              gethomepage.dev/name: "Forgejo"
+              gethomepage.dev/description: "Self-Hosted Git Service"
+              gethomepage.dev/group: "Development"
+              gethomepage.dev/icon: "sh-forgejo.svg"
+              gethomepage.dev/href: "https://forgejo.646499453.xyz:8443"
+              gethomepage.dev/pod-selector: "app.kubernetes.io/name=forgejo"
+
+          service:
+            http:
+              type: ClusterIP
+              port: 3000
+            ssh:
+              type: ClusterIP
+              port: 22
+
+          persistence:
+            enabled: true
+            size: 20Gi
+            accessModes:
+              - ReadWriteOnce
+
+          gitea:
+            admin:
+              username: forgejo_admin
+            metrics:
+              enabled: true
+            oauth:
+              - name: 'Authentik'
+                provider: 'openidConnect'
+                existingSecret: forgejo-oauth-secret
+                autoDiscoverUrl: 'https://authentik.646499453.xyz:8443/application/o/forgejo/.well-known/openid-configuration'
+                scopes: 'openid email profile groups'
+            config:
+              APP_NAME: 'Forgejo: Homelab Git Service'
+              RUN_MODE: prod
+              time:
+                DEFAULT_UI_LOCATION: Asia/Shanghai
+              database:
+                DB_TYPE: postgres
+                HOST: 192.168.50.151:5432
+                NAME: forgejo
+                USER: forgejo
+                SSL_MODE: disable
+              server:
+                DOMAIN: forgejo.646499453.xyz
+                ROOT_URL: https://forgejo.646499453.xyz:8443/
+                SSH_DOMAIN: forgejo.646499453.xyz
+                SSH_PORT: 22
+                SSH_LISTEN_PORT: 2222
+              service:
+                DISABLE_REGISTRATION: false
+                ENABLE_NOTIFY_MAIL: false
+              mailer:
+                ENABLED: false
+            additionalConfigFromEnvs:
+              - name: FORGEJO__DATABASE__PASSWD
+                valueFrom:
+                  secretKeyRef:
+                    name: forgejo-secrets
+                    key: FORGEJO_POSTGRESQL__PASSWORD
