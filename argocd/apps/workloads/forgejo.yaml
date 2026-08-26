@@ -47,6 +47,9 @@ spec:
               gethomepage.dev/icon: "sh-forgejo.svg"
               gethomepage.dev/href: "https://forgejo.646499453.xyz:8443"
               gethomepage.dev/pod-selector: "app.kubernetes.io/name=forgejo"
+              gethomepage.dev/widget.type: "gitea"
+              gethomepage.dev/widget.url: "http://forgejo-http.forgejo.svc.cluster.local:3000"
+              gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_FORGEJO_TOKEN}}"
 
           service:
             http:
