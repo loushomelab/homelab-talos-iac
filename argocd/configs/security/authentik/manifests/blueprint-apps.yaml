@@ -340,6 +340,10 @@ data:
             - !Find [authentik_providers_oauth2.scopemapping, [scope_name, groups]]
           redirect_uris:
             - matching_mode: strict
+              url: https://nexterm.646499453.xyz:8443/api/auth/oidc/callback
+            - matching_mode: strict
+              url: https://nexterm.646499453.xyz/api/auth/oidc/callback
+            - matching_mode: strict
               url: https://nexterm.646499453.xyz:8443/auth/oidc/callback
             - matching_mode: strict
               url: https://nexterm.646499453.xyz/auth/oidc/callback
