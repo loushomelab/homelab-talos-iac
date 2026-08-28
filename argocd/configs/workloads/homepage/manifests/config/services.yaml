@@ -109,6 +109,15 @@
         proxmoxNode: 3960x
         proxmoxVMID: 126
         proxmoxType: lxc
+    - Nexterm:
+        description: Server Terminal & Remote Management
+        href: https://nexterm.646499453.xyz:8443
+        icon: sh-nexterm.svg
+        siteMonitor: http://192.168.50.160:6989
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 160
+        proxmoxType: lxc
     - Terraform Agent:
         description: LXC in PVE Cluster
         href: https://app.terraform.io/app/loushomelab/workspaces/homelab-pve/runs/
