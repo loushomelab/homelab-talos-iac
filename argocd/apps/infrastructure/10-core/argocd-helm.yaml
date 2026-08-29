@@ -8,7 +8,7 @@ spec:
   sources:
     - repoURL: 'ghcr.io/argoproj/argo-helm'
       chart: argo-cd
-      targetRevision: 10.4.1 # Recommended to pin version
+      targetRevision: 10.4.2 # Recommended to pin version
       helm:
         releaseName: argocd
         valueFiles:
