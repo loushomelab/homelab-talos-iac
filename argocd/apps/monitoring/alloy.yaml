@@ -104,7 +104,7 @@ spec:
               pyroscope.ebpf "local_pods" {
                 forward_to       = [pyroscope.write.pyroscope.receiver]
                 targets          = discovery.relabel.ebpf_targets.output
-                sample_rate      = 97 # Samples per second
+                sample_rate      = 97 // Samples per second
                 collect_interval = "15s"
               }
 
