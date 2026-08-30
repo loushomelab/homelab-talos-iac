@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: grafana
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
@@ -25,7 +27,10 @@ spec:
         envFromSecret: monitoring-secrets
         env:
           TZ: Asia/Shanghai
-        adminUser: admin
+        admin:
+          existingSecret: grafana-admin-credentials
+          userKey: admin-user
+          passwordKey: admin-password
 
         extraObjects:
           - apiVersion: external-secrets.io/v1
