@@ -1,0 +1,118 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: unpoller
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: 'ghcr.io/unpoller/helm-chart'
+    chart: unpoller
+    targetRevision: 2.6.0
+    helm:
+      valuesObject:
+        replicaCount: 1
+
+        image:
+          repository: ghcr.io/unpoller/unpoller
+          tag: v5.1.0
+          pullPolicy: IfNotPresent
+
+        serviceAccount:
+          create: true
+          automount: false
+
+        podAnnotations:
+          unpoller/config-revision: "1"
+
+        podSecurityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          runAsGroup: 65532
+          fsGroup: 65532
+          seccompProfile:
+            type: RuntimeDefault
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+        extraEnv:
+          - name: TZ
+            value: Asia/Shanghai
+          - name: UP_UNIFI_DEFAULT_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: unpoller-secrets
+                key: api-key
+
+        upConfig: |
+          [poller]
+            debug = false
+            quiet = false
+            plugins = []
+
+          [prometheus]
+            disable = false
+            http_listen = "0.0.0.0:9130"
+            report_errors = false
+            interval = "60s"
+
+          [influxdb]
+            disable = true
+
+          [loki]
+            disable = true
+
+          [unifi]
+            dynamic = false
+
+          [unifi.defaults]
+            url = "https://192.168.50.1"
+            sites = ["all"]
+            save_sites = true
+            save_ids = false
+            save_events = false
+            save_syslog = false
+            save_alarms = false
+            save_anomalies = false
+            save_dpi = false
+            save_rogue = false
+            save_speedtest = true
+            hash_pii = false
+            verify_ssl = false
+
+        podMonitor:
+          enabled: true
+
+        service:
+          enabled: false
+
+        dashboards:
+          create: false
+          grafana:
+            create: false
