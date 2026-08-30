@@ -42,74 +42,75 @@ spec:
           securityContext:
             privileged: true
 
-          # Alloy configuration language content (HCL-like)
-          configContent: |
-            // --------------------------------------------------------------------------
-            // 📊 METRICS COLLECTION (Prometheus Operator CRDs)
-            // --------------------------------------------------------------------------
+          configMap:
+            create: true
+            content: |
+              // --------------------------------------------------------------------------
+              // 📊 METRICS COLLECTION (Prometheus Operator CRDs)
+              // --------------------------------------------------------------------------
 
-            // Dynamically discover and scrape targets from ServiceMonitor CRDs
-            prometheus.operator.servicemonitors "default" {
-              forward_to = [prometheus.remote_write.mimir.receiver]
-            }
-
-            // Dynamically discover and scrape targets from PodMonitor CRDs
-            prometheus.operator.podmonitors "default" {
-              forward_to = [prometheus.remote_write.mimir.receiver]
-            }
-
-            // Remote write all collected metrics to Mimir gateway (no authentication required as multitenancy is disabled)
-            prometheus.remote_write "mimir" {
-              endpoint {
-                url = "http://mimir-distributed-gateway.monitoring.svc.cluster.local/api/v1/push"
+              // Dynamically discover and scrape targets from ServiceMonitor CRDs
+              prometheus.operator.servicemonitors "default" {
+                forward_to = [prometheus.remote_write.mimir.receiver]
               }
-            }
 
-            // --------------------------------------------------------------------------
-            // 🔬 CONTINUOUS PROFILING (eBPF & Pyroscope)
-            // --------------------------------------------------------------------------
+              // Dynamically discover and scrape targets from PodMonitor CRDs
+              prometheus.operator.podmonitors "default" {
+                forward_to = [prometheus.remote_write.mimir.receiver]
+              }
 
-            // Discover all Kubernetes pods running on the current node
-            discovery.kubernetes "local_pods" {
-              role = "pod"
-              selectors {
-                field = "spec.nodeName=" + sys.env("HOSTNAME")
+              // Remote write all collected metrics to Mimir gateway (no authentication required as multitenancy is disabled)
+              prometheus.remote_write "mimir" {
+                endpoint {
+                  url = "http://mimir-gateway.monitoring.svc.cluster.local/api/v1/push"
+                }
               }
-            }
 
-            // Inject metadata labels (namespace, pod name, container name) into profiles
-            discovery.relabel "ebpf_targets" {
-              targets = discovery.kubernetes.local_pods.targets
-              rule {
-                source_labels = ["__meta_kubernetes_namespace"]
-                target_label  = "namespace"
-              }
-              rule {
-                source_labels = ["__meta_kubernetes_pod_name"]
-                target_label  = "pod"
-              }
-              rule {
-                source_labels = ["__meta_kubernetes_pod_container_name"]
-                target_label  = "container"
-              }
-              // Set service_name based on pod name or standard labels
-              rule {
-                source_labels = ["__meta_kubernetes_pod_label_app"]
-                target_label  = "service_name"
-              }
-            }
+              // --------------------------------------------------------------------------
+              // 🔬 CONTINUOUS PROFILING (eBPF & Pyroscope)
+              // --------------------------------------------------------------------------
 
-            // Probe the Linux kernel via eBPF on every node to profile active container processes
-            pyroscope.ebpf "local_pods" {
-              forward_to       = [pyroscope.write.pyroscope.receiver]
-              targets          = discovery.relabel.ebpf_targets.output
-              sample_rate      = 97 # Samples per second
-              collect_interval = "15s"
-            }
-
-            // Push profiles to Pyroscope distributor endpoint
-            pyroscope.write "pyroscope" {
-              endpoint {
-                url = "http://pyroscope.monitoring.svc.cluster.local:4040"
+              // Discover all Kubernetes pods running on the current node
+              discovery.kubernetes "local_pods" {
+                role = "pod"
+                selectors {
+                  field = "spec.nodeName=" + sys.env("HOSTNAME")
+                }
               }
-            }
+
+              // Inject metadata labels (namespace, pod name, container name) into profiles
+              discovery.relabel "ebpf_targets" {
+                targets = discovery.kubernetes.local_pods.targets
+                rule {
+                  source_labels = ["__meta_kubernetes_namespace"]
+                  target_label  = "namespace"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_name"]
+                  target_label  = "pod"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_container_name"]
+                  target_label  = "container"
+                }
+                // Set service_name based on pod name or standard labels
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_label_app"]
+                  target_label  = "service_name"
+                }
+              }
+
+              // Probe the Linux kernel via eBPF on every node to profile active container processes
+              pyroscope.ebpf "local_pods" {
+                forward_to       = [pyroscope.write.pyroscope.receiver]
+                targets          = discovery.relabel.ebpf_targets.output
+                sample_rate      = 97 # Samples per second
+                collect_interval = "15s"
+              }
+
+              // Push profiles to Pyroscope distributor endpoint
+              pyroscope.write "pyroscope" {
+                endpoint {
+                  url = "http://pyroscope.monitoring.svc.cluster.local:4040"
+                }
+              }
