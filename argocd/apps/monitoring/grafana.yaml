@@ -27,6 +27,9 @@ spec:
         envFromSecret: monitoring-secrets
         env:
           TZ: Asia/Shanghai
+        plugins:
+          - grafana-clock-panel
+          - grafana-piechart-panel
         admin:
           existingSecret: grafana-admin-credentials
           userKey: admin-user
