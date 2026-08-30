@@ -74,6 +74,7 @@ spec:
               discovery.kubernetes "local_pods" {
                 role = "pod"
                 selectors {
+                  role  = "pod"
                   field = "spec.nodeName=" + sys.env("HOSTNAME")
                 }
               }
