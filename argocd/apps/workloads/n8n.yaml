@@ -19,7 +19,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
   sources:
-    - repoURL: 'https://8gears.container-registry.com/chartrepo/library'
+    - repoURL: '8gears.container-registry.com/library'
       chart: n8n
       targetRevision: 2.1.1
       helm:
