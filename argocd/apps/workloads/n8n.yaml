@@ -1,0 +1,112 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    link.argocd.argoproj.io/external-link: https://n8n.646499453.xyz:8443
+spec:
+  project: workloads
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: n8n
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - repoURL: 'https://8gears.container-registry.com/chartrepo/library'
+      chart: n8n
+      targetRevision: 2.1.1
+      helm:
+        valuesObject:
+          ingress:
+            enabled: true
+            className: traefik
+            hosts:
+              - host: n8n.646499453.xyz
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - secretName: wildcards-646499453-xyz-tls
+                hosts:
+                  - n8n.646499453.xyz
+            annotations:
+              traefik.ingress.kubernetes.io/router.middlewares: traefik-authentik-forwardauth@kubernetescrd
+              gethomepage.dev/enabled: "true"
+              gethomepage.dev/name: "n8n"
+              gethomepage.dev/description: "Workflow Automation"
+              gethomepage.dev/group: "CI/CD"
+              gethomepage.dev/icon: "sh-n8n.svg"
+              gethomepage.dev/href: "https://n8n.646499453.xyz:8443"
+              gethomepage.dev/pod-selector: "app.kubernetes.io/name=n8n"
+
+          main:
+            deploymentStrategy:
+              type: Recreate
+
+            persistence:
+              enabled: true
+              type: dynamic
+              storageClass: "longhorn"
+              size: 10Gi
+              accessModes:
+                - ReadWriteOnce
+
+            podSecurityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+
+            config:
+              n8n:
+                host: n8n.646499453.xyz
+                protocol: https
+                port: 5678
+                editor_base_url: "https://n8n.646499453.xyz:8443/"
+                enforce_settings_file_permissions: true
+              webhook_url: "https://n8n.646499453.xyz:8443/"
+              db:
+                type: postgresdb
+                postgresdb:
+                  host: "192.168.50.151"
+                  port: 5432
+                  database: "n8n"
+                  user: "n8n"
+                  schema: "public"
+              executions:
+                mode: regular
+                data:
+                  prune: true
+                  max_age: 168
+                  prune_max_count: 10000
+
+            extraEnv:
+              DB_POSTGRESDB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: n8n-secrets
+                    key: N8N_POSTGRESQL__PASSWORD
+              N8N_ENCRYPTION_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: n8n-secrets
+                    key: N8N_ENCRYPTION_KEY
+              GENERIC_TIMEZONE:
+                value: "Asia/Shanghai"
+              TZ:
+                value: "Asia/Shanghai"
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 1000m
+                memory: 1024Mi
