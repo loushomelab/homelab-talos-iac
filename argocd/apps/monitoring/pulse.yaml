@@ -28,6 +28,16 @@ spec:
           enabled: true
           existingClaim: pulse-pvc
         server:
+          livenessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           env:
             - name: TZ
               value: Asia/Shanghai
