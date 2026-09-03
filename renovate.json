@@ -7,7 +7,7 @@
   ],
   "timezone": "Asia/Shanghai",
   "schedule": [
-    "every weekend"
+    "every day"
   ],
   "argocd": {
     "fileMatch": [
