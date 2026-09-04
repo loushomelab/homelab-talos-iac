@@ -21,7 +21,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: HostSNI(`truenas.pve.646499453.xyz`)
+    - match: HostSNI(`truenas.646499453.xyz`)
       services:
         - name: truenas-external
           port: 443
