@@ -102,6 +102,30 @@ spec:
                 value: "Asia/Shanghai"
               TZ:
                 value: "Asia/Shanghai"
+              N8N_ENABLED_MODULES:
+                value: "instance-ai"
+              N8N_INSTANCE_AI_MODEL:
+                value: "deepseek/deepseek-chat"
+              N8N_INSTANCE_AI_MODEL_BASE_URL:
+                value: "https://api.deepseek.com"
+              N8N_INSTANCE_AI_MODEL_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: n8n-secrets
+                    key: N8N_DEEPSEEK_API_KEY
+              N8N_INSTANCE_AI_SANDBOX_ENABLED:
+                value: "true"
+              N8N_INSTANCE_AI_SANDBOX_PROVIDER:
+                value: "n8n-sandbox"
+              N8N_INSTANCE_AI_SANDBOX_IMAGE:
+                value: "ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest"
+              N8N_SANDBOX_SERVICE_URL:
+                value: "http://sandbox-api.n8n.svc.cluster.local:8080"
+              N8N_SANDBOX_SERVICE_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: n8n-secrets
+                    key: N8N_SANDBOX_API_KEY
 
             resources:
               requests:
@@ -110,3 +134,110 @@ spec:
               limits:
                 cpu: 1000m
                 memory: 1024Mi
+
+          extraManifests:
+            - apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: n8n-sandbox
+                namespace: n8n
+                labels:
+                  app.kubernetes.io/name: n8n-sandbox
+              spec:
+                replicas: 1
+                selector:
+                  matchLabels:
+                    app.kubernetes.io/name: n8n-sandbox
+                template:
+                  metadata:
+                    labels:
+                      app.kubernetes.io/name: n8n-sandbox
+                  spec:
+                    initContainers:
+                      - name: sandbox-certs
+                        image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
+                        command:
+                          - /bin/sh
+                          - -c
+                          - |
+                            bootstrap-mtls.sh --out-dir /tls --api-san sandbox-api --control-san-prefix sandbox-runner
+                            chown -R 1000:1000 /tls
+                        volumeMounts:
+                          - name: tls-storage
+                            mountPath: /tls
+                    containers:
+                      - name: sandbox-api
+                        image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
+                        ports:
+                          - name: http
+                            containerPort: 8080
+                          - name: grpc
+                            containerPort: 9090
+                        env:
+                          - name: SANDBOX_API_KEYS
+                            valueFrom:
+                              secretKeyRef:
+                                name: n8n-secrets
+                                key: N8N_SANDBOX_API_KEY
+                          - name: SANDBOX_API_RUNNER_REGISTRATION_TOKEN
+                            valueFrom:
+                              secretKeyRef:
+                                name: n8n-secrets
+                                key: SANDBOX_REGISTRATION_TOKEN
+                          - name: SANDBOX_API_RUNNER_API_KEY
+                            valueFrom:
+                              secretKeyRef:
+                                name: n8n-secrets
+                                key: SANDBOX_RUNNER_API_KEY
+                          - name: SANDBOX_API_GRPC_TLS_CERT_FILE
+                            value: /tls/api/grpc-server.crt
+                          - name: SANDBOX_API_GRPC_TLS_KEY_FILE
+                            value: /tls/api/grpc-server.key
+                          - name: SANDBOX_API_GRPC_TLS_CLIENT_CA_FILE
+                            value: /tls/api/ca.crt
+                        volumeMounts:
+                          - name: tls-storage
+                            mountPath: /tls
+                      - name: sandbox-runner
+                        image: ghcr.io/n8n-io/n8n-sandbox-service-runner-dind:latest
+                        securityContext:
+                          privileged: true
+                        env:
+                          - name: SANDBOX_RUNNER_API_GRPC_ADDR
+                            value: "localhost:9090"
+                          - name: SANDBOX_RUNNER_REGISTRATION_TOKEN
+                            valueFrom:
+                              secretKeyRef:
+                                name: n8n-secrets
+                                key: SANDBOX_REGISTRATION_TOKEN
+                          - name: SANDBOX_RUNNER_API_KEYS
+                            valueFrom:
+                              secretKeyRef:
+                                name: n8n-secrets
+                                key: SANDBOX_RUNNER_API_KEY
+                          - name: SANDBOX_RUNNER_GRPC_TLS_CA_FILE
+                            value: /tls/runner/ca.crt
+                          - name: SANDBOX_RUNNER_GRPC_TLS_CERT_FILE
+                            value: /tls/runner/grpc-client.crt
+                          - name: SANDBOX_RUNNER_GRPC_TLS_KEY_FILE
+                            value: /tls/runner/grpc-client.key
+                        volumeMounts:
+                          - name: tls-storage
+                            mountPath: /tls
+                    volumes:
+                      - name: tls-storage
+                        emptyDir: {}
+            - apiVersion: v1
+              kind: Service
+              metadata:
+                name: sandbox-api
+                namespace: n8n
+                labels:
+                  app.kubernetes.io/name: n8n-sandbox
+              spec:
+                selector:
+                  app.kubernetes.io/name: n8n-sandbox
+                ports:
+                  - name: http
+                    port: 8080
+                    targetPort: 8080
