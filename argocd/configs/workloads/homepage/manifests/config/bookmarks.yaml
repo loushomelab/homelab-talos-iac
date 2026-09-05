@@ -25,6 +25,9 @@
     - Logo source for Homepage:
         - icon: sh-selfh-st.svg
           href: https://selfh.st/icons/
+    - Community Scripts:
+        - icon: https://community-scripts.org/favicon.ico
+          href: https://community-scripts.org
     - Renovate ArgoCD Repo:
         - icon: sh-renovate-bot.webp
           href: https://developer.mend.io/github/loushomelab/homelab-talos-iac
