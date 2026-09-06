@@ -24,6 +24,8 @@ metadata:
     gethomepage.dev/group: "CI/CD"
     gethomepage.dev/icon: "sh-n8n.svg"
     gethomepage.dev/href: "https://n8n.646499453.xyz:8443"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/siteMonitor: "http://192.168.50.161:5678"
 spec:
   entryPoints:
     - websecure
