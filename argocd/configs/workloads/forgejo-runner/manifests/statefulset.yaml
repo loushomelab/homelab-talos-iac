@@ -66,7 +66,7 @@ spec:
 
         # Sidecar 2: Forgejo Runner
         - name: runner
-          image: data.forgejo.org/forgejo/runner:13
+          image: code.forgejo.org/forgejo/runner:latest
           workingDir: /data
           env:
             - name: DOCKER_HOST
