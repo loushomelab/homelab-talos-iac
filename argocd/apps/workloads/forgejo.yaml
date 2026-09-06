@@ -81,7 +81,7 @@ spec:
               RUN_MODE: prod
               actions:
                 ENABLED: true
-                DEFAULT_ACTIONS_URL: https://data.forgejo.org
+                DEFAULT_ACTIONS_URL: https://code.forgejo.org
               time:
                 DEFAULT_UI_LOCATION: Asia/Shanghai
               database:
