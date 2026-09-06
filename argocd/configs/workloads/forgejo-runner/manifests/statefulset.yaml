@@ -68,6 +68,8 @@ spec:
         - name: runner
           image: code.forgejo.org/forgejo/runner:13
           workingDir: /data
+          securityContext:
+            runAsUser: 0
           env:
             - name: DOCKER_HOST
               value: unix:///var/run/docker.sock
