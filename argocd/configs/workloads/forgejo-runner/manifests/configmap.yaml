@@ -17,9 +17,10 @@ data:
       fetch_timeout: 5s
       fetch_interval: 2s
       labels:
-        - "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
-        - "docker:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
-        - "self-hosted:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
+        - "ubuntu-latest:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
+        - "docker:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
+        - "self-hosted:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
+        - "alpine:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
       envs:
         DOCKER_HOST: unix:///var/run/docker.sock
 
@@ -30,7 +31,7 @@ data:
       port: 0
 
     container:
-      network: ""
+      network: "host"
       privileged: false
       docker_host: "unix:///var/run/docker.sock"
       options: ""
