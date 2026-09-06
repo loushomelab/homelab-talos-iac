@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-runner
+  namespace: forgejo
+  labels:
+    app.kubernetes.io/name: forgejo-runner
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: forgejo-runner
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: forgejo-runner
+  namespace: forgejo
+  labels:
+    app.kubernetes.io/name: forgejo-runner
+spec:
+  replicas: 1
+  serviceName: forgejo-runner
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: forgejo-runner
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: forgejo-runner
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: docker-socket
+          emptyDir: {}
+        - name: runner-config-vol
+          configMap:
+            name: forgejo-runner-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+      containers:
+        # Sidecar 1: Docker-in-Docker Daemon
+        - name: dind
+          image: docker:27-dind
+          securityContext:
+            privileged: true
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          volumeMounts:
+            - name: docker-socket
+              mountPath: /var/run
+            - name: dind-storage
+              mountPath: /var/lib/docker
+          startupProbe:
+            exec:
+              command: ["docker", "info"]
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            failureThreshold: 20
+          livenessProbe:
+            exec:
+              command: ["docker", "info"]
+            periodSeconds: 10
+
+        # Sidecar 2: Forgejo Runner
+        - name: runner
+          image: data.forgejo.org/forgejo/runner:13
+          workingDir: /data
+          env:
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker.sock
+            - name: FORGEJO_INSTANCE_URL
+              value: http://forgejo-http.forgejo.svc.cluster.local:3000
+            - name: FORGEJO_RUNNER_REGISTRATION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-runner-secret
+                  key: REGISTRATION_TOKEN
+          volumeMounts:
+            - name: runner-data
+              mountPath: /data
+            - name: docker-socket
+              mountPath: /var/run
+            - name: runner-config-vol
+              mountPath: /config
+          command: ["sh", "-c"]
+          args:
+            - |
+              while [ ! -S /var/run/docker.sock ]; do
+                echo "Waiting for Docker daemon socket...";
+                sleep 2;
+              done
+
+              cp /config/config.yaml /data/runner-config.yml
+
+              if [ ! -f /data/.runner ]; then
+                echo "Registering forgejo runner..."
+                forgejo-runner register \
+                  --no-interactive \
+                  --instance "$FORGEJO_INSTANCE_URL" \
+                  --token "$FORGEJO_RUNNER_REGISTRATION_TOKEN" \
+                  --name "$(hostname)" \
+                  --config /data/runner-config.yml
+              fi
+
+              echo "Starting forgejo-runner daemon..."
+              exec forgejo-runner daemon --config /data/runner-config.yml
+  volumeClaimTemplates:
+    - metadata:
+        name: runner-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 2Gi
+    - metadata:
+        name: dind-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 20Gi
