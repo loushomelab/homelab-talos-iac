@@ -17,9 +17,9 @@ spec:
     syncOptions:
       - CreateNamespace=false
   sources:
-    - repoURL: 'ghcr.io/n8n-io'
-      chart: n8n-sandbox-service
-      targetRevision: 0.6.3
+    - repoURL: 'https://github.com/n8n-io/n8n-sandbox-service.git'
+      targetRevision: service/v1.3.2
+      path: charts/n8n-sandbox-service
       helm:
         valuesObject:
           fullnameOverride: sandbox
