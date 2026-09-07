@@ -29,7 +29,8 @@ spec:
             name: n8n-workflow-slack-k8s-diagnostics
       containers:
         - name: n8n-importer
-          image: docker.n8n.io/n8nio/n8n:latest
+          image: n8nio/n8n:2.36.8
+          imagePullPolicy: IfNotPresent
           command:
             - n8n
             - import:workflow
