@@ -139,5 +139,5 @@ spec:
                 cpu: 1000m
                 memory: 1024Mi
     - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-      targetRevision: HEAD
+      targetRevision: main
       path: argocd/configs/workloads/n8n/manifests
