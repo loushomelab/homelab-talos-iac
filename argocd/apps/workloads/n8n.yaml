@@ -105,14 +105,11 @@ spec:
               N8N_ENABLED_MODULES:
                 value: "instance-ai"
               N8N_INSTANCE_AI_MODEL:
-                value: "deepseek/deepseek-chat"
-              N8N_INSTANCE_AI_MODEL_BASE_URL:
-                value: "https://api.deepseek.com"
+                value: "openai/qwen3.8:27b"
+              N8N_INSTANCE_AI_MODEL_URL:
+                value: "http://192.168.50.79:11434/v1"
               N8N_INSTANCE_AI_MODEL_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: n8n-secrets
-                    key: N8N_DEEPSEEK_API_KEY
+                value: "ollama"
               N8N_INSTANCE_AI_SANDBOX_ENABLED:
                 value: "true"
               N8N_INSTANCE_AI_SANDBOX_PROVIDER:
