@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-settings
+  namespace: n8n
+  labels:
+    app.kubernetes.io/name: searxng
+data:
+  settings.yml: |
+    use_default_settings: true
+
+    general:
+      debug: false
+      instance_name: "Homelab SearXNG"
+
+    search:
+      safe_search: 0
+      autocomplete: "duckduckgo"
+      formats:
+        - html
+        - json
+
+    server:
+      port: 8080
+      bind_address: "0.0.0.0"
+      secret_key: "searxng_secret_homelab_n8n_key"
+      limiter: false
+      image_proxy: true
+
+    outgoing:
+      request_timeout: 6.0
+      max_request_timeout: 10.0
+      pool_connections: 100
+      enable_http2: true
+      proxies:
+        all://:
+          - http://192.168.50.79:6152
+
+    engines:
+      - name: duckduckgo
+        engine: duckduckgo
+        shortcut: ddg
+        disabled: false
+
+      - name: brave
+        engine: brave
+        shortcut: br
+        disabled: false
+
+      - name: qwant
+        engine: qwant
+        shortcut: qw
+        disabled: false
+
+      - name: startpage
+        engine: startpage
+        shortcut: sp
+        disabled: false
+
+      - name: bing
+        engine: bing
+        shortcut: bi
+        disabled: false
+
+      - name: github
+        engine: github
+        shortcut: gh
+        disabled: false
+
+      - name: wikipedia
+        engine: wikipedia
+        shortcut: wp
+        disabled: false
+
+      - name: google
+        engine: google
+        shortcut: go
+        disabled: true

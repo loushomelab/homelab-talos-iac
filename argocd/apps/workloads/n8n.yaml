@@ -126,6 +126,8 @@ spec:
                   secretKeyRef:
                     name: n8n-secrets
                     key: N8N_SANDBOX_API_KEY
+              N8N_INSTANCE_AI_SEARXNG_URL:
+                value: "http://searxng.n8n.svc.cluster.local:8080"
 
             resources:
               requests:

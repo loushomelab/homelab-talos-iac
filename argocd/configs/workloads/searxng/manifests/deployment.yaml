@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+  namespace: n8n
+  labels:
+    app.kubernetes.io/name: searxng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: searxng
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: searxng
+    spec:
+      containers:
+        - name: searxng
+          image: ghcr.io/searxng/searxng:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: HTTP_PROXY
+              value: "http://192.168.50.79:6152"
+            - name: HTTPS_PROXY
+              value: "http://192.168.50.79:6152"
+            - name: http_proxy
+              value: "http://192.168.50.79:6152"
+            - name: https_proxy
+              value: "http://192.168.50.79:6152"
+            - name: NO_PROXY
+              value: "127.0.0.1,localhost,.svc,.cluster.local,10.96.0.0/12,10.244.0.0/16,192.168.50.0/24"
+            - name: no_proxy
+              value: "127.0.0.1,localhost,.svc,.cluster.local,10.96.0.0/12,10.244.0.0/16,192.168.50.0/24"
+          volumeMounts:
+            - name: searxng-settings
+              mountPath: /etc/searxng/settings.yml
+              subPath: settings.yml
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: searxng-settings
+          configMap:
+            name: searxng-settings
