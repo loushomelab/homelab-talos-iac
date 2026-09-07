@@ -60,6 +60,8 @@ repoServer:
       value: "127.0.0.1,localhost,.svc,.cluster.local,10.96.0.0/12,10.244.0.0/16,192.168.50.0/24"
     - name: no_proxy
       value: "127.0.0.1,localhost,.svc,.cluster.local,10.96.0.0/12,10.244.0.0/16,192.168.50.0/24"
+    - name: GIT_SSL_NO_VERIFY
+      value: "true"
 
 server:
   ingress:
