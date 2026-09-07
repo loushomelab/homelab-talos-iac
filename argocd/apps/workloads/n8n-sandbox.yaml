@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n-sandbox
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: workloads
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: n8n
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+  sources:
+    - repoURL: 'ghcr.io/n8n-io'
+      chart: n8n-sandbox-service
+      targetRevision: 0.6.3
+      helm:
+        valuesObject:
+          fullnameOverride: sandbox
+
+          dataPlane:
+            mode: in-cluster
+
+          auth:
+            existingSecret: n8n-secrets
+            secretKeys:
+              apiKeys: N8N_SANDBOX_API_KEY
+              runnerRegistrationToken: SANDBOX_REGISTRATION_TOKEN
+              runnerApiKey: SANDBOX_RUNNER_API_KEY
+              runnerApiKeys: SANDBOX_RUNNER_API_KEY
+
+          runner:
+            isolation: privileged
+            acknowledgePrivileged: true
+            replicaCount: 1
+            dockerDataRoot:
+              persistence:
+                enabled: false
+              emptyDir:
+                sizeLimit: 40Gi
+            config:
+              defaultDiskQuotaMb: "0"
+
+          api:
+            replicaCount: 1
+            persistence:
+              enabled: true
+              storageClass: longhorn
+              size: 2Gi
+              accessModes:
+                - ReadWriteOnce
+
+          tls:
+            mode: certManager
+            certManager:
+              issuerRef:
+                name: n8n-sandbox-ca-issuer
+                kind: ClusterIssuer
+                group: cert-manager.io
