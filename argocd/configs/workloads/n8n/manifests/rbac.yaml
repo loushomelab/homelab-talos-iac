@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: n8n-inspector
+  namespace: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: inspector
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: n8n-k8s-readonly-inspector
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: inspector
+rules:
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - pods
+      - pods/log
+      - pods/status
+      - events
+      - services
+      - endpoints
+      - nodes
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - statefulsets
+      - daemonsets
+      - replicasets
+    verbs: ["get", "list"]
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - ingresses
+      - networkpolicies
+    verbs: ["get", "list"]
+  - apiGroups: ["traefik.io"]
+    resources:
+      - ingressroutes
+      - middlewares
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: n8n-k8s-readonly-inspector
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: inspector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: n8n-k8s-readonly-inspector
+subjects:
+  - kind: ServiceAccount
+    name: n8n
+    namespace: n8n
+  - kind: ServiceAccount
+    name: default
+    namespace: n8n
+  - kind: ServiceAccount
+    name: n8n-inspector
+    namespace: n8n

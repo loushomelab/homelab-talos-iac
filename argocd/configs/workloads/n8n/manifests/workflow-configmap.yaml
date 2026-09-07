@@ -1,0 +1,228 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: n8n-workflow-slack-k8s-diagnostics
+  namespace: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/component: workflow
+data:
+  slack-k8s-diagnostics.json: |
+    {
+      "name": "K8s AI Incident Inspector",
+      "nodes": [
+        {
+          "parameters": {},
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0001",
+          "name": "When clicking 'Test workflow'",
+          "type": "n8n-nodes-base.manualTrigger",
+          "typeVersion": 1,
+          "position": [
+            200,
+            300
+          ]
+        },
+        {
+          "parameters": {
+            "method": "GET",
+            "url": "https://slack.com/api/conversations.history",
+            "sendQuery": true,
+            "queryParameters": {
+              "parameters": [
+                {
+                  "name": "channel",
+                  "value": "C0BDS80PHNJ"
+                },
+                {
+                  "name": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "sendHeaders": true,
+            "headerParameters": {
+              "parameters": [
+                {
+                  "name": "Authorization",
+                  "value": "=Bearer {{ $env.SLACK_BOT_TOKEN }}"
+                }
+              ]
+            },
+            "options": {}
+          },
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0002",
+          "name": "Fetch Last 10 Slack Messages",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            420,
+            300
+          ]
+        },
+        {
+          "parameters": {
+            "jsCode": "const response = $input.first().json;\nconst rawMessages = response.messages || [];\n\nif (!rawMessages.length) {\n  return [{\n    json: {\n      channel: \"C0BDS80PHNJ\",\n      message_count: 0,\n      formatted_logs: \"(No messages retrieved from Slack channel)\"\n    }\n  }];\n}\n\n// Filter out automated report replies from this AI agent to avoid feedback loops\nconst nonBotReports = rawMessages.filter(msg => {\n  const text = msg.text || \"\";\n  return !text.includes(\"[AI Cluster Diagnostic Report]\");\n}).slice(0, 10);\n\nconst formattedLogs = nonBotReports.map((msg, idx) => {\n  const tsNum = parseFloat(msg.ts || \"0\");\n  const timeStr = tsNum ? new Date(tsNum * 1000).toISOString() : \"unknown\";\n  const sender = msg.username || msg.user || msg.bot_id || \"system\";\n  return `--- [Message ${idx + 1}] (${timeStr}) Sender: ${sender} ---\\n${msg.text || ''}`;\n}).join(\"\\n\\n\");\n\nreturn [{\n  json: {\n    channel: \"C0BDS80PHNJ\",\n    message_count: nonBotReports.length,\n    latest_ts: rawMessages[0]?.ts,\n    formatted_logs: formattedLogs\n  }\n}];"
+          },
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0003",
+          "name": "Format Messages & Context",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            640,
+            300
+          ]
+        },
+        {
+          "parameters": {
+            "promptType": "define",
+            "text": "=You are an expert Kubernetes Site Reliability Engineer (SRE).\n\nAnalyze the following 10 recent messages/alerts from our homelab Slack channel (C0BDS80PHNJ):\n\n{{ $json.formatted_logs }}\n\nTasks:\n1. Identify if any active alerts, error logs, or degraded services exist in these messages.\n2. If an alert or issue mentions a Kubernetes namespace, deployment, service, or pod, call the `k8s_cluster_inspector` tool to query live cluster status, pod restarts, recent logs, and warning events.\n3. Combine the alert information with real-time cluster inspection findings to diagnose the root cause.\n4. Produce a concise, well-structured SRE incident report formatted with markdown headers, emojis, status indicators, and clear remediation steps.",
+            "options": {
+              "systemMessage": "You are a professional SRE diagnosing issues in a Talos Linux Kubernetes cluster with Argo CD GitOps. Always verify live cluster state using the k8s_cluster_inspector tool before concluding. Never suggest direct cluster mutation (`kubectl apply/delete/edit`); suggest GitOps commits or declarative fixes when applicable."
+            }
+          },
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0004",
+          "name": "AI Diagnostic Agent",
+          "type": "@n8n/n8n-nodes-langchain.agent",
+          "typeVersion": 1.7,
+          "position": [
+            880,
+            300
+          ]
+        },
+        {
+          "parameters": {
+            "model": "qwen3.8:27b",
+            "options": {
+              "baseURL": "http://192.168.50.79:11434/v1",
+              "temperature": 0.2
+            }
+          },
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0005",
+          "name": "Local Ollama Qwen3",
+          "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+          "typeVersion": 1.1,
+          "position": [
+            860,
+            520
+          ]
+        },
+        {
+          "parameters": {
+            "name": "k8s_cluster_inspector",
+            "description": "Read-only inspection tool for Kubernetes cluster. Input should be a JSON object with: { action: 'list_pods' | 'get_pod_status' | 'get_pod_logs' | 'list_events', namespace: string, pod_name?: string }",
+            "jsCode": "const https = require('https');\nconst fs = require('fs');\n\nconst tokenPath = '/var/run/secrets/kubernetes.io/serviceaccount/token';\nconst caPath = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt';\n\nlet token = '';\nlet ca = null;\n\ntry {\n  if (fs.existsSync(tokenPath)) token = fs.readFileSync(tokenPath, 'utf8').trim();\n  if (fs.existsSync(caPath)) ca = fs.readFileSync(caPath);\n} catch (e) {\n  // In non-k8s dev environment, fallback gracefully\n}\n\nasync function k8sApi(path) {\n  return new Promise((resolve, reject) => {\n    const options = {\n      hostname: 'kubernetes.default.svc',\n      port: 443,\n      path: path,\n      method: 'GET',\n      headers: {\n        'Authorization': `Bearer ${token}`,\n        'Accept': 'application/json'\n      },\n      ca: ca,\n      rejectUnauthorized: false,\n      timeout: 5000\n    };\n\n    const req = https.request(options, (res) => {\n      let data = '';\n      res.on('data', chunk => data += chunk);\n      res.on('end', () => {\n        try {\n          resolve(JSON.parse(data));\n        } catch (err) {\n          resolve({ raw: data });\n        }\n      });\n    });\n\n    req.on('error', (e) => resolve({ error: e.message }));\n    req.on('timeout', () => {\n      req.destroy();\n      resolve({ error: 'Request timed out' });\n    });\n    req.end();\n  });\n}\n\nlet parsedInput = {};\ntry {\n  parsedInput = typeof query === 'string' ? JSON.parse(query) : query;\n} catch (e) {\n  parsedInput = { action: 'list_pods', namespace: 'default' };\n}\n\nconst action = parsedInput.action || 'list_pods';\nconst ns = parsedInput.namespace || 'default';\nconst pod = parsedInput.pod_name;\n\nif (action === 'get_pod_logs' && pod) {\n  const res = await k8sApi(`/api/v1/namespaces/${ns}/pods/${pod}/log?tailLines=50`);\n  return JSON.stringify(res);\n}\n\nif (action === 'get_pod_status' && pod) {\n  const res = await k8sApi(`/api/v1/namespaces/${ns}/pods/${pod}/status`);\n  return JSON.stringify({ phase: res?.status?.phase, conditions: res?.status?.conditions, containerStatuses: res?.status?.containerStatuses });\n}\n\nif (action === 'list_events') {\n  const res = await k8sApi(`/api/v1/namespaces/${ns}/events?limit=20`);\n  const events = (res?.items || []).map(i => `${i.type} ${i.reason}: ${i.message}`);\n  return JSON.stringify(events);\n}\n\n// Default: list pods in namespace\nconst res = await k8sApi(`/api/v1/namespaces/${ns}/pods`);\nconst summary = (res?.items || []).map(p => ({\n  name: p.metadata?.name,\n  phase: p.status?.phase,\n  restartCount: p.status?.containerStatuses?.[0]?.restartCount || 0\n}));\nreturn JSON.stringify(summary);"
+          },
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0006",
+          "name": "K8s Cluster Inspector Tool",
+          "type": "@n8n/n8n-nodes-langchain.toolCode",
+          "typeVersion": 1.1,
+          "position": [
+            1060,
+            520
+          ]
+        },
+        {
+          "parameters": {
+            "method": "POST",
+            "url": "https://slack.com/api/chat.postMessage",
+            "sendHeaders": true,
+            "headerParameters": {
+              "parameters": [
+                {
+                  "name": "Authorization",
+                  "value": "=Bearer {{ $env.SLACK_BOT_TOKEN }}"
+                },
+                {
+                  "name": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ]
+            },
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\n  \"channel\": \"C0BDS80PHNJ\",\n  \"text\": \"*🤖 [AI Cluster Diagnostic Report]*\\n\\n\" + $json.output\n}",
+            "options": {}
+          },
+          "id": "e0e29202-0e54-470a-8bf7-e17f0a1d0007",
+          "name": "Post AI Report to Slack",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            1160,
+            300
+          ]
+        }
+      ],
+      "connections": {
+        "When clicking 'Test workflow'": {
+          "main": [
+            [
+              {
+                "node": "Fetch Last 10 Slack Messages",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Fetch Last 10 Slack Messages": {
+          "main": [
+            [
+              {
+                "node": "Format Messages & Context",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Format Messages & Context": {
+          "main": [
+            [
+              {
+                "node": "AI Diagnostic Agent",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "AI Diagnostic Agent": {
+          "main": [
+            [
+              {
+                "node": "Post AI Report to Slack",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Local Ollama Qwen3": {
+          "ai_languageModel": [
+            [
+              {
+                "node": "AI Diagnostic Agent",
+                "type": "ai_languageModel",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "K8s Cluster Inspector Tool": {
+          "ai_tool": [
+            [
+              {
+                "node": "AI Diagnostic Agent",
+                "type": "ai_tool",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      },
+      "settings": {
+        "executionOrder": "v1"
+      },
+      "active": false
+    }

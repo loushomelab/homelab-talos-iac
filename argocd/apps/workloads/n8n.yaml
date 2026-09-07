@@ -123,6 +123,11 @@ spec:
                   secretKeyRef:
                     name: n8n-secrets
                     key: N8N_SANDBOX_API_KEY
+              SLACK_BOT_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: n8n-secrets
+                    key: SLACK_BOT_TOKEN
               N8N_INSTANCE_AI_SEARXNG_URL:
                 value: "http://searxng.n8n.svc.cluster.local:8080"
 
@@ -133,3 +138,6 @@ spec:
               limits:
                 cpu: 1000m
                 memory: 1024Mi
+    - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+      targetRevision: HEAD
+      path: argocd/configs/workloads/n8n/manifests
