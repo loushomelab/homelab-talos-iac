@@ -9,6 +9,7 @@ metadata:
 data:
   slack-k8s-diagnostics.json: |
     {
+      "id": "WfSlackK8sDiag1",
       "name": "K8s AI Incident Inspector",
       "nodes": [
         {
