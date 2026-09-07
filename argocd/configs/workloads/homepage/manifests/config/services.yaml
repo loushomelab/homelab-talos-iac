@@ -150,7 +150,7 @@
             key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
     - Zot Registry:
         description: LXC in PVE Cluster
-        href: http://192.168.50.125:8080
+        href: https://zot.646499453.xyz:8443
         icon: sh-zot-registry.svg
         siteMonitor: http://192.168.50.125:8080
         showStats: true
