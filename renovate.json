@@ -6,9 +6,6 @@
     ":semanticCommits"
   ],
   "timezone": "Asia/Shanghai",
-  "schedule": [
-    "every day"
-  ],
   "argocd": {
     "fileMatch": [
       "^argocd/apps/.+\\.ya?ml$",
