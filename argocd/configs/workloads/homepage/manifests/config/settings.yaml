@@ -29,6 +29,9 @@ layout:
   CI/CD:
     style: row
     columns: 4
+  Git:
+    style: row
+    columns: 2
   Dashboards:
     style: row
     columns: 4

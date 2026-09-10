@@ -43,7 +43,7 @@ spec:
               gethomepage.dev/enabled: "true"
               gethomepage.dev/name: "Forgejo"
               gethomepage.dev/description: "Self-Hosted Git Service"
-              gethomepage.dev/group: "Development"
+              gethomepage.dev/group: "Git"
               gethomepage.dev/icon: "sh-forgejo.svg"
               gethomepage.dev/href: "https://forgejo.646499453.xyz:8443"
               gethomepage.dev/pod-selector: "app.kubernetes.io/name=forgejo"
