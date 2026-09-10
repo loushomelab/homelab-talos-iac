@@ -21,7 +21,7 @@ spec:
   source:
     repoURL: 'ghcr.io/unpoller/helm-chart'
     chart: unpoller
-    targetRevision: 2.6.0
+    targetRevision: 2.8.0
     helm:
       valuesObject:
         replicaCount: 1
