@@ -19,7 +19,7 @@ spec:
   sources:
   - repoURL: 'ghcr.io/prometheus-community/charts'
     chart: alertmanager
-    targetRevision: 1.43.0
+    targetRevision: 1.43.1
     helm:
       valuesObject:
         extraEnv:
