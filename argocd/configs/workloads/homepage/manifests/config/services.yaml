@@ -117,7 +117,7 @@
         showStats: true
         proxmoxNode: 3960x
         proxmoxVMID: 200
-        proxmoxType: lxc    
+        proxmoxType: lxc
     - Github Runner (Homelab):
         description: LXC in PVE Cluster
         href: https://github.com/organizations/loushomelab/settings/actions/runners/

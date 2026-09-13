@@ -1,0 +1,62 @@
+name: Manifest & Config Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  yamllint:
+    name: YAML Syntax & Style (yamllint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run yamllint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint.yaml
+          file_or_dir: .
+
+  kubeconform:
+    name: Kubernetes Schema Validation (kubeconform)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup kubeconform
+        uses: alexellis/setup-kubeconform@v1
+
+      - name: Run kubeconform
+        run: |
+          echo "==> Running kubeconform validation on argocd/ manifests..."
+          kubeconform \
+            -summary \
+            -strict \
+            -ignore-missing-schemas \
+            -kubernetes-version 1.32.0 \
+            -schema-location default \
+            -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+            argocd/
+
+  renovate-lint:
+    name: Renovate Config Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate renovate.json
+        run: |
+          node -e 'JSON.parse(require("fs").readFileSync("renovate.json", "utf8"))'
+          npx --yes --package renovate renovate-config-validator renovate.json

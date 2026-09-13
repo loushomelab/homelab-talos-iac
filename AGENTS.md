@@ -15,18 +15,22 @@ GitOps Infrastructure-as-Code (IaC) repository managing a Talos Linux Kubernetes
 
 ## Local Pre-Commit Validation & Testing
 
-Run these commands locally for client-side validation before pushing to Git:
+Run these commands locally for client-side validation before pushing to Git (via `task` or direct CLI):
 
 ```bash
-# 1. Single Manifest / File Dry-Run Validation (Syntax & Schema only)
+# 1. Standardized Taskfile validation (Recommended)
+task val:all        # Validates apps, configs, and renovate.json
+pre-commit run --all-files
+
+# 2. Granular Taskfile checks
+task val:apps       # Dry-run argocd/apps/
+task val:configs    # Dry-run argocd/configs/
+task val:renovate   # Validate renovate.json syntax
+
+# 3. Direct Fallback Commands
 kubectl apply --dry-run=client -f argocd/apps/workloads/forgejo.yaml
 kubectl apply --dry-run=client -f argocd/configs/infrastructure/ingressroute/manifests/
-
-# 2. Syntax, Formatting & JSON Validation
-git diff --check
 node -e 'JSON.parse(require("fs").readFileSync("renovate.json", "utf8"))'
-
-# 3. Single Invariant / Assertion Testing (Python)
 python3 -c 'from pathlib import Path; assert "gethomepage.dev/enabled" in Path("argocd/apps/workloads/forgejo.yaml").read_text()'
 ```
 
@@ -37,25 +41,26 @@ python3 -c 'from pathlib import Path; assert "gethomepage.dev/enabled" in Path("
 After pushing changes to `main`, verify that the submitted changes have taken effect:
 
 ```bash
-# 1. Verify Argo CD is syncing the EXACT target commit SHA (not previous state)
+# 1. Trigger Deterministic Sync via Taskfile (Recommended)
+task sync app=<app-name>
+
+# 2. Or Manual Patch Verification
 TARGET_SHA=$(git rev-parse HEAD)
 kubectl get application <app-name> -n argocd -o jsonpath='{.status.sync.revision}'
 # If not synced yet, trigger immediate sync for the commit:
 kubectl -n argocd patch application <app-name> --type merge -p "{\"operation\":{\"sync\":{\"prune\":true,\"revision\":\"$TARGET_SHA\"}}}"
 
-# 2. Wait for Workload Rollout to Complete
+# 3. Workload Rollout & Live State Inspection
 kubectl rollout status deployment/<name> -n <namespace> --timeout=120s
-
-# 3. Inspect Live Cluster State to PROVE the Modified Fields are Applied
-# Example A: Verify new IngressRoute annotations / routes are present
 kubectl get ingressroute <name> -n <namespace> -o jsonpath='{.metadata.annotations}'
-# Example B: Verify updated container image or environment variables
 kubectl get deployment <name> -n <namespace> -o jsonpath='{.spec.template.spec.containers[0].image}'
-# Example C: Verify generated ExternalSecret or ConfigMap contents
 kubectl get configmap <name> -n <namespace> -o yaml
 
-# 4. Live Endpoint & Health Probe
-curl -ks https://<service>.646499453.xyz:8443 -o /dev/null -w "%{http_code}\n"
+# 4. Cluster State & Endpoint Probing via Taskfile
+task inspect:certs    # Wildcard TLS Secret sync status across all namespaces
+task inspect:secrets  # ExternalSecret sync status across all namespaces
+task probe app=<service>  # Probe specific service
+task probe:all        # Probe all main services (homepage, forgejo, n8n, grafana, authentik)
 ```
 
 ---

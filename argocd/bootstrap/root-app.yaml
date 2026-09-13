@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
-    path: argocd/bootstrap/init 
+    path: argocd/bootstrap/init
     directory:
       recurse: true
   destination:

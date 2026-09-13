@@ -6,6 +6,7 @@
     ":semanticCommits"
   ],
   "timezone": "Asia/Shanghai",
+  "minimumReleaseAge": "3 days",
   "argocd": {
     "fileMatch": [
       "^argocd/apps/.+\\.ya?ml$",
@@ -25,6 +26,49 @@
   "assignees": ["L128"],
   "labels": ["dependencies", "renovate"],
   "packageRules": [
+    {
+      "description": "监控全家桶成组升级 (Grafana, Mimir, Alloy, Pyroscope, Alertmanager)",
+      "matchPackageNames": [
+        "*grafana*",
+        "*mimir*",
+        "*alloy*",
+        "*pyroscope*",
+        "*alertmanager*",
+        "*prometheus*"
+      ],
+      "groupName": "observability-stack",
+      "groupSlug": "observability-stack"
+    },
+    {
+      "description": "网络与入口基础设施成组升级 (Traefik, cert-manager, metallb)",
+      "matchPackageNames": [
+        "*traefik*",
+        "*cert-manager*",
+        "*metallb*"
+      ],
+      "groupName": "networking-stack",
+      "groupSlug": "networking-stack"
+    },
+    {
+      "description": "用户应用工作负载成组升级 (Forgejo, n8n, Homepage, SearXNG)",
+      "matchPackageNames": [
+        "*forgejo*",
+        "*n8n*",
+        "*homepage*",
+        "*searxng*"
+      ],
+      "groupName": "workloads-stack",
+      "groupSlug": "workloads-stack"
+    },
+    {
+      "description": "身份鉴权与安全组件成组升级 (Authentik, External Secrets)",
+      "matchPackageNames": [
+        "*authentik*",
+        "*external-secrets*"
+      ],
+      "groupName": "security-stack",
+      "groupSlug": "security-stack"
+    },
     {
       "description": "自动合并小版本 (minor)、补丁版本 (patch) 及 digest/pin 更新",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],

@@ -1,0 +1,119 @@
+version: '3'
+
+vars:
+  VIP_DOMAIN: 646499453.xyz
+  VIP_PORT: 8443
+
+tasks:
+  default:
+    desc: "List all available tasks"
+    cmds:
+      - task --list
+    silent: true
+
+  # =========================================================================
+  # 1. Argo CD Deterministic Sync & Rollout
+  # =========================================================================
+  sync:
+    desc: "Trigger Argo CD deterministic sync for an application with current git SHA (e.g. task sync app=forgejo)"
+    vars:
+      app: '{{.app | default ""}}'
+    cmds:
+      - |
+        if [ -z "{{.app}}" ]; then
+          echo "Error: app variable required. Usage: task sync app=<app-name>" >&2
+          exit 1
+        fi
+        TARGET_SHA=$(git rev-parse HEAD)
+        echo "==> Triggering Argo CD sync for {{.app}} at commit: ${TARGET_SHA}..."
+        kubectl -n argocd patch application {{.app}} --type merge -p "{\"operation\":{\"sync\":{\"prune\":true,\"revision\":\"${TARGET_SHA}\"}}}"
+        echo "==> Waiting for workload rollout..."
+        kubectl rollout status deployment/{{.app}} -n {{.app}} --timeout=90s || true
+
+  # =========================================================================
+  # 2. Local Dry-Run Validation & Manifest Linting
+  # =========================================================================
+  "val:all":
+    desc: "Run client-side dry-run validation on all applications, configs, and renovate"
+    cmds:
+      - task: "val:apps"
+      - task: "val:configs"
+      - task: "val:renovate"
+      - echo "✔ All local validations passed."
+
+  "val:apps":
+    desc: "Dry-run validate all Argo CD application CRDs"
+    cmds:
+      - echo "==> Dry-run validating argocd/apps/..."
+      - kubectl apply --dry-run=client --request-timeout=5s -R -f argocd/apps/
+
+  "val:configs":
+    desc: "Dry-run validate all native manifests in argocd/configs/..."
+    cmds:
+      - echo "==> Dry-run validating argocd/configs/..."
+      - kubectl apply --dry-run=client --request-timeout=5s -R -f argocd/configs/
+
+  "val:renovate":
+    desc: "Validate renovate.json JSON syntax"
+    cmds:
+      - echo "==> Validating renovate.json syntax..."
+      - node -e 'JSON.parse(require("fs").readFileSync("renovate.json", "utf8"))'
+      - echo "✔ renovate.json is valid JSON."
+
+  # =========================================================================
+  # 3. Cluster Inspection (Certs, Secrets, Ingress)
+  # =========================================================================
+  "inspect:certs":
+    desc: "Inspect wildcard certificate synchronization across all namespaces"
+    cmds:
+      - echo "==> Wildcard TLS Secret distribution (via Reflector):"
+      - kubectl get secret wildcards-646499453-xyz-tls -A
+
+  "inspect:secrets":
+    desc: "Inspect ExternalSecret synchronization status across all namespaces"
+    cmds:
+      - echo "==> ExternalSecret synchronization status (Doppler + ESO):"
+      - kubectl get externalsecret -A -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,STORE:.spec.secretStoreRef.name,STATUS:.status.conditions[-1].type,REASON:.status.conditions[-1].reason'
+
+  "inspect:apps":
+    desc: "Overview of all Argo CD applications and sync/health status"
+    cmds:
+      - kubectl get application -n argocd -o custom-columns='NAME:.metadata.name,PROJECT:.spec.project,SYNC:.status.sync.status,HEALTH:.status.health.status,REVISION:.status.sync.revision'
+
+  # =========================================================================
+  # 4. Cluster Housekeeping
+  # =========================================================================
+  "clean:pods":
+    desc: "Clean up Failed, Succeeded, and Evicted pods across all namespaces"
+    cmds:
+      - echo "==> Cleaning Failed and Succeeded pods..."
+      - kubectl delete pods -A --field-selector status.phase=Failed --ignore-not-found
+      - kubectl delete pods -A --field-selector status.phase=Succeeded --ignore-not-found
+      - echo "==> Cleaning Evicted pods..."
+      - kubectl get pods -A --no-headers | awk '/Evicted/{print "kubectl delete pod -n " $1 " " $2}' | bash || true
+      - echo "✔ Housekeeping complete."
+
+  # =========================================================================
+  # 5. Endpoint & VIP Probing
+  # =========================================================================
+  "probe:all":
+    desc: "Probe Traefik Ingress VIP endpoints for all primary homelab services"
+    cmds:
+      - |
+        printf "%-15s %-45s %-10s\n" "SERVICE" "URL" "HTTP_CODE"
+        printf "%-15s %-45s %-10s\n" "-------" "---" "---------"
+        for svc in homepage forgejo n8n grafana authentik; do
+          URL="https://${svc}.{{.VIP_DOMAIN}}:{{.VIP_PORT}}"
+          CODE=$(curl -ks -o /dev/null -w "%{http_code}" --connect-timeout 3 "$URL" || echo "ERR")
+          printf "%-15s %-45s %-10s\n" "$svc" "$URL" "$CODE"
+        done
+
+  probe:
+    desc: "Probe a specific service endpoint (Usage: task probe app=forgejo)"
+    vars:
+      app: '{{.app | default "homepage"}}'
+    cmds:
+      - |
+        URL="https://{{.app}}.{{.VIP_DOMAIN}}:{{.VIP_PORT}}"
+        CODE=$(curl -ks -o /dev/null -w "%{http_code}" --connect-timeout 4 "$URL" || echo "ERR")
+        echo "==> {{.app}} ($URL) returned HTTP: $CODE"
