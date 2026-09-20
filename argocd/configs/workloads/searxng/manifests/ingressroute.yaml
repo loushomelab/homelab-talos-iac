@@ -10,7 +10,7 @@ spec:
     - websecure
   routes:
     # Trusted home LAN clients bypass the external Authentik login.
-    - match: Host(`searxng.646499453.xyz`) && ClientIP(`192.168.0.0/16`)
+    - match: Host(`searxng.646499453.xyz`) && ClientIP(`192.168.50.0/24`)
       kind: Rule
       priority: 100
       services:
