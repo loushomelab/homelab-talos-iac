@@ -23,7 +23,6 @@ data:
     server:
       port: 8080
       bind_address: "0.0.0.0"
-      secret_key: "searxng_secret_homelab_n8n_key"
       limiter: false
       image_proxy: true
 

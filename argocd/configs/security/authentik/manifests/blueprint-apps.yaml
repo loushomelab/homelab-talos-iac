@@ -377,6 +377,27 @@ data:
           icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/n8n.svg
           meta_launch_url: https://n8n.646499453.xyz:8443/
 
+      # --- SearXNG (Forward Auth) ---
+      - identifiers:
+          name: SearXNG
+        model: authentik_providers_proxy.proxyprovider
+        id: searxng-provider
+        attrs:
+          name: SearXNG
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          internal_host: ""
+          external_host: https://searxng.646499453.xyz:8443
+          mode: forward_single
+      - identifiers:
+          slug: searxng
+        model: authentik_core.application
+        attrs:
+          name: SearXNG
+          provider: !KeyOf searxng-provider
+          icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/searxng.svg
+          meta_launch_url: https://searxng.646499453.xyz:8443/
+
       # --- Embedded Outpost Update ---
       # Automatically bind these proxy providers to the embedded outpost
       - identifiers:
@@ -388,3 +409,4 @@ data:
             - !KeyOf longhorn-provider
             - !KeyOf truenas-provider
             - !KeyOf n8n-provider
+            - !KeyOf searxng-provider

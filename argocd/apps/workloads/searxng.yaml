@@ -5,11 +5,13 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    link.argocd.argoproj.io/external-link: https://searxng.646499453.xyz:8443
 spec:
   project: workloads
   source:
     repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
-    targetRevision: HEAD
+    targetRevision: main
     path: argocd/configs/workloads/searxng/manifests
     directory:
       recurse: true
