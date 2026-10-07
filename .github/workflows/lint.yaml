@@ -34,13 +34,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup kubeconform
-        uses: alexellis/setup-kubeconform@v1
-
       - name: Run kubeconform
         run: |
           echo "==> Running kubeconform validation on argocd/ manifests..."
-          kubeconform \
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            ghcr.io/yannh/kubeconform:v0.7.0 \
             -summary \
             -strict \
             -ignore-missing-schemas \
