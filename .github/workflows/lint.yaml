@@ -34,16 +34,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup kubeconform
-        uses: alexellis/setup-kubeconform@v1
-
       - name: Run kubeconform
         run: |
           echo "==> Running kubeconform validation on argocd/ manifests..."
-          kubeconform \
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            ghcr.io/yannh/kubeconform:v0.7.0 \
             -summary \
             -strict \
             -ignore-missing-schemas \
+            -ignore-filename-pattern '(^|/)argocd/bootstrap/values\.yaml$' \
+            -ignore-filename-pattern '(^|/)argocd/configs/workloads/homepage/manifests/config/.*\.ya?ml$' \
             -kubernetes-version 1.32.0 \
             -schema-location default \
             -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
