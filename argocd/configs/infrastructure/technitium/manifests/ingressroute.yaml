@@ -1,0 +1,37 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: technitium
+  namespace: technitium
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`technitium.646499453.xyz`) && PathPrefix(`/api`)
+      kind: Rule
+      priority: 100
+      middlewares:
+        - name: tfc-agent-api-allowlist
+      services:
+        - name: technitium-web
+          port: 5380
+    - match: Host(`technitium.646499453.xyz`)
+      kind: Rule
+      middlewares:
+        - name: authentik-forwardauth
+          namespace: traefik
+      services:
+        - name: technitium-web
+          port: 5380
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: tfc-agent-api-allowlist
+  namespace: technitium
+spec:
+  ipAllowList:
+    sourceRange:
+      - 192.168.50.200/32

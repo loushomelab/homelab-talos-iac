@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: technitium
+  namespace: technitium
+  labels:
+    app.kubernetes.io/name: technitium
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: technitium
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: technitium
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: technitium
+          image: technitium/dns-server:15.6.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: dns-udp
+              containerPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 53
+              protocol: TCP
+            - name: web
+              containerPort: 5380
+              protocol: TCP
+          env:
+            - name: DNS_SERVER_DOMAIN
+              value: technitium
+            - name: DNS_SERVER_ADMIN_PASSWORD_FILE
+              value: /run/secrets/technitium/admin-password
+            # Restrict recursive queries to the home LAN; never expose an open resolver.
+            - name: DNS_SERVER_RECURSION
+              value: UseSpecifiedNetworkACL
+            - name: DNS_SERVER_RECURSION_NETWORK_ACL
+              value: 192.168.50.0/23
+          volumeMounts:
+            - name: config
+              mountPath: /etc/dns
+            - name: admin-password
+              mountPath: /run/secrets/technitium
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1
+              memory: 1Gi
+          # Technitium allows unauthenticated health checks only from loopback.
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - >-
+                  curl -fsS http://127.0.0.1:5380/api/dnsClient/healthCheck |
+                  grep -q '"status":"ok"'
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - >-
+                  curl -fsS http://127.0.0.1:5380/api/dnsClient/healthCheck |
+                  grep -q '"status":"ok"'
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: technitium-config
+        - name: admin-password
+          secret:
+            secretName: technitium-secrets
+            defaultMode: 0440
+            items:
+              - key: TECHNITIUM_ADMIN_PASSWORD
+                path: admin-password
