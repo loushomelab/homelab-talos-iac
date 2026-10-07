@@ -43,6 +43,8 @@ layout:
     columns: 4
   Storage:
   Network:
+    style: row
+    columns: 3
   IOT:
   Identity:
   Monitoring:
