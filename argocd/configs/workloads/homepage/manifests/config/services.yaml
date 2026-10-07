@@ -27,7 +27,7 @@
     - NAS:
         - Synology:
             description: Synology DSM
-            href: https://lou128.synology.me:5001
+            href: https://ds920.646499453.xyz:8443
             siteMonitor: https://192.168.50.77:5001
             icon: sh-synology.svg
             widget:
@@ -157,6 +157,11 @@
         proxmoxNode: 1920x
         proxmoxVMID: 125
         proxmoxType: lxc
+    - Technitium:
+        description: DNS Server
+        href: https://technitium.646499453.xyz:8443
+        icon: sh-technitium.svg
+        siteMonitor: http://technitium-web.technitium.svc.cluster.local:5380
 
 - IOT:
     - Langshi:
