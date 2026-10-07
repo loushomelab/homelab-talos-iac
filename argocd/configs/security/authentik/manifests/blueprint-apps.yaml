@@ -429,3 +429,4 @@ data:
             - !KeyOf truenas-provider
             - !KeyOf n8n-provider
             - !KeyOf searxng-provider
+            - !KeyOf technitium-provider
