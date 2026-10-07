@@ -148,6 +148,25 @@ data:
           icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
           meta_launch_url: https://longhorn.646499453.xyz:8443/
 
+      - identifiers:
+          name: Technitium DNS
+        model: authentik_providers_proxy.proxyprovider
+        id: technitium-provider
+        attrs:
+          name: Technitium DNS
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          internal_host: ""
+          external_host: https://technitium.646499453.xyz:8443
+          mode: forward_single
+      - identifiers:
+          slug: technitium-dns
+        model: authentik_core.application
+        attrs:
+          name: Technitium DNS
+          provider: !KeyOf technitium-provider
+          meta_launch_url: https://technitium.646499453.xyz:8443/
+
 
       # --- Grafana ---
       - identifiers:
