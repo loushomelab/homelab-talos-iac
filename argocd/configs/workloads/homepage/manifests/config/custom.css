@@ -25,6 +25,7 @@ html.dark header > div,
 html.dark #information-widgets > div,
 html.dark #information-widgets > div > div,
 html.dark .header-widget,
+html.dark #information-widgets .information-widget-form,
 html.dark #search form {
   background-color: rgba(15, 23, 42, 0.88) !important;
   backdrop-filter: blur(20px) saturate(125%) !important;
@@ -97,19 +98,16 @@ html.dark [class*="description"] {
   color: #94a3b8 !important;
 }
 /* 指标小标签与数据块文字高对比度强化 */
-/* 指标小标签与数据块文字高对比度强化 */
+/* v2.4 指标块没有 value/label 类：两个直接子元素依次是数值与标签 */
 html.dark .text-slate-400,
 html.dark .text-gray-400,
 html.dark .text-neutral-400,
 html.dark .text-zinc-400,
-html.dark .service-card [class*="label"],
-html.dark .service-card dt {
+html.dark .service-block > div:last-child {
   color: #94a3b8 !important;
   font-weight: 600 !important;
 }
-.service-card [class*="value"],
-html.dark .service-card [class*="value"],
-html.dark .service-card dd {
+html.dark .service-block > div:first-child {
   color: #f1f5f9 !important;
   font-weight: 700 !important;
 }
