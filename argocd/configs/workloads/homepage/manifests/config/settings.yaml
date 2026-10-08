@@ -2,12 +2,12 @@ title: Lous Homelab Dashboard
 # theme / color 故意不固定：写了固定值会隐藏切换器（v2.4 src/pages/index.jsx: `{!settings.theme && <ThemeToggle />}`）。
 # 不固定时默认跟随 localStorage 与系统 prefers-color-scheme，用户可在页面上切白天/夜间与配色。
 useEqualHeights: true
+# 壁纸只保留一档压暗（opacity → 40% 遮罩），不再叠加 blur/brightness/saturate：
+# 那三个键会让整个页面套一层 backdrop-filter（实测 #inner_wrapper = blur(8px) brightness(0.75)），
+# 与卡片自身的模糊叠加后画面发闷、层次消失。玻璃只保留在 CSS 的页头一条。
 background:
   image: https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2940&auto=format&fit=crop
-  blur: sm
-  brightness: 75
-  saturate: 95
-  opacity: 85
+  opacity: 60
 favicon: https://humblehouse.com.cn/favicon.ico
 headerStyle: boxedWidgets
 # 家庭仪表盘不应被搜索引擎收录（robots.txt + noindex meta）
