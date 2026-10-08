@@ -1,12 +1,16 @@
 title: Lous Homelab Dashboard
-color: zinc
-cardBlur: lg
+theme: dark
+color: slate
+cardStyle: hairline
+blockStyle: refined
+font: plexData
 useEqualHeights: true
 background:
   image: https://images.unsplash.com/photo-1780467763551-f182a0d55c9f?q=80&w=2940&auto=format&fit=crop
-  blur: lg
-  brightness: 25
-  opacity: 40
+  blur: sm
+  brightness: 65
+  saturate: 85
+  opacity: 80
 favicon: https://humblehouse.com.cn/favicon.ico
 headerStyle: boxedWidgets
 quicklaunch:
