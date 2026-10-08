@@ -27,6 +27,11 @@ spec:
           env:
           - name: TZ
             value: Asia/Shanghai
+          - name: AUTHENTIK_OIDC_TECHNITIUM_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: authentik-secrets
+                key: AUTHENTIK_OIDC_TECHNITIUM_SECRET
           envFrom:
           - secretRef:
               name: authentik-secrets
@@ -60,6 +65,11 @@ spec:
           env:
           - name: TZ
             value: Asia/Shanghai
+          - name: AUTHENTIK_OIDC_TECHNITIUM_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: authentik-secrets
+                key: AUTHENTIK_OIDC_TECHNITIUM_SECRET
           envFrom:
           - secretRef:
               name: authentik-secrets
