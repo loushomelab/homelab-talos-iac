@@ -11,7 +11,7 @@
 /* 分组标题与区块标题保护光晕 (解决文字在背景上发虚漂浮问题) */
 html.dark .service-group-name,
 html.dark .bookmark-group-name,
-html.dark h2, 
+html.dark h2,
 html.dark h3 {
   color: #ffffff !important;
   font-weight: 700 !important;
@@ -115,6 +115,115 @@ html.dark .service-block > div:first-child {
 /* 状态标签圆角与高亮强化 */
 html.dark .service-status,
 html.dark [class*="status"] {
+  font-weight: 600 !important;
+  letter-spacing: 0.025em;
+}
+
+/* =========================================================
+   Light (Day) Mode —— 与深色模式同结构、同模糊度的浅色亚克力
+   不启用这段的话，切到白天时上面所有规则都因 html.dark 前缀失效，
+   会退化回上游默认的近透明卡片，在亮色壁纸上同样不可读。
+   ========================================================= */
+html.light .service-group-name,
+html.light .bookmark-group-name,
+html.light h2,
+html.light h3 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(255, 255, 255, 0.7) !important;
+  letter-spacing: -0.01em;
+}
+
+/* 顶部信息小组件与搜索框浅色玻璃化 */
+html.light #header > div,
+html.light header > div,
+html.light #information-widgets > div,
+html.light #information-widgets > div > div,
+html.light .header-widget,
+html.light #information-widgets .information-widget-form,
+html.light #search form {
+  background-color: rgba(248, 250, 252, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.18) !important;
+  border-radius: 0.75rem !important;
+}
+/* 搜索框输入区域干净透明 */
+html.light #search input,
+html.light form input {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+}
+/* 顶部 Tab 切换按钮浅色玻璃拟态 */
+html.light #myTab {
+  background-color: rgba(248, 250, 252, 0.80) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15) !important;
+  padding: 4px !important;
+  border-radius: 0.75rem !important;
+}
+/* 选中状态 */
+html.light #myTab button[aria-selected="true"] {
+  background-color: rgba(37, 99, 235, 0.18) !important;
+  border: 1px solid rgba(37, 99, 235, 0.45) !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15) !important;
+}
+
+/* 服务卡片浅色亚克力护罩 (88% 不透明，阻隔背景穿透杂光) */
+html.light .service-card:is(.light *),
+html.light [class*="service-card"]:is(.light *) {
+  background-color: rgba(248, 250, 252, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.14) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.18) !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 鼠标悬浮 */
+html.light .service-card:hover:is(.light *),
+html.light [class*="service-card"]:hover:is(.light *) {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(37, 99, 235, 0.45) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22), 0 0 14px rgba(37, 99, 235, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+/* 卡片内部服务标题 */
+html.light .service-name,
+html.light .service-title-text div {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+/* 次要描述文字 */
+html.light .service-description,
+html.light .service-descr,
+html.light [class*="description"] {
+  color: #475569 !important;
+}
+
+/* 指标标签与数值（与深色模式同样的选择器修正） */
+html.light .service-block > div:last-child {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+html.light .service-block > div:first-child {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* 状态标签 */
+html.light .service-status,
+html.light [class*="status"] {
   font-weight: 600 !important;
   letter-spacing: 0.025em;
 }
