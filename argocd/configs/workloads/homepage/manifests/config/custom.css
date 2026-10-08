@@ -1,24 +1,36 @@
 /* =========================================================
-   Homepage Dark Acrylic / Glassmorphism Theme
+   Homepage Dark Acrylic / Glassmorphism Theme (Option 2)
    ========================================================= */
 
 /* 消除重影，提升字体渲染平滑度 */
 *, body, h1, h2, h3, h4, h5, h6, span, p, a, input, div {
-  text-shadow: none !important;
+  text-shadow: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 顶部信息小组件与搜索框玻璃化 */
+/* 分组标题与区块标题保护光晕 (解决文字在背景上发虚漂浮问题) */
+.service-group-name,
+.bookmark-group-name,
+h2, h3 {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.75) !important;
+  letter-spacing: -0.01em;
+}
+
+/* 顶部信息小组件与搜索框深色玻璃化 */
 #header > div,
 header > div,
 #information-widgets > div,
+#information-widgets > div > div,
+.header-widget,
 #search form {
-  background-color: rgba(15, 23, 42, 0.75) !important;
-  backdrop-filter: blur(16px) saturate(125%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+  background-color: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
   border-radius: 0.75rem !important;
 }
 
@@ -31,35 +43,35 @@ form input {
   color: #f8fafc !important;
 }
 
-/* 顶部 Tab 切换按钮玻璃拟态美化 */
+/* 顶部 Tab 切换按钮深色玻璃拟态 */
 #myTab {
-  background-color: rgba(15, 23, 42, 0.65) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  background-color: rgba(15, 23, 42, 0.80) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
   padding: 4px !important;
+  border-radius: 0.75rem !important;
 }
 
 #myTab button[aria-selected="true"] {
-  background-color: rgba(59, 130, 246, 0.25) !important;
-  border: 1px solid rgba(96, 165, 250, 0.35) !important;
+  background-color: rgba(59, 130, 246, 0.35) !important;
+  border: 1px solid rgba(96, 165, 250, 0.5) !important;
   color: #ffffff !important;
   font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* 服务卡片暗黑亚克力磨砂护罩 */
+/* 服务卡片高密度深色亚克力磨砂护罩 (88% 不透明，彻底阻隔背景穿透杂光) */
 .service-card,
 .widget,
-.header-widget,
 [class*="service-card"],
 [class*="widget_"] {
-  background-color: rgba(15, 23, 42, 0.72) !important;
-  backdrop-filter: blur(16px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+  background-color: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
   border-radius: 0.75rem !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -67,22 +79,43 @@ form input {
 /* 鼠标悬浮精致微光与微动效 */
 .service-card:hover,
 [class*="service-card"]:hover {
-  border-color: rgba(96, 165, 250, 0.45) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 12px rgba(59, 130, 246, 0.2) !important;
+  border-color: rgba(96, 165, 250, 0.55) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(59, 130, 246, 0.25) !important;
   transform: translateY(-2px);
 }
 
-/* 提升次要文字、标签和描述信息的明度对比度 (解决发虚暗淡问题) */
+/* 卡片内部服务标题高亮加粗 */
+.service-name,
+.service-title-text div {
+  color: #f8fafc !important;
+  font-weight: 600 !important;
+}
+
+/* 次要描述文字清晰度提升 */
+.service-description,
+.service-descr,
+[class*="description"] {
+  color: #94a3b8 !important;
+}
+
+/* 指标小标签与数据块文字高对比度强化 */
 .text-slate-400,
 .text-gray-400,
 .text-neutral-400,
 .text-zinc-400,
-.service-descr,
-[class*="description"] {
-  color: #cbd5e1 !important;
+.service-card [class*="label"],
+.service-card dt {
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
 }
 
-/* 状态标签圆角与对比度强化 */
+.service-card [class*="value"],
+.service-card dd {
+  color: #f1f5f9 !important;
+  font-weight: 700 !important;
+}
+
+/* 状态标签圆角与高亮强化 */
 .service-status,
 [class*="status"] {
   font-weight: 600 !important;

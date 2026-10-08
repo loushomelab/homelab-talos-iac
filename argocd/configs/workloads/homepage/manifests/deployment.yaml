@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        kubectl.kubernetes.io/restartedAt: "2026-10-08T10:00:00Z"
+        kubectl.kubernetes.io/restartedAt: "2026-10-08T10:15:00Z"
       labels:
         app.kubernetes.io/name: homepage
     spec:
