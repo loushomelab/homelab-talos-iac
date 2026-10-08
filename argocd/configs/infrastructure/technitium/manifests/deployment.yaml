@@ -89,3 +89,93 @@ spec:
             items:
               - key: TECHNITIUM_ADMIN_PASSWORD
                 path: admin-password
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: technitium-configure-oidc
+  namespace: technitium
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 180
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: technitium-configure-oidc
+        app.kubernetes.io/component: oidc-configurator
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: configure-oidc
+          image: python:3.14.7-alpine3.23
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          env:
+            - name: TECHNITIUM_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: technitium-secrets
+                  key: TECHNITIUM_ADMIN_PASSWORD
+            - name: AUTHENTIK_OIDC_TECHNITIUM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: technitium-secrets
+                  key: AUTHENTIK_OIDC_TECHNITIUM_SECRET
+          # Docker SSO variables initialize only new config; reconcile the existing PVC via API.
+          command:
+            - python
+            - -c
+            - |
+              import json
+              import os
+              from urllib.parse import urlencode
+              from urllib.request import Request, urlopen
+
+              def api(path, values=None, token=None):
+                  body = urlencode(values).encode() if values is not None else None
+                  headers = {"Authorization": "Bearer " + token} if token else {}
+                  request = Request("http://technitium-web:5380" + path, data=body, headers=headers)
+                  with urlopen(request, timeout=30) as response:
+                      result = json.load(response)
+                  if result["status"] != "ok":
+                      raise RuntimeError(path + ": " + result["status"])
+                  return result
+
+              token = api("/api/user/login", {
+                  "user": "admin",
+                  "pass": os.environ["TECHNITIUM_ADMIN_PASSWORD"],
+              })["token"]
+              try:
+                  api("/api/admin/sso/set", {
+                      "ssoEnabled": "true",
+                      "ssoAuthority": "https://authentik.646499453.xyz:8443/application/o/technitium-dns/",
+                      "ssoClientId": "technitium",
+                      "ssoClientSecret": os.environ["AUTHENTIK_OIDC_TECHNITIUM_SECRET"],
+                      "ssoScopes": "openid|profile|email|groups",
+                      "ssoAllowSignup": "true",
+                      "ssoAllowSignupOnlyForMappedUsers": "true",
+                      "ssoGroupMap": "authentik Admins|Administrators",
+                  }, token)
+              finally:
+                  api("/api/user/logout", {}, token)
