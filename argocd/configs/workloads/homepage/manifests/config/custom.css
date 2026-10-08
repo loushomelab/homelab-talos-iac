@@ -1,229 +1,281 @@
 /* =========================================================
-   Homepage Dark Acrylic / Glassmorphism Theme (Option 2)
+   Homepage v2.4 视觉系统
+   ---------------------------------------------------------
+   设计依据（一手规范）：
+   · 表面层级：Material 3 elevation「less is more」——只用 2 级表面
+     画布/卡片，层级靠 3–6 tone 亮度差 + 1px 发丝边框表达；
+     阴影只作为「背景是照片时的保护」与交互态的例外。
+   · 模糊：Apple HIG 规定玻璃属功能层（导航/控件），内容层不用；
+     Chrome 官方说明 blur 开销随面积与半径增长 —— 因此只保留
+     页头一条功能层玻璃，卡片一律不用 backdrop-filter。
+   · 文字：NN/g 建议 ≤3 档字号、用字重差而非颜色差建立层次；
+     正文 ≥4.5:1、非文本 ≥3:1（WCAG 2.2 SC 1.4.3 / 1.4.11）。
+   · 用色预算：中性 70–90%、单一强调色 5–10%、每屏 ≤2 处。
+   · 几何：4/8/12/16 刻度（8pt 主轴），密集数据卡圆角 6–8px。
+   ---------------------------------------------------------
+   选择器全部对齐 v2.4.0 真实标记（已逐条核对源码）：
+   .service-card / .service-name / .service-description /
+   .service-block(.service-block > div 依次为数值、标签) /
+   .bookmark > a / .widget-container / .information-widget-form /
+   #myTab / #widgets-wrap。已删除 v2.4.0 中不存在的
+   #header、header > div、.header-widget、#search form/input、
+   [class*="service-card"]、.widget、[class*="widget_"]。
    ========================================================= */
 
-/* 消除重影，提升字体渲染平滑度 */
+html.dark {
+  /* 表面：画布由 settings 的 background.opacity 压暗，这里只用两级表面 */
+  --hp-surface: rgb(var(--color-800) / 0.78);
+  --hp-surface-hover: rgb(var(--color-800) / 0.88);
+  --hp-control: rgb(var(--color-900) / 0.72);
+  --hp-inset: rgb(255 255 255 / 0.05);
+  --hp-border: rgb(255 255 255 / 0.07);
+  --hp-border-strong: rgb(255 255 255 / 0.12);
+  --hp-text: #e9eef6;
+  --hp-text-dim: #b9c4d4;
+  --hp-text-mute: #a9b5c6;
+  --hp-accent: #7aa2f7;
+  --hp-accent-soft: rgb(122 162 247 / 0.14);
+  --hp-shadow: 0 1px 2px rgb(0 0 0 / 0.28);
+}
+
+html.light {
+  /* 亮色壁纸下白色卡片极易与雪景糊在一起，因此亮色表面比暗色更实，
+     并提高边框/阴影对比度来维持卡片边界。 */
+  --hp-surface: rgb(255 255 255 / 0.90);
+  --hp-surface-hover: rgb(255 255 255 / 0.98);
+  --hp-control: rgb(255 255 255 / 0.88);
+  --hp-inset: rgb(15 23 42 / 0.04);
+  --hp-border: rgb(15 23 42 / 0.10);
+  --hp-border-strong: rgb(15 23 42 / 0.16);
+  --hp-text: #1c2430;
+  --hp-text-dim: #414c5a;
+  --hp-text-mute: #515d6c;
+  --hp-accent: #2563eb;
+  --hp-accent-soft: rgb(37 99 235 / 0.12);
+  --hp-shadow: 0 1px 3px rgb(15 23 42 / 0.12);
+}
+
+/* 统一文字渲染：不使用 text-shadow 伪造对比度 */
 *, body, h1, h2, h3, h4, h5, h6, span, p, a, input, div {
   text-shadow: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/* 分组标题与区块标题保护光晕 (解决文字在背景上发虚漂浮问题) */
-html.dark .service-group-name,
-html.dark .bookmark-group-name,
-html.dark h2,
-html.dark h3 {
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.75) !important;
+
+/* ---------- 内容层：服务卡片 / 书签（无模糊，靠边框 + 亮度差分层） ---------- */
+.service-card,
+.bookmark > a {
+  background: var(--hp-surface) !important;
+  border: 1px solid var(--hp-border) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--hp-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 10px 12px !important;
+  transition: background-color 140ms ease, border-color 140ms ease !important;
+}
+.bookmark > a {
+  padding: 0 !important;
+}
+.service-card:hover,
+.bookmark > a:hover {
+  background: var(--hp-surface-hover) !important;
+  border-color: var(--hp-accent) !important;
+  transform: none !important;
+}
+
+/* ---------- 功能层：页头一条玻璃面板 + Tab 分段控件 ---------- */
+#widgets-wrap,
+#myTab {
+  background: var(--hp-control) !important;
+  border: 1px solid var(--hp-border) !important;
+  box-shadow: var(--hp-shadow) !important;
+  backdrop-filter: blur(12px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+}
+#widgets-wrap {
+  border-radius: 12px !important;
+  padding: 6px 8px !important;
+}
+/* 页头内部各 widget 不再各自铺一层底色（避免「深色外套 + 内部半透明卡」） */
+#widgets-wrap .widget-container {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+#widgets-wrap .widget-container span,
+#widgets-wrap .primary-text {
+  color: var(--hp-text) !important;
+}
+/* 搜索框作为页头内的内嵌输入控件 */
+#information-widgets .information-widget-form {
+  background: var(--hp-inset) !important;
+  border: 1px solid var(--hp-border) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+#information-widgets .information-widget-form input,
+#information-widgets input {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--hp-text) !important;
+}
+#information-widgets input::placeholder {
+  color: var(--hp-text-mute) !important;
+  opacity: 1;
+}
+
+#myTab {
+  border-radius: 10px !important;
+  padding: 3px !important;
+}
+#myTab button {
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--hp-text-dim) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  transition: background-color 140ms ease, color 140ms ease !important;
+}
+#myTab button:hover {
+  background: var(--hp-inset) !important;
+}
+/* 强调色唯一出现的位置之一：Tab 选中态 */
+#myTab button[aria-selected="true"] {
+  background: var(--hp-accent-soft) !important;
+  color: var(--hp-accent) !important;
+  font-weight: 600 !important;
+}
+
+/* ---------- 文字层级：3 档字号，靠字重与字号分层 ---------- */
+/* 分组标题压在照片壁纸上，实测亮部只有 2.1:1 —— 因此给它一层胶囊表面，
+   而不是用 text-shadow 伪造对比度（M3/NN-g：文字不应直接坐在照片上）。 */
+.service-group-name,
+.bookmark-group-name {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 3px 10px !important;
+  border-radius: 999px !important;
+  background: var(--hp-control) !important;
+  border: 1px solid var(--hp-border) !important;
+  color: var(--hp-text-dim) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+.service-name,
+.bookmark-name {
+  color: var(--hp-text) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   letter-spacing: -0.01em;
 }
+.bookmark-name {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+.service-description,
+.bookmark-description {
+  color: var(--hp-text-dim) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
 
-/* 顶部信息小组件与搜索框深色玻璃化 */
-html.dark #header > div,
-html.dark header > div,
-html.dark #information-widgets > div,
-html.dark #information-widgets > div > div,
-html.dark .header-widget,
-html.dark #information-widgets .information-widget-form,
-html.dark #search form {
-  background-color: rgba(15, 23, 42, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(125%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
-  border-radius: 0.75rem !important;
+/* ---------- 指标块：去掉嵌套底色，只用字重差表达数值/标签 ---------- */
+.service-block {
+  background: transparent !important;
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 10px 4px !important;
 }
-/* 搜索框输入区域干净透明 */
-html.dark #search input,
-html.dark form input {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: #f8fafc !important;
-}
-/* 顶部 Tab 切换按钮深色玻璃拟态 */
-html.dark #myTab {
-  background-color: rgba(15, 23, 42, 0.80) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
-  padding: 4px !important;
-  border-radius: 0.75rem !important;
-}
-/* 选中状态 */
-html.dark #myTab button[aria-selected="true"] {
-  background-color: rgba(59, 130, 246, 0.35) !important;
-  border: 1px solid rgba(96, 165, 250, 0.5) !important;
-  color: #ffffff !important;
+/* v2.4 指标块没有 value/label 类，两个直接子元素依次是数值与标签 */
+.service-block > div:first-child {
+  color: var(--hp-text) !important;
+  font-size: 16px !important;
   font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
 }
-
-/* 服务卡片高密度深色亚克力磨砂护罩 (88% 不透明，彻底阻隔背景穿透杂光) */
-html.dark .service-card:is(.dark *),
-html.dark .widget:is(.dark *),
-html.dark [class*="service-card"]:is(.dark *),
-html.dark [class*="widget_"]:is(.dark *) {
-  background-color: rgba(15, 23, 42, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-  border-radius: 0.75rem !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* 鼠标悬浮精致微光与微动效 */
-html.dark .service-card:hover:is(.dark *),
-html.dark [class*="service-card"]:hover:is(.dark *) {
-  background-color: rgba(22, 33, 56, 0.95) !important;
-  border-color: rgba(96, 165, 250, 0.55) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(59, 130, 246, 0.25) !important;
-  transform: translateY(-2px);
-}
-
-/* 卡片内部服务标题高亮加粗 */
-html.dark .service-name,
-html.dark .service-title-text div {
-  color: #f8fafc !important;
+.service-block > div:last-child {
+  color: var(--hp-text-mute) !important;
+  font-size: 10px !important;
   font-weight: 600 !important;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+/* 卡片内标题行与指标行之间用发丝分隔线，避免再套一层容器 */
+.service-stats {
+  border-top: 1px solid var(--hp-border);
+  margin-top: 10px !important;
+  padding-top: 2px !important;
+}
+/* k8s 容器统计展开时上游限制 max-h-[55px]，这里保持紧凑避免裁切 */
+.service-stats .service-block,
+.service-container .service-block {
+  padding: 3px 4px !important;
 }
 
-/* 次要描述文字清晰度提升 */
-html.dark .service-description,
-html.dark .service-descr,
-html.dark [class*="description"] {
-  color: #94a3b8 !important;
+/* ---------- 书签、状态标签、页脚 ---------- */
+.bookmark-icon {
+  background: transparent !important;
 }
-/* 指标小标签与数据块文字高对比度强化 */
-/* v2.4 指标块没有 value/label 类：两个直接子元素依次是数值与标签 */
-html.dark .text-slate-400,
-html.dark .text-gray-400,
-html.dark .text-neutral-400,
-html.dark .text-zinc-400,
-html.dark .service-block > div:last-child {
-  color: #94a3b8 !important;
-  font-weight: 600 !important;
-}
-html.dark .service-block > div:first-child {
-  color: #f1f5f9 !important;
-  font-weight: 700 !important;
+.bookmark-text {
+  padding: 8px 0 !important;
 }
 .service-status,
-/* 状态标签圆角与高亮强化 */
-html.dark .service-status,
-html.dark [class*="status"] {
+.service-tags,
+.service-tag {
   font-weight: 600 !important;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.02em;
+}
+#footer,
+#version {
+  color: var(--hp-text-mute) !important;
+  font-size: 11px !important;
 }
 
-/* =========================================================
-   Light (Day) Mode —— 与深色模式同结构、同模糊度的浅色亚克力
-   不启用这段的话，切到白天时上面所有规则都因 html.dark 前缀失效，
-   会退化回上游默认的近透明卡片，在亮色壁纸上同样不可读。
-   ========================================================= */
-html.light .service-group-name,
-html.light .bookmark-group-name,
-html.light h2,
-html.light h3 {
-  color: #0f172a !important;
-  font-weight: 700 !important;
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(255, 255, 255, 0.7) !important;
-  letter-spacing: -0.01em;
+/* ---------- 无障碍：焦点环用强调色（非文本对比 ≥3:1） ---------- */
+:where(.service-card, .bookmark, #widgets-wrap, #myTab) :is(a, button, input):focus-visible {
+  outline: 2px solid var(--hp-accent) !important;
+  outline-offset: 2px;
 }
 
-/* 顶部信息小组件与搜索框浅色玻璃化 */
-html.light #header > div,
-html.light header > div,
-html.light #information-widgets > div,
-html.light #information-widgets > div > div,
-html.light .header-widget,
-html.light #information-widgets .information-widget-form,
-html.light #search form {
-  background-color: rgba(248, 250, 252, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(125%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
-  border: 1px solid rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.18) !important;
-  border-radius: 0.75rem !important;
+/* ---------- 用户偏好：减少透明/提高对比时转为不透明 ---------- */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html.dark {
+    --hp-surface: rgb(15 23 42);
+    --hp-surface-hover: rgb(30 41 59);
+    --hp-control: rgb(15 23 42);
+    --hp-border: rgb(255 255 255 / 0.18);
+    --hp-text-dim: #d3dbe6;
+  }
+  html.light {
+    --hp-surface: #ffffff;
+    --hp-surface-hover: #f4f6f9;
+    --hp-control: #ffffff;
+    --hp-border: rgb(15 23 42 / 0.20);
+    --hp-text-dim: #333d4a;
+  }
+  #widgets-wrap,
+  #myTab {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
-/* 搜索框输入区域干净透明 */
-html.light #search input,
-html.light form input {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: #0f172a !important;
-}
-/* 顶部 Tab 切换按钮浅色玻璃拟态 */
-html.light #myTab {
-  background-color: rgba(248, 250, 252, 0.80) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15) !important;
-  padding: 4px !important;
-  border-radius: 0.75rem !important;
-}
-/* 选中状态 */
-html.light #myTab button[aria-selected="true"] {
-  background-color: rgba(37, 99, 235, 0.18) !important;
-  border: 1px solid rgba(37, 99, 235, 0.45) !important;
-  color: #0f172a !important;
-  font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15) !important;
-}
-
-/* 服务卡片浅色亚克力护罩 (88% 不透明，阻隔背景穿透杂光) */
-html.light .service-card:is(.light *),
-html.light [class*="service-card"]:is(.light *) {
-  background-color: rgba(248, 250, 252, 0.88) !important;
-  backdrop-filter: blur(20px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
-  border: 1px solid rgba(15, 23, 42, 0.14) !important;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.18) !important;
-  border-radius: 0.75rem !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* 鼠标悬浮 */
-html.light .service-card:hover:is(.light *),
-html.light [class*="service-card"]:hover:is(.light *) {
-  background-color: rgba(255, 255, 255, 0.96) !important;
-  border-color: rgba(37, 99, 235, 0.45) !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22), 0 0 14px rgba(37, 99, 235, 0.15) !important;
-  transform: translateY(-2px);
-}
-
-/* 卡片内部服务标题 */
-html.light .service-name,
-html.light .service-title-text div {
-  color: #0f172a !important;
-  font-weight: 600 !important;
-}
-
-/* 次要描述文字 */
-html.light .service-description,
-html.light .service-descr,
-html.light [class*="description"] {
-  color: #475569 !important;
-}
-
-/* 指标标签与数值（与深色模式同样的选择器修正） */
-html.light .service-block > div:last-child {
-  color: #475569 !important;
-  font-weight: 600 !important;
-}
-html.light .service-block > div:first-child {
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
-
-/* 状态标签 */
-html.light .service-status,
-html.light [class*="status"] {
-  font-weight: 600 !important;
-  letter-spacing: 0.025em;
+@media (prefers-reduced-motion: reduce) {
+  .service-card,
+  .bookmark > a,
+  #myTab button {
+    transition: none !important;
+  }
 }
