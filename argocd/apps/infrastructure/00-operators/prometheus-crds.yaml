@@ -20,4 +20,8 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
+      # ServerSideApply 不覆盖 CRD：Argo 对 CustomResourceDefinition 仍走客户端 apply，
+      # 会把整个 manifest 写进 kubectl.kubernetes.io/last-applied-configuration，
+      # 而 prometheuses(1.2MB)/scrapeconfigs(1.2MB)/alertmanagers(0.9MB) 超过 262144 字节注解上限，
+      # 报 "metadata.annotations: Too long"。Replace=true 改用 kubectl replace，不写该注解。
+      - Replace=true
