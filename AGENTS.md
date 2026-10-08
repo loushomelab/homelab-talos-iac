@@ -98,7 +98,7 @@ Rollouts strictly follow sync waves (`argocd.argoproj.io/sync-wave`) to ensure z
 │       ├── monitoring/              # PVCs, ingress, middlewares
 │       └── workloads/homepage/      # Homepage YAML config files
 ├── docs/                            # Architecture specs and plans (gitignored)
-└── renovate.json                    # Automated dependency updates (weekend automerge)
+└── renovate.json                    # 依赖自动升级：minor/patch/pin/digest 自动合并（ignoreTests，不等 CI）；major 仅提 PR 待人工审核（无时间表限制）
 ```
 
 ---
