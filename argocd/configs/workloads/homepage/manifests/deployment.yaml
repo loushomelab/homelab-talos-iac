@@ -15,8 +15,6 @@ spec:
       app.kubernetes.io/name: homepage
   template:
     metadata:
-      annotations:
-        kubectl.kubernetes.io/restartedAt: "2026-10-08T16:34:20Z"
       labels:
         app.kubernetes.io/name: homepage
     spec:
@@ -69,33 +67,10 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 15
           volumeMounts:
-            - mountPath: /app/config/custom.js
+            # 整目录挂载：ConfigMap 内容变化会由 kubelet 自动同步到 Pod，
+            # 无需再 bump restartedAt 重建 Pod（subPath 挂载不会更新）。
+            - mountPath: /app/config
               name: homepage-config
-              subPath: custom.js
-            - mountPath: /app/config/custom.css
-              name: homepage-config
-              subPath: custom.css
-            - mountPath: /app/config/bookmarks.yaml
-              name: homepage-config
-              subPath: bookmarks.yaml
-            - mountPath: /app/config/docker.yaml
-              name: homepage-config
-              subPath: docker.yaml
-            - mountPath: /app/config/proxmox.yaml
-              name: homepage-config
-              subPath: proxmox.yaml
-            - mountPath: /app/config/kubernetes.yaml
-              name: homepage-config
-              subPath: kubernetes.yaml
-            - mountPath: /app/config/services.yaml
-              name: homepage-config
-              subPath: services.yaml
-            - mountPath: /app/config/settings.yaml
-              name: homepage-config
-              subPath: settings.yaml
-            - mountPath: /app/config/widgets.yaml
-              name: homepage-config
-              subPath: widgets.yaml
             - mountPath: /app/config/logs
               name: logs
       volumes:
