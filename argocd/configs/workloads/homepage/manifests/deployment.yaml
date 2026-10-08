@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        kubectl.kubernetes.io/restartedAt: "2026-10-08T07:55:00Z"
+        kubectl.kubernetes.io/restartedAt: "2026-10-08T08:35:00Z"
       labels:
         app.kubernetes.io/name: homepage
     spec:
@@ -28,6 +28,44 @@ spec:
         - name: homepage
           image: "ghcr.io/gethomepage/homepage:v2.3.0"
           imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - -c
+            - |
+              node --input-type=module -e '
+              import fs from "fs";
+              try {
+                const mod = await import("/app/.next/server/pages/index.js");
+                const m = await mod.default;
+                const getStaticProps = Object.getOwnPropertyDescriptor(m, "getStaticProps").get();
+                const res = await getStaticProps({ locale: "en" });
+                if (res?.props?.initialSettings) {
+                  const s = res.props.initialSettings;
+                  for (const lang of ["en"]) {
+                    const jsonPath = `/app/.next/server/pages/${lang}.json`;
+                    if (fs.existsSync(jsonPath)) {
+                      const data = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+                      data.pageProps.initialSettings = s;
+                      fs.writeFileSync(jsonPath, JSON.stringify(data), "utf8");
+                    }
+                    const htmlPath = `/app/.next/server/pages/${lang}.html`;
+                    if (fs.existsSync(htmlPath)) {
+                      let html = fs.readFileSync(htmlPath, "utf8");
+                      const match = html.match(/<script id="__NEXT_DATA__" type="application\/json">([^<]+)<\/script>/);
+                      if (match) {
+                        const nextData = JSON.parse(match[1]);
+                        nextData.props.pageProps.initialSettings = s;
+                        html = html.replace(match[0], `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify(nextData)}</script>`);
+                        fs.writeFileSync(htmlPath, html, "utf8");
+                      }
+                    }
+                  }
+                }
+              } catch (e) {
+                console.error("Warning: pre-seeding initialSettings failed:", e);
+              }
+              '
+              exec node server.js
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
