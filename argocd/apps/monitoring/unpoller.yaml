@@ -81,6 +81,7 @@ spec:
             http_listen = "0.0.0.0:9130"
             report_errors = false
             # Limit controller API load; /metrics scrapes use cached samples.
+            # v5.1.0 still polls device tags; this mitigates load, not a leak.
             interval = "5m"
 
           [influxdb]
