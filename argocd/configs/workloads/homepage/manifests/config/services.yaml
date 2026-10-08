@@ -119,6 +119,20 @@
         proxmoxVMID: 125
         proxmoxType: lxc
 
+- IOT:
+    - Langshi:
+        description: Home Assistant
+        href: https://langshi.hass.646499453.xyz:8443
+        icon: sh-home-assistant.svg
+        siteMonitor: http://192.168.50.120
+        showStats: true
+        proxmoxNode: 3960x
+        proxmoxVMID: 120
+        proxmoxType: qemu
+        widget:
+            type: homeassistant
+            url: http://192.168.50.120
+            key: {{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}
 - CI/CD:
     - Semaphore:
         description: LXC in PVE Cluster
@@ -159,20 +173,6 @@
         proxmoxVMID: 160
         proxmoxType: lxc
 
-- IOT:
-    - Langshi:
-        description: Home Assistant
-        href: https://langshi.hass.646499453.xyz:8443
-        icon: sh-home-assistant.svg
-        siteMonitor: http://192.168.50.120
-        showStats: true
-        proxmoxNode: 3960x
-        proxmoxVMID: 120
-        proxmoxType: qemu
-        widget:
-            type: homeassistant
-            url: http://192.168.50.120
-            key: {{HOMEPAGE_VAR_HASS_LANGSHI_TOKEN}}
 
 - Database:
     - PostgreSQL Authentik:
