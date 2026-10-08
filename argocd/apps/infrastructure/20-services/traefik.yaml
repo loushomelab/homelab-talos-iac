@@ -79,7 +79,7 @@ spec:
               gethomepage.dev/enabled: "true"
               gethomepage.dev/name: "Traefik"
               gethomepage.dev/description: "Ingress Controller"
-              gethomepage.dev/group: "Infrastructure"
+              gethomepage.dev/group: "Network"
               gethomepage.dev/icon: "sh-traefik.svg"
               gethomepage.dev/href: "https://traefik.646499453.xyz:8443"
               gethomepage.dev/pod-selector: "app.kubernetes.io/name=traefik"
