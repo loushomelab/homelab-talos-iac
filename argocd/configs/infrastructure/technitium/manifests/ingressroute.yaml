@@ -3,6 +3,17 @@ kind: IngressRoute
 metadata:
   name: technitium
   namespace: technitium
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Technitium"
+    gethomepage.dev/description: "DNS Server"
+    gethomepage.dev/group: "Network"
+    gethomepage.dev/icon: "sh-technitium.svg"
+    gethomepage.dev/href: "https://technitium.646499453.xyz:8443"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=technitium"
+    gethomepage.dev/widget.type: "technitium"
+    gethomepage.dev/widget.url: "http://technitium-web.technitium.svc.cluster.local:5380"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_TECHNITIUM_API_KEY}}"
 spec:
   entryPoints:
     - websecure
