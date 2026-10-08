@@ -1,1 +1,90 @@
-/* Homepage custom CSS (cleared to use native Homepage styling) */
+/* =========================================================
+   Homepage Dark Acrylic / Glassmorphism Theme
+   ========================================================= */
+
+/* 消除重影，提升字体渲染平滑度 */
+*, body, h1, h2, h3, h4, h5, h6, span, p, a, input, div {
+  text-shadow: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 顶部信息小组件与搜索框玻璃化 */
+#header > div,
+header > div,
+#information-widgets > div,
+#search form {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+  border-radius: 0.75rem !important;
+}
+
+/* 搜索框输入区域干净透明 */
+#search input,
+form input {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #f8fafc !important;
+}
+
+/* 顶部 Tab 切换按钮玻璃拟态美化 */
+#myTab {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  padding: 4px !important;
+}
+
+#myTab button[aria-selected="true"] {
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  border: 1px solid rgba(96, 165, 250, 0.35) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 服务卡片暗黑亚克力磨砂护罩 */
+.service-card,
+.widget,
+.header-widget,
+[class*="service-card"],
+[class*="widget_"] {
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(16px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 鼠标悬浮精致微光与微动效 */
+.service-card:hover,
+[class*="service-card"]:hover {
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 12px rgba(59, 130, 246, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+/* 提升次要文字、标签和描述信息的明度对比度 (解决发虚暗淡问题) */
+.text-slate-400,
+.text-gray-400,
+.text-neutral-400,
+.text-zinc-400,
+.service-descr,
+[class*="description"] {
+  color: #cbd5e1 !important;
+}
+
+/* 状态标签圆角与对比度强化 */
+.service-status,
+[class*="status"] {
+  font-weight: 600 !important;
+  letter-spacing: 0.025em;
+}
