@@ -99,6 +99,26 @@
             password: {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}
             node: r720
 
+- Network:
+    - Unifi:
+        description: Network Controller
+        href: https://unifi.ui.com
+        icon: sh-ubiquiti-unifi.svg
+        siteMonitor: https://192.168.50.1
+        widget:
+            type: unifi
+            url: https://192.168.50.1
+            key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
+    - Zot Registry:
+        description: LXC in PVE Cluster
+        href: https://zot.646499453.xyz:8443
+        icon: sh-zot-registry.svg
+        siteMonitor: http://192.168.50.125:8080
+        showStats: true
+        proxmoxNode: 1920x
+        proxmoxVMID: 125
+        proxmoxType: lxc
+
 - CI/CD:
     - Semaphore:
         description: LXC in PVE Cluster
@@ -137,25 +157,6 @@
         showStats: true
         proxmoxNode: 3960x
         proxmoxVMID: 160
-        proxmoxType: lxc
-- Network:
-    - Unifi:
-        description: Network Controller
-        href: https://unifi.ui.com
-        icon: sh-ubiquiti-unifi.svg
-        siteMonitor: https://192.168.50.1
-        widget:
-            type: unifi
-            url: https://192.168.50.1
-            key: {{HOMEPAGE_VAR_UNIFI_API_KEY}}
-    - Zot Registry:
-        description: LXC in PVE Cluster
-        href: https://zot.646499453.xyz:8443
-        icon: sh-zot-registry.svg
-        siteMonitor: http://192.168.50.125:8080
-        showStats: true
-        proxmoxNode: 1920x
-        proxmoxVMID: 125
         proxmoxType: lxc
 
 - IOT:

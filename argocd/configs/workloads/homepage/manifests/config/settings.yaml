@@ -26,6 +26,9 @@ layout:
   PVE-Nodes:
     style: row
     columns: 4
+  Network:
+    style: row
+    columns: 4
   CI/CD:
     style: row
     columns: 4
@@ -42,9 +45,6 @@ layout:
     style: row
     columns: 4
   Storage:
-  Network:
-    style: row
-    columns: 3
   IOT:
   Identity:
   Monitoring:
