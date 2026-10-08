@@ -36,7 +36,7 @@ spec:
           automount: false
 
         podAnnotations:
-          unpoller/config-revision: "1"
+          unpoller/config-revision: "2"
 
         podSecurityContext:
           runAsNonRoot: true
@@ -80,7 +80,8 @@ spec:
             disable = false
             http_listen = "0.0.0.0:9130"
             report_errors = false
-            interval = "60s"
+            # Limit controller API load; /metrics scrapes use cached samples.
+            interval = "5m"
 
           [influxdb]
             disable = true
@@ -102,7 +103,7 @@ spec:
             save_anomalies = false
             save_dpi = false
             save_rogue = false
-            save_speedtest = true
+            save_speedtest = false
             hash_pii = false
             verify_ssl = false
 
