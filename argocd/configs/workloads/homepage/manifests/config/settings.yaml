@@ -1,6 +1,7 @@
 title: Lous Homelab Dashboard
 color: zinc
 cardBlur: lg
+useEqualHeights: true
 background:
   image: https://images.unsplash.com/photo-1780467763551-f182a0d55c9f?q=80&w=2940&auto=format&fit=crop
   blur: lg
@@ -18,33 +19,48 @@ providers:
   longhorn:
     url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
 layout:
+  # === Tab 1: 🖥️ Infrastructure ===
   Hosts:
+    tab: Infrastructure
     style: row
     columns: 2
     PVE-Cluster:
     NAS:
   PVE-Nodes:
+    tab: Infrastructure
     style: row
     columns: 4
   Network:
-    style: row
-    columns: 4
-  CI/CD:
-    style: row
-    columns: 4
-  Git:
-    style: row
-    columns: 2
-  Dashboards:
-    style: row
-    columns: 4
-  Database:
-    style: row
-    columns: 4
-  Development:
+    tab: Infrastructure
     style: row
     columns: 4
   Storage:
-  IOT:
+    tab: Infrastructure
   Identity:
+    tab: Infrastructure
+  IOT:
+    tab: Infrastructure
+
+  # === Tab 2: 🚀 DevOps ===
+  CI/CD:
+    tab: DevOps
+    style: row
+    columns: 5
+  Git:
+    tab: DevOps
+  Development:
+    tab: DevOps
+
+  # === Tab 3: 📊 Observability ===
+  Dashboards:
+    tab: Observability
+    style: row
+    columns: 4
   Monitoring:
+    tab: Observability
+    style: row
+    columns: 2
+  Database:
+    tab: Observability
+    style: row
+    columns: 4
