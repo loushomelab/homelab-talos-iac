@@ -43,11 +43,9 @@ spec:
         # Sidecar 1: Docker-in-Docker Daemon
         - name: dind
           image: docker:28-dind
+          args: ["dockerd", "--host=unix:///var/run/docker.sock"]
           securityContext:
             privileged: true
-          env:
-            - name: DOCKER_TLS_CERTDIR
-              value: ""
           volumeMounts:
             - name: docker-socket
               mountPath: /var/run
