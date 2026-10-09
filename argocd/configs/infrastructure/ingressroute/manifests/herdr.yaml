@@ -31,6 +31,16 @@ endpoints:
       terminating: false
 ---
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: herdr-https-proto
+  namespace: traefik
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: herdr
@@ -42,6 +52,7 @@ spec:
     - match: Host(`herdr.646499453.xyz`)
       kind: Rule
       middlewares:
+        - name: herdr-https-proto
         - name: lan-only-allowlist
           namespace: monitoring
       services:
