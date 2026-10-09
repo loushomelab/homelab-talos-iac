@@ -17,10 +17,10 @@ data:
       fetch_timeout: 5s
       fetch_interval: 2s
       labels:
-        - "ubuntu-latest:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
-        - "docker:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
-        - "self-hosted:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
-        - "alpine:docker://192.168.50.125:8080/docker.io/library/alpine:latest"
+        - "ubuntu-latest:docker://zot.646499453.xyz:8443/ghcr.io/catthehacker/ubuntu:act-22.04"
+        - "docker:docker://zot.646499453.xyz:8443/docker.io/library/alpine:latest"
+        - "self-hosted:docker://zot.646499453.xyz:8443/docker.io/library/alpine:latest"
+        - "alpine:docker://zot.646499453.xyz:8443/docker.io/library/alpine:latest"
       envs:
         DOCKER_HOST: unix:///var/run/docker.sock
 
