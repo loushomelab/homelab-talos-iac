@@ -54,6 +54,10 @@ spec:
           # Access is restricted to LAN by the forgejo-ssh-lan-only MiddlewareTCP.
           gitssh:
             port: 2222
+            # The chart only publishes ports on the LoadBalancer when expose.default is
+            # set explicitly for custom entrypoints (built-in web/websecure carry it).
+            expose:
+              default: true
             exposedPort: 22
 
 # 强制 Traefik 使用 MetalLB 池子里的第一个 IP，方便你在 Surge 里做 DNS 映射
