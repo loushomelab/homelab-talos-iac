@@ -49,6 +49,12 @@ spec:
             expose:
               default: false
             exposedPort: 8080
+          # Git over SSH for Forgejo. Traefik listens on 2222 inside the pod and
+          # publishes it on the VIP as 22, so clone URLs stay ssh://git@forgejo.646499453.xyz/...
+          # Access is restricted to LAN by the forgejo-ssh-lan-only MiddlewareTCP.
+          gitssh:
+            port: 2222
+            exposedPort: 22
 
 # 强制 Traefik 使用 MetalLB 池子里的第一个 IP，方便你在 Surge 里做 DNS 映射
         service:
