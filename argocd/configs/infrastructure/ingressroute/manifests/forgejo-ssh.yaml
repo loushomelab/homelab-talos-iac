@@ -1,0 +1,32 @@
+apiVersion: traefik.io/v1alpha1
+kind: MiddlewareTCP
+metadata:
+  name: forgejo-ssh-lan-only
+  namespace: traefik
+spec:
+  # TCP counterpart of monitoring/lan-only-allowlist (HTTP Middleware cannot attach to IngressRouteTCP).
+  ipAllowList:
+    sourceRange:
+      - 127.0.0.1/32
+      - 192.168.0.0/16
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: forgejo-ssh
+  namespace: traefik
+spec:
+  entryPoints:
+    - gitssh
+  routes:
+    # SSH carries no TLS SNI, so HostSNI(`*`) is the only valid match for a plain TCP route.
+    # Service lives in the forgejo namespace; cross-namespace refs are allowed by allowCrossNamespace in traefik.yaml.
+    - match: HostSNI(`*`)
+      middlewares:
+        - name: forgejo-ssh-lan-only
+      services:
+        - name: forgejo-ssh
+          namespace: forgejo
+          port: 22
