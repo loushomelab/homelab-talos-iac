@@ -11,12 +11,8 @@ configs:
   cm:
     url: https://argocd.646499453.xyz:8443
     accounts.homepage: apiKey
-    # Static Endpoints for external upstream services must remain GitOps-managed.
+    # EndpointSlice is tracked: static upstream backends are GitOps-managed EndpointSlices (v1 Endpoints is deprecated).
     resource.exclusions: |
-      - apiGroups:
-        - discovery.k8s.io
-        kinds:
-        - EndpointSlice
       - apiGroups:
         - coordination.k8s.io
         kinds:

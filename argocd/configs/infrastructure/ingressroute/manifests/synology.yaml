@@ -14,21 +14,28 @@ spec:
       targetPort: 5001
       protocol: TCP
 ---
-apiVersion: v1
-kind: Endpoints
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
 metadata:
   name: synology-external
   namespace: traefik
-subsets:
+  labels:
+    kubernetes.io/service-name: synology-external
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 5000
+  - name: https
+    protocol: TCP
+    port: 5001
+endpoints:
   - addresses:
-      - ip: 192.168.50.77
-    ports:
-      - name: http
-        port: 5000
-        protocol: TCP
-      - name: https
-        port: 5001
-        protocol: TCP
+      - 192.168.50.77
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
 ---
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport

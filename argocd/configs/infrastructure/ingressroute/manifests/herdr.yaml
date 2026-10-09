@@ -10,18 +10,25 @@ spec:
       targetPort: 7317
       protocol: TCP
 ---
-apiVersion: v1
-kind: Endpoints
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
 metadata:
   name: herdr-mac
   namespace: traefik
-subsets:
+  labels:
+    kubernetes.io/service-name: herdr-mac
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 7317
+endpoints:
   - addresses:
-      - ip: 192.168.50.79
-    ports:
-      - name: http
-        port: 7317
-        protocol: TCP
+      - 192.168.50.79
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
