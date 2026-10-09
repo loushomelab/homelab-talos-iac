@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: herdr-mac
+  namespace: traefik
+spec:
+  ports:
+    - name: http
+      port: 7317
+      targetPort: 7317
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: herdr-mac
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.50.79
+    ports:
+      - name: http
+        port: 7317
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: herdr
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`herdr.646499453.xyz`)
+      kind: Rule
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+      services:
+        - name: herdr-mac
+          port: 7317
+  tls:
+    secretName: wildcards-646499453-xyz-tls
