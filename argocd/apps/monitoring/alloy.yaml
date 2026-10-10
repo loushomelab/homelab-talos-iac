@@ -27,6 +27,9 @@ spec:
         # Docs: https://grafana.com/docs/alloy/latest/
         controller:
           type: daemonset
+          # Temporary NAS maintenance: no node carries this label.
+          nodeSelector:
+            homelab.louslab/allow-nas-maintenance-collector: "true"
           # Required for eBPF profiling to map host PIDs to containers
           hostPID: true
 
