@@ -62,23 +62,26 @@ spec:
             limits:
               max_global_series_per_user: 5000000
         distributor:
-          replicas: 1
+          replicas: 0
         ingester:
-          replicas: 1
+          replicas: 0
           persistentVolume:
             enabled: false
           zones: []
+        # Temporary NAS maintenance; revert after S3 storage is restored.
+        query_scheduler:
+          replicas: 0
         querier:
-          replicas: 1
+          replicas: 0
         query_frontend:
-          replicas: 1
+          replicas: 0
         store_gateway:
-          replicas: 1
+          replicas: 0
           persistentVolume:
             enabled: false
           zones: []
         compactor:
-          replicas: 1
+          replicas: 0
           persistentVolume:
             enabled: false
         ruler:
@@ -87,7 +90,7 @@ spec:
           enabled: false
         gateway:
           enabled: true
-          replicas: 1
+          replicas: 0
           ingress:
             enabled: true
             ingressClassName: traefik
