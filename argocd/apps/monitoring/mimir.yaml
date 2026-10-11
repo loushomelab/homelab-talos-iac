@@ -64,7 +64,11 @@ spec:
         distributor:
           replicas: 0
         ingester:
-          replicas: 0
+          replicas: 1
+          # Full outage maintenance: collectors paused and ingesters already flushed.
+          # Restore normal cross-zone delay before resuming ingestion.
+          zoneAwareReplication:
+            minTimeBetweenZonesDownscale: 0s
           persistentVolume:
             enabled: false
           zones: []
@@ -76,7 +80,11 @@ spec:
         query_frontend:
           replicas: 0
         store_gateway:
-          replicas: 0
+          replicas: 1
+          # Full outage maintenance: collectors paused and ingesters already flushed.
+          # Restore normal cross-zone delay before resuming ingestion.
+          zoneAwareReplication:
+            minTimeBetweenZonesDownscale: 0s
           persistentVolume:
             enabled: false
           zones: []
