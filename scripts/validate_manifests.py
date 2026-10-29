@@ -84,7 +84,10 @@ def validate(content, label):
 
 
 def yaml_files(directory):
-    files = sorted(p for p in directory.rglob("*") if p.suffix.lower() in {".yaml", ".yml", ".json"})
+    files = sorted(
+        p for p in directory.rglob("*")
+        if p.suffix.lower() in {".yaml", ".yml", ".json"} or p.name in KUSTOMIZATION_NAMES
+    )
     if not directory.is_dir() or not files:
         raise ValidationError(f"{directory}: no manifest files found")
     return files
@@ -99,7 +102,7 @@ def local_file(directory, value, label):
     return path
 
 
-def render_homepage(root):
+def render_homepage(root, templates):
     directory = root / HOMEPAGE
     path = directory / "kustomization.yaml"
     docs = documents(read(path), path)
@@ -118,6 +121,7 @@ def render_homepage(root):
         source = local_file(directory, ref, f"{path}, resources[{i}]")
         validate(read(source), source)
     generators = config.get("configMapGenerator", [])
+    generator_files = set()
     if not isinstance(generators, list):
         raise ValidationError(f"{path}: configMapGenerator must be a list")
     for generator in generators:
@@ -129,7 +133,14 @@ def render_homepage(root):
         for i, ref in enumerate(refs, 1):
             # Kustomize permits key=path file references.
             value = ref.split("=", 1)[-1] if isinstance(ref, str) else ref
-            local_file(directory, value, f"{path}, generator files[{i}]")
+            source = local_file(directory, value, f"{path}, generator files[{i}]")
+            generator_files.add(source.resolve())
+    for template in templates:
+        if template.resolve() not in generator_files:
+            raise ValidationError(f"{template}: template is not consumed by a ConfigMap generator")
+    print(f"INPUT: {path.relative_to(root)}: local build input; validated through rendered output")
+    for source in sorted(generator_files):
+        print(f"INPUT: {source.relative_to(root)}: template consumed by ConfigMap generator")
     try:
         result = subprocess.run(
             ["kubectl", "kustomize", str(directory)],
@@ -148,18 +159,20 @@ def render_homepage(root):
 def run(root, target):
     directory = root / "argocd" / target
     count = 0
+    templates = []
     for path in yaml_files(directory):
         if target == "configs":
-            if path.is_relative_to(root / HOMEPAGE / "config"):
-                continue  # Application template data, consumed by configMapGenerator.
             if path.name in KUSTOMIZATION_NAMES:
                 if path != root / HOMEPAGE / "kustomization.yaml":
                     raise ValidationError(f"{path}: unregistered build input; add an explicit offline renderer")
                 continue
+            if path.is_relative_to(root / HOMEPAGE / "config"):
+                templates.append(path)
+                continue  # Verify these are consumed before allowing opaque template data.
         count += validate(read(path), path)
     print(f"OK: {target}: {count} source resources passed YAML/basic structure checks")
     if target == "configs":
-        rendered = render_homepage(root)
+        rendered = render_homepage(root, templates)
         print(f"OK: Homepage: {rendered} rendered resources passed YAML/basic structure checks")
 
 

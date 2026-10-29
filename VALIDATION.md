@@ -45,6 +45,11 @@ the ConfigMap. It does not parse the embedded Homepage template language.
 Only the current local-file build features are supported; remote resources,
 paths outside Homepage, new build fields and other unregistered Kustomizations
 fail before rendering. No migration or additional Kustomize usage is introduced.
+The output lists the Kustomization and every generator file as build inputs,
+with the reason they are not checked as standalone resources. YAML/YML/JSON
+files under `config/` must be referenced by a ConfigMap generator; unreferenced
+templates fail instead of being silently excluded. Unregistered build files
+also fail when named `Kustomization` without a file extension.
 
 Failures return nonzero and identify the file/document or the Homepage build
 and rendered document. YAML errors include line/column when available. Raw

@@ -147,6 +147,22 @@ class ValidationCLI(unittest.TestCase):
         self.write("argocd/configs/ordinary/kustomization.yaml", "kind: Kustomization\n")
         self.assert_failure(self.run_cli(), "unregistered build input")
 
+    def test_extensionless_kustomization_is_not_silently_skipped(self):
+        self.write("argocd/configs/ordinary/Kustomization", "kind: Kustomization\n")
+        self.assert_failure(self.run_cli(), "ordinary/Kustomization: unregistered build input")
+
+    def test_unreferenced_template_is_not_silently_skipped(self):
+        self.write(HOMEPAGE / "config/unreferenced.yaml", f"password: [{SENTINEL}\n")
+        self.fake_kubectl(MANIFEST)
+        self.assert_failure(self.run_cli(), "config/unreferenced.yaml: template is not consumed")
+
+    def test_build_inputs_are_reported_explicitly(self):
+        self.fake_kubectl(MANIFEST)
+        result = self.run_cli()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("kustomization.yaml: local build input", result.stdout)
+        self.assertIn("config/template.yaml: template consumed by ConfigMap generator", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
