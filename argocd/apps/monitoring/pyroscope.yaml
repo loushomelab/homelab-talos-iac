@@ -22,13 +22,13 @@ spec:
     targetRevision: 2.3.1
     helm:
       valuesObject:
-        # Temporary NAS maintenance: pause the bundled profiling collector first.
+        # Keep the bundled collector paused; recover backend before the canary.
         alloy:
           controller:
             replicas: 0
         pyroscope:
           # This nested field controls the actual backend StatefulSet.
-          replicaCount: 0
+          replicaCount: 1
           extraEnv:
           - name: TZ
             value: Asia/Shanghai
@@ -48,7 +48,7 @@ spec:
                 insecure: true
         minio:
           enabled: false
-        replicaCount: 0
+        replicaCount: 1
         ingress:
           enabled: true
           className: traefik
