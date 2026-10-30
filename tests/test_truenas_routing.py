@@ -53,5 +53,14 @@ class TrueNASRoutingTests(unittest.TestCase):
         middleware = next(r for r in resources if r['kind'] == 'Middleware' and r['metadata']['name'] == rule['middlewares'][0]['name'])
         self.assertEqual(middleware['spec']['redirectRegex']['replacement'], 'https://truenas.646499453.xyz:8443/${1}')
 
+    def test_truenas_widget_is_disabled_until_client_verifies_tls(self):
+        import re
+        path = ROOT / 'argocd/configs/workloads/homepage/manifests/config/services.yaml'
+        services = yaml.safe_load(re.sub(r'\{\{[^}]+\}\}', 'PLACEHOLDER', path.read_text()))
+        hosts = next(group['Hosts'] for group in services if 'Hosts' in group)
+        nas = next(group['NAS'] for group in hosts if 'NAS' in group)
+        truenas = next(service['TrueNAS'] for service in nas if 'TrueNAS' in service)
+        self.assertNotIn('widget', truenas, 'Homepage v2.4.0 TrueNAS WebSocket client disables TLS verification')
+
 if __name__ == '__main__':
     unittest.main()

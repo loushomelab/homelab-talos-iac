@@ -40,11 +40,9 @@
             href: https://truenas.646499453.xyz:8443
             siteMonitor: https://truenas.646499453.xyz:8443
             icon: sh-truenas-scale.svg
-            widget:
-                type: truenas
-                url: https://truenas.646499453.xyz:8443
-                key: {{HOMEPAGE_VAR_TRUENAS_API_KEY}}
-                version: 2
+            # Homepage v2.4.0 TrueNAS WS hardcodes rejectUnauthorized:false.
+            # Keep the link/health check; restore stats only with a TLS-verifying
+            # client and a dedicated least-privilege API key.
 - PVE-Nodes:
     - 1920x:
         icon: sh-proxmox.svg
