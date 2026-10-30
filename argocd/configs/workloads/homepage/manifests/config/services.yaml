@@ -37,8 +37,8 @@
                 password: {{HOMEPAGE_VAR_SYNOLOGY_PASSWORD}}
         - TrueNAS:
             description: NAS Storage
-            href: https://truenas.pve.646499453.xyz:8443
-            siteMonitor: https://192.168.50.76
+            href: https://truenas.646499453.xyz:8443
+            siteMonitor: https://192.168.50.102
             showStats: true
             icon: sh-truenas-scale.svg
             proxmoxNode: n100x8
@@ -46,7 +46,7 @@
             proxmoxType: qemu
             widget:
                 type: truenas
-                url: https://192.168.50.76
+                url: https://192.168.50.102
                 key: {{HOMEPAGE_VAR_TRUENAS_API_KEY}}
                 version: 2
 - PVE-Nodes:
@@ -203,7 +203,7 @@
         description: S3 Object Storage on TrueNAS
         icon: sh-minio.svg
         href: https://minio.truenas.646499453.xyz:8443
-        siteMonitor: https://192.168.50.76
+        siteMonitor: https://192.168.50.102
         showStats: true
         proxmoxNode: n100x8
         proxmoxVMID: 176

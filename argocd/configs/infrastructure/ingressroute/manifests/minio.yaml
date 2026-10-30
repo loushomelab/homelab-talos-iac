@@ -24,7 +24,7 @@ ports:
     port: 9001
 endpoints:
   - addresses:
-      - 192.168.50.76
+      - 192.168.50.102
     conditions:
       ready: true
       serving: true
