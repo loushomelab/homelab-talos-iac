@@ -62,48 +62,25 @@ spec:
             limits:
               max_global_series_per_user: 5000000
         distributor:
-          replicas: 0
+          replicas: 1
         ingester:
-          replicas: 0
-          # Full outage maintenance: collectors paused and ingesters already flushed.
-          # Restore normal cross-zone delay before resuming ingestion.
-          zoneAwareReplication:
-            minTimeBetweenZonesDownscale: 0s
-            # Ingesters manually prepared/flushed; disable timed-out admission preparation only.
-            zones:
-            - name: zone-a
-              prepareDownscale: false
-            - name: zone-b
-              prepareDownscale: false
-            - name: zone-c
-              prepareDownscale: false
+          replicas: 1
           persistentVolume:
             enabled: false
           zones: []
-        # Temporary NAS maintenance; revert after S3 storage is restored.
+        # Two scheduler addresses satisfy query-frontend discovery defaults.
         query_scheduler:
-          replicas: 0
+          replicas: 2
         querier:
-          replicas: 0
+          replicas: 1
         query_frontend:
-          replicas: 0
+          replicas: 1
         store_gateway:
-          replicas: 0
-          # Full outage maintenance: collectors paused and ingesters already flushed.
-          # Restore normal cross-zone delay before resuming ingestion.
-          zoneAwareReplication:
-            minTimeBetweenZonesDownscale: 0s
-            # Ingesters manually prepared/flushed; disable timed-out admission preparation only.
-            zones:
-            - name: zone-a
-              prepareDownscale: false
-            - name: zone-b
-              prepareDownscale: false
-            - name: zone-c
-              prepareDownscale: false
+          replicas: 1
           persistentVolume:
             enabled: false
           zones: []
+        # Keep compaction/deletion paused until the recovery canary is accepted.
         compactor:
           replicas: 0
           persistentVolume:
@@ -114,7 +91,7 @@ spec:
           enabled: false
         gateway:
           enabled: true
-          replicas: 0
+          replicas: 1
           ingress:
             enabled: true
             ingressClassName: traefik
