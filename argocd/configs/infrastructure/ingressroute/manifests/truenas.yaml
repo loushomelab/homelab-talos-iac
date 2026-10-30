@@ -1,3 +1,47 @@
+# Terminate browser TLS with the managed wildcard certificate; keep TLS to NAS.
+# Pin only the NAS public certificate. Regenerate this ConfigMap when NAS rotates it.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: truenas-backend-ca
+  namespace: traefik
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDrTCCApWgAwIBAgIELX/+UzANBgkqhkiG9w0BAQsFADCBgDELMAkGA1UEBhMC
+    VVMxEjAQBgNVBAoMCWlYc3lzdGVtczESMBAGA1UEAwwJbG9jYWxob3N0MSEwHwYJ
+    KoZIhvcNAQkBFhJpbmZvQGl4c3lzdGVtcy5jb20xEjAQBgNVBAgMCVRlbm5lc3Nl
+    ZTESMBAGA1UEBwwJTWFyeXZpbGxlMB4XDTI2MTAzMDEwMTQ0M1oXDTI3MTIwMTEw
+    MTQ0M1owgYAxCzAJBgNVBAYTAlVTMRIwEAYDVQQKDAlpWHN5c3RlbXMxEjAQBgNV
+    BAMMCWxvY2FsaG9zdDEhMB8GCSqGSIb3DQEJARYSaW5mb0BpeHN5c3RlbXMuY29t
+    MRIwEAYDVQQIDAlUZW5uZXNzZWUxEjAQBgNVBAcMCU1hcnl2aWxsZTCCASIwDQYJ
+    KoZIhvcNAQEBBQADggEPADCCAQoCggEBAKCEg5/85m5V7asAOZ1vSD5S0rKbyvrh
+    q0Fi4+G7XRukrc3r3oN5aEVSPIt5kj8LXquOy1PlwiF8tptpc4/gS0Y2K/RLpzC6
+    8PvOYXcLScyjSk5AAACCI5crP6tLi/FHwL0tFnPTmi8gJgcxOKAck6B58cs3Y5le
+    SEI3jAeX3c7m+4qEdJ0KXQ96QN1Vuf7wyebVLAo92gvY4IKNuCfjelexz27jd4l5
+    z9e06zES4K8yxumC7gHD/b9QA1AEK3FNr8If0BGAh3qPMUBbmNAqF2595vpQro3t
+    VJctb65q6XQhUEkJeh8z1bhQiH0KNGGy54X5ve+tvyHtNl2yh3kYvsUCAwEAAaMt
+    MCswFAYDVR0RBA0wC4IJbG9jYWxob3N0MBMGA1UdJQQMMAoGCCsGAQUFBwMBMA0G
+    CSqGSIb3DQEBCwUAA4IBAQA57vQ67WS7XsFwZLhaVJQfWFWSbXEdaf6mTOamovdc
+    Ns+N92aWKwBSISAbkYJZnWjH5lDHEX0odor+y939QD7ixT0of6bLmf+IzLlPVbqR
+    joEAPmaUtKjnN96t1d0bM4p9A9pk4hBiXWcxL5sBLxEYaAXAybaoun5zOV/Q/UQD
+    OT3rAWqoxJwpuwD/g4rQW/5U3jkqif4rIcoOWVA9lRntP745uvGKRz8Yc0Bw58EN
+    wMfywTdTqd6fSKRz22Wm6hImzV+V9eToBZ3taaRNf/5O/wEIbRX6LBzzgBVy3jEg
+    6kid5YWPxGfxzJuY7+CKVKwe+0FL1ND04taefxtE4JiM
+    -----END CERTIFICATE-----
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: truenas-verified-transport
+  namespace: traefik
+spec:
+  # The installed NAS certificate has only DNS:localhost in its SAN.
+  serverName: localhost
+  insecureSkipVerify: false
+  rootCAs:
+    - configMap: truenas-backend-ca
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,7 +57,7 @@ spec:
       protocol: TCP
 ---
 apiVersion: traefik.io/v1alpha1
-kind: IngressRouteTCP
+kind: IngressRoute
 metadata:
   name: truenas
   namespace: traefik
@@ -21,9 +65,12 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: HostSNI(`truenas.646499453.xyz`)
+    - match: Host(`truenas.646499453.xyz`)
+      kind: Rule
       services:
         - name: truenas-external
           port: 443
+          scheme: https
+          serversTransport: truenas-verified-transport
   tls:
-    passthrough: true
+    secretName: wildcards-646499453-xyz-tls
