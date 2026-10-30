@@ -63,39 +63,18 @@ spec:
 
 ---
 # ==========================================
-# n100x8 Node
+# n100x8 is now bare-metal TrueNAS; preserve bookmarks without probing port 8006.
 # ==========================================
-apiVersion: v1
-kind: Service
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
 metadata:
-  name: pve-n100x8
+  name: n100x8-truenas-redirect
   namespace: traefik
 spec:
-  ports:
-    - name: https
-      port: 8006
-      targetPort: 8006
-      protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: pve-n100x8
-  namespace: traefik
-  labels:
-    kubernetes.io/service-name: pve-n100x8
-addressType: IPv4
-ports:
-  - name: https
-    protocol: TCP
-    port: 8006
-endpoints:
-  - addresses:
-      - 192.168.50.102
-    conditions:
-      ready: true
-      serving: true
-      terminating: false
+  redirectRegex:
+    regex: '^https?://n100x8\.pve\.646499453\.xyz(?::[0-9]+)?/(.*)'
+    replacement: 'https://truenas.646499453.xyz:8443/${1}'
+    permanent: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -108,11 +87,13 @@ spec:
   routes:
     - match: Host(`n100x8.pve.646499453.xyz`)
       kind: Rule
+      middlewares:
+        - name: n100x8-truenas-redirect
       services:
-        - name: pve-n100x8
-          port: 8006
+        - name: truenas-external
+          port: 443
           scheme: https
-          serversTransport: pve-insecure-transport
+          serversTransport: truenas-verified-transport
   tls:
     secretName: wildcards-646499453-xyz-tls
 
