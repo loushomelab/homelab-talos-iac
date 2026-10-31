@@ -80,9 +80,9 @@ spec:
           persistentVolume:
             enabled: false
           zones: []
-        # Keep compaction/deletion paused until the recovery canary is accepted.
+        # Normal S3 compaction/cleanup approved; old monitoring data is disposable.
         compactor:
-          replicas: 0
+          replicas: 1
           persistentVolume:
             enabled: false
         ruler:

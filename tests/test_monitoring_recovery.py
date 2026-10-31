@@ -16,7 +16,9 @@ class MonitoringRecoveryTests(unittest.TestCase):
         self.assertEqual(v['query_scheduler']['replicas'], 2)
         for component in ['ingester','store_gateway']:
             self.assertNotIn('zoneAwareReplication',v[component])
-        self.assertEqual(v['compactor']['replicas'], 0, 'defer S3 compaction until acceptance')
+        self.assertEqual(v['compactor']['replicas'], 1, 'normal compaction approved; no backup gate')
+        self.assertNotIn('compactor', v['mimir']['structuredConfig'], 'keep normal cleanup/retention defaults')
+        self.assertNotIn('bucket_store', v['mimir']['structuredConfig']['blocks_storage'], 'do not bypass stale index guard')
         self.assertEqual(v['mimir']['structuredConfig']['ingester']['ring']['replication_factor'], 1)
         self.assertFalse(v['ingester']['persistentVolume']['enabled'])
 
