@@ -31,6 +31,10 @@ class MonitoringRecoveryTests(unittest.TestCase):
         for kind in ['servicemonitors', 'podmonitors']:
             self.assertRegex(content, rf'prometheus\.operator\.{kind} "default" \{{[^}}]*clustering \{{\s+enabled = true\s+\}}')
 
+    def test_alloy_pod_records_required_worker_kernel_policy(self):
+        v = values('alloy')
+        self.assertEqual(v['controller'].get('podAnnotations', {}).get('homelab.louslab/profiling-kernel-policy'), 'kptr-restrict-1')
+
     def test_pyroscope_backend_restores_without_duplicate_collector(self):
         v = values('pyroscope')
         self.assertEqual(v['pyroscope']['replicaCount'], 1)

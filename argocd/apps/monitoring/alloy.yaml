@@ -32,6 +32,9 @@ spec:
             kubernetes.io/hostname: worker-01
           # Required for eBPF profiling to map host PIDs to containers
           hostPID: true
+          # Recreate the failed tracer after the declarative Talos sysctl fix.
+          podAnnotations:
+            homelab.louslab/profiling-kernel-policy: kptr-restrict-1
 
         alloy:
           clustering:
