@@ -22,10 +22,10 @@ class MonitoringRecoveryTests(unittest.TestCase):
         self.assertEqual(v['mimir']['structuredConfig']['ingester']['ring']['replication_factor'], 1)
         self.assertFalse(v['ingester']['persistentVolume']['enabled'])
 
-    def test_alloy_canary_uses_one_worker_and_shards_both_operator_scrapers(self):
-        import re
+    def test_alloy_worker_collection_shards_both_operator_scrapers(self):
         v = values('alloy')
-        self.assertEqual(v['controller']['nodeSelector'], {'kubernetes.io/hostname': 'worker-01'})
+        self.assertEqual(v['controller']['nodeSelector'], {'kubernetes.io/os': 'linux'})
+        self.assertFalse(v['controller'].get('tolerations'), 'keep control-plane NoSchedule isolation')
         self.assertTrue(v['alloy']['clustering']['enabled'])
         content = v['alloy']['configMap']['content']
         for kind in ['servicemonitors', 'podmonitors']:
