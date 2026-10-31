@@ -27,13 +27,15 @@ spec:
         # Docs: https://grafana.com/docs/alloy/latest/
         controller:
           type: daemonset
-          # Temporary NAS maintenance: no node carries this label.
+          # Recovery canary: expand only after functional/queue observation.
           nodeSelector:
-            homelab.louslab/allow-nas-maintenance-collector: "true"
+            kubernetes.io/hostname: worker-01
           # Required for eBPF profiling to map host PIDs to containers
           hostPID: true
 
         alloy:
+          clustering:
+            enabled: true
           extraEnv:
           - name: TZ
             value: Asia/Shanghai
@@ -55,11 +57,17 @@ spec:
               // Dynamically discover and scrape targets from ServiceMonitor CRDs
               prometheus.operator.servicemonitors "default" {
                 forward_to = [prometheus.remote_write.mimir.receiver]
+                clustering {
+                  enabled = true
+                }
               }
 
               // Dynamically discover and scrape targets from PodMonitor CRDs
               prometheus.operator.podmonitors "default" {
                 forward_to = [prometheus.remote_write.mimir.receiver]
+                clustering {
+                  enabled = true
+                }
               }
 
               // Remote write all collected metrics to Mimir gateway (no authentication required as multitenancy is disabled)
