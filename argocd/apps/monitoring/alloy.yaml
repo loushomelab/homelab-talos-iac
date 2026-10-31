@@ -27,9 +27,9 @@ spec:
         # Docs: https://grafana.com/docs/alloy/latest/
         controller:
           type: daemonset
-          # Recovery canary: expand only after functional/queue observation.
+          # Worker rollout; control-plane NoSchedule taints remain untolerated.
           nodeSelector:
-            kubernetes.io/hostname: worker-01
+            kubernetes.io/os: linux
           # Required for eBPF profiling to map host PIDs to containers
           hostPID: true
           # Recreate the failed tracer after the declarative Talos sysctl fix.
