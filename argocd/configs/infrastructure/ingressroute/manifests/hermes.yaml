@@ -1,0 +1,84 @@
+# Hermes Agent dashboard (macOS host, off-cluster) for Hermes Conduit (iOS).
+#
+# Why this shape:
+# - Off-cluster host: selector-less Service + EndpointSlice pointing at the Mac's
+#   LAN IP (same pattern as herdr.yaml). Traefik resolves it like any other backend.
+# - No `lan-only-allowlist`: the route must answer from cellular for Conduit.
+# - NO `authentik-forward-auth` on purpose: Conduit authenticates with a bearer
+#   token and upgrades /api/ws. ForwardAuth answers unauthenticated API clients
+#   with a 302 HTML login page, which breaks both. Hermes runs its own OIDC login
+#   (dashboard.oauth.self_hosted) and issues session cookies + WS tickets.
+# - Single canonical origin for LAN and WAN: the same hostname:8443 is served to
+#   both because Technitium answers 192.168.50.230 on the LAN and the public zone
+#   answers the WAN address off-LAN. One URL => one Conduit dashboard entry, one
+#   OIDC redirect URI, one cookie/Keychain scope.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes-mac
+  namespace: traefik
+spec:
+  ports:
+    - name: http
+      port: 9119
+      targetPort: 9119
+      protocol: TCP
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: hermes-mac
+  namespace: traefik
+  labels:
+    kubernetes.io/service-name: hermes-mac
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 9119
+endpoints:
+  - addresses:
+      - 192.168.50.79
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: hermes-forwarded-proto
+  namespace: traefik
+# Traefik already sets X-Forwarded-Proto on the TLS entrypoint; pinning it means
+# the dashboard marks its cookies Secure even if a future proxy hop drops it.
+# Hermes only honours it from peers listed in dashboard.trusted_proxies.
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: hermes
+  namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Hermes"
+    gethomepage.dev/description: "Hermes Agent dashboard"
+    gethomepage.dev/group: "Identity"
+    gethomepage.dev/icon: "sh-hermes.svg"
+    gethomepage.dev/href: "https://hermes.646499453.xyz:8443"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`hermes.646499453.xyz`)
+      kind: Rule
+      middlewares:
+        - name: hermes-forwarded-proto
+      services:
+        - name: hermes-mac
+          port: 9119
+  tls:
+    secretName: wildcards-646499453-xyz-tls
