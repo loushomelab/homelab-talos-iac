@@ -123,6 +123,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "sonarr.png"
     gethomepage.dev/href: "https://sonarr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://sonarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "sonarr"
     gethomepage.dev/widget.url: "http://192.168.50.102:8989"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SONARR_API_KEY}}"
@@ -154,6 +156,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "radarr.png"
     gethomepage.dev/href: "https://radarr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://radarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "radarr"
     gethomepage.dev/widget.url: "http://192.168.50.102:7878"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
@@ -185,6 +189,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "prowlarr.png"
     gethomepage.dev/href: "https://prowlarr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://prowlarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "prowlarr"
     gethomepage.dev/widget.url: "http://192.168.50.102:9696"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}"
@@ -216,6 +222,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "bazarr.png"
     gethomepage.dev/href: "https://bazarr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://bazarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "bazarr"
     gethomepage.dev/widget.url: "http://192.168.50.102:6767"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_BAZARR_API_KEY}}"
@@ -247,6 +255,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "seerr.png"
     gethomepage.dev/href: "https://seerr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://seerr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "seerr"
     gethomepage.dev/widget.url: "http://192.168.50.102:5055"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SEERR_API_KEY}}"
@@ -278,6 +288,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "qbittorrent.png"
     gethomepage.dev/href: "https://qbittorrent.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://qbittorrent.646499453.xyz:8443"
     gethomepage.dev/widget.type: "qbittorrent"
     gethomepage.dev/widget.url: "http://192.168.50.102:8080"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_None}}"
@@ -312,6 +324,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "plex.png"
     gethomepage.dev/href: "https://plex.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://plex.646499453.xyz:8443"
     gethomepage.dev/widget.type: "plex"
     gethomepage.dev/widget.url: "http://192.168.50.102:32400"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PLEX_TOKEN}}"
@@ -345,6 +359,8 @@ metadata:
     gethomepage.dev/group: "Media"
     gethomepage.dev/icon: "sh-lingarr.svg"
     gethomepage.dev/href: "https://lingarr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://lingarr.646499453.xyz:8443"
 spec:
   entryPoints:
     - websecure
