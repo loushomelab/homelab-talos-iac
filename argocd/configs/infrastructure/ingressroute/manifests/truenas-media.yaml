@@ -41,6 +41,10 @@ spec:
       port: 32400
       targetPort: 32400
       protocol: TCP
+    - name: lingarr
+      port: 9876
+      targetPort: 9876
+      protocol: TCP
 ---
 apiVersion: discovery.k8s.io/v1
 kind: EndpointSlice
@@ -72,6 +76,9 @@ ports:
   - name: plex
     protocol: TCP
     port: 32400
+  - name: lingarr
+    protocol: TCP
+    port: 9876
 endpoints:
   - addresses:
       - 192.168.50.102
@@ -109,6 +116,16 @@ kind: IngressRoute
 metadata:
   name: sonarr
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Sonarr"
+    gethomepage.dev/description: "TV library automation"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "sonarr.png"
+    gethomepage.dev/href: "https://sonarr.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "sonarr"
+    gethomepage.dev/widget.url: "http://192.168.50.102:8989"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SONARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
@@ -130,6 +147,16 @@ kind: IngressRoute
 metadata:
   name: radarr
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Radarr"
+    gethomepage.dev/description: "Movie library automation"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "radarr.png"
+    gethomepage.dev/href: "https://radarr.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "radarr"
+    gethomepage.dev/widget.url: "http://192.168.50.102:7878"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
@@ -151,6 +178,16 @@ kind: IngressRoute
 metadata:
   name: prowlarr
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Prowlarr"
+    gethomepage.dev/description: "Indexer manager"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "prowlarr.png"
+    gethomepage.dev/href: "https://prowlarr.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "prowlarr"
+    gethomepage.dev/widget.url: "http://192.168.50.102:9696"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
@@ -172,6 +209,16 @@ kind: IngressRoute
 metadata:
   name: bazarr
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Bazarr"
+    gethomepage.dev/description: "Subtitle management"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "bazarr.png"
+    gethomepage.dev/href: "https://bazarr.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "bazarr"
+    gethomepage.dev/widget.url: "http://192.168.50.102:6767"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_BAZARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
@@ -193,6 +240,16 @@ kind: IngressRoute
 metadata:
   name: seerr
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Seerr"
+    gethomepage.dev/description: "Media requests"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "seerr.png"
+    gethomepage.dev/href: "https://seerr.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "seerr"
+    gethomepage.dev/widget.url: "http://192.168.50.102:5055"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SEERR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
@@ -214,6 +271,16 @@ kind: IngressRoute
 metadata:
   name: qbittorrent
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "qBittorrent"
+    gethomepage.dev/description: "Torrent client"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "qbittorrent.png"
+    gethomepage.dev/href: "https://qbittorrent.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "qbittorrent"
+    gethomepage.dev/widget.url: "http://192.168.50.102:8080"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_None}}"
 spec:
   entryPoints:
     - websecure
@@ -238,6 +305,16 @@ kind: IngressRoute
 metadata:
   name: plex
   namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Plex"
+    gethomepage.dev/description: "Media server"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "plex.png"
+    gethomepage.dev/href: "https://plex.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "plex"
+    gethomepage.dev/widget.url: "http://192.168.50.102:32400"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PLEX_TOKEN}}"
 spec:
   entryPoints:
     - websecure
@@ -251,5 +328,35 @@ spec:
       services:
         - name: truenas-media
           port: plex
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+# Subtitle translation. Talks to ollama on the Mac Studio; the UI is lan-only
+# like the rest of the stack and has no Authentik gate.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lingarr
+  namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Lingarr"
+    gethomepage.dev/description: "Subtitle translation (local LLM)"
+    gethomepage.dev/group: "Media"
+    gethomepage.dev/icon: "sh-lingarr.svg"
+    gethomepage.dev/href: "https://lingarr.646499453.xyz:8443"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`lingarr.646499453.xyz`)
+      kind: Rule
+      middlewares:
+        - name: truenas-media-proto
+        - name: lan-only-allowlist
+          namespace: monitoring
+      services:
+        - name: truenas-media
+          port: lingarr
   tls:
     secretName: wildcards-646499453-xyz-tls
