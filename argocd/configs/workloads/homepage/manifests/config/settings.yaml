@@ -69,3 +69,22 @@ layout:
     tab: Observability
     style: row
     columns: 4
+
+  # === Tab 4: Media ===
+  # Like Hosts/PVE-Nodes: two entrypoints, then three task-oriented columns.
+  # Explicit child objects let v2.4 merge IngressRoute-discovered services here.
+  Watch & Request:
+    tab: Media
+    style: row
+    columns: 2
+    Watch: {}
+    Request: {}
+  Media Management:
+    tab: Media
+    style: row
+    columns: 3
+    Library: {}
+    Downloads: {}
+    Subtitles:
+      # Lingarr is a link-only service; keep it compact without fake stats.
+      useEqualHeights: false
