@@ -15,6 +15,9 @@ spec:
       app.kubernetes.io/name: homepage
   template:
     metadata:
+      annotations:
+        # Roll the service via GitOps when delivering the new media layout.
+        homepage.loushomelab/config-revision: "media-layout-v1"
       labels:
         app.kubernetes.io/name: homepage
     spec:

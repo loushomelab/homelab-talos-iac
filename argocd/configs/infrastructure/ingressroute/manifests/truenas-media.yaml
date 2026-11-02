@@ -120,7 +120,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Sonarr"
     gethomepage.dev/description: "TV library automation"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Library"
+    gethomepage.dev/weight: "10"
     gethomepage.dev/icon: "sonarr.png"
     gethomepage.dev/href: "https://sonarr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -153,7 +154,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Radarr"
     gethomepage.dev/description: "Movie library automation"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Library"
+    gethomepage.dev/weight: "20"
     gethomepage.dev/icon: "radarr.png"
     gethomepage.dev/href: "https://radarr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -186,7 +188,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Prowlarr"
     gethomepage.dev/description: "Indexer manager"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Downloads"
+    gethomepage.dev/weight: "20"
     gethomepage.dev/icon: "prowlarr.png"
     gethomepage.dev/href: "https://prowlarr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -219,7 +222,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Bazarr"
     gethomepage.dev/description: "Subtitle management"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Subtitles"
+    gethomepage.dev/weight: "10"
     gethomepage.dev/icon: "bazarr.png"
     gethomepage.dev/href: "https://bazarr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -252,7 +256,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Seerr"
     gethomepage.dev/description: "Media requests"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Request"
+    gethomepage.dev/weight: "10"
     gethomepage.dev/icon: "seerr.png"
     gethomepage.dev/href: "https://seerr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -285,7 +290,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "qBittorrent"
     gethomepage.dev/description: "Torrent client"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Downloads"
+    gethomepage.dev/weight: "10"
     gethomepage.dev/icon: "qbittorrent.png"
     gethomepage.dev/href: "https://qbittorrent.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -322,7 +328,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Plex"
     gethomepage.dev/description: "Media server"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Watch"
+    gethomepage.dev/weight: "10"
     gethomepage.dev/icon: "plex.png"
     gethomepage.dev/href: "https://plex.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
@@ -357,7 +364,8 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Lingarr"
     gethomepage.dev/description: "Subtitle translation (local LLM)"
-    gethomepage.dev/group: "Media"
+    gethomepage.dev/group: "Subtitles"
+    gethomepage.dev/weight: "20"
     gethomepage.dev/icon: "sh-lingarr.svg"
     gethomepage.dev/href: "https://lingarr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
