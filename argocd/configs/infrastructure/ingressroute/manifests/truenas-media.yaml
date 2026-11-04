@@ -2,10 +2,17 @@
 # HTTP backends, TLS terminated here with the managed wildcard. DNS needs no
 # change: *.646499453.xyz already resolves to the Traefik VIP (192.168.50.230).
 #
-# No Authentik ForwardAuth on these routes by design: every one of them exposes an
-# API or a media stream that answers unauthenticated clients, and forward-auth
-# replies with a 302 html login page (which breaks Sonarr's API, Seerr's Plex
-# login and Plex clients). Protection is lan-only + each app's own auth.
+# Sonarr, Radarr, and Prowlarr browser UIs use Authentik Forward Auth
+# (traefik/authentik-forwardauth, Embedded Outpost). A miss is a 302 HTML login
+# page, so each of those hosts keeps a higher-priority /api route on
+# truenas-media-proto + lan-only-allowlist only. API keys keep working for
+# Homepage and the other *arr apps. The allowlist runs before Forward Auth so
+# non-LAN clients still get 403 instead of an Authentik login page.
+# AuthenticationMethod stays Forms until that gate is verified.
+#
+# Bazarr, Seerr, Plex, Lingarr, and qBittorrent stay off Forward Auth: a 302
+# breaks Seerr's Plex login and Plex clients, and the rest still rely on
+# lan-only plus each app's own auth.
 apiVersion: v1
 kind: Service
 metadata:
@@ -127,18 +134,35 @@ metadata:
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
     gethomepage.dev/siteMonitor: "https://sonarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "sonarr"
-    gethomepage.dev/widget.url: "http://192.168.50.102:8989"
+    # /api is not behind Forward Auth, so the widget API key works via Traefik
+    # and does not need the NAS host port.
+    gethomepage.dev/widget.url: "https://sonarr.646499453.xyz:8443"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SONARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`sonarr.646499453.xyz`)
+    # API-key clients. No Forward Auth: a 302 login page breaks them.
+    - match: Host(`sonarr.646499453.xyz`) && PathPrefix(`/api`)
       kind: Rule
+      priority: 100
       middlewares:
         - name: truenas-media-proto
         - name: lan-only-allowlist
           namespace: monitoring
+      services:
+        - name: truenas-media
+          port: sonarr
+    # Browser UI.
+    - match: Host(`sonarr.646499453.xyz`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+        - name: authentik-forwardauth
+          namespace: traefik
+        - name: truenas-media-proto
       services:
         - name: truenas-media
           port: sonarr
@@ -161,18 +185,35 @@ metadata:
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
     gethomepage.dev/siteMonitor: "https://radarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "radarr"
-    gethomepage.dev/widget.url: "http://192.168.50.102:7878"
+    # /api is not behind Forward Auth, so the widget API key works via Traefik
+    # and does not need the NAS host port.
+    gethomepage.dev/widget.url: "https://radarr.646499453.xyz:8443"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`radarr.646499453.xyz`)
+    # API-key clients. No Forward Auth: a 302 login page breaks them.
+    - match: Host(`radarr.646499453.xyz`) && PathPrefix(`/api`)
       kind: Rule
+      priority: 100
       middlewares:
         - name: truenas-media-proto
         - name: lan-only-allowlist
           namespace: monitoring
+      services:
+        - name: truenas-media
+          port: radarr
+    # Browser UI.
+    - match: Host(`radarr.646499453.xyz`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+        - name: authentik-forwardauth
+          namespace: traefik
+        - name: truenas-media-proto
       services:
         - name: truenas-media
           port: radarr
@@ -195,18 +236,35 @@ metadata:
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
     gethomepage.dev/siteMonitor: "https://prowlarr.646499453.xyz:8443"
     gethomepage.dev/widget.type: "prowlarr"
-    gethomepage.dev/widget.url: "http://192.168.50.102:9696"
+    # /api is not behind Forward Auth, so the widget API key works via Traefik
+    # and does not need the NAS host port.
+    gethomepage.dev/widget.url: "https://prowlarr.646499453.xyz:8443"
     gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}"
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`prowlarr.646499453.xyz`)
+    # API-key clients. No Forward Auth: a 302 login page breaks them.
+    - match: Host(`prowlarr.646499453.xyz`) && PathPrefix(`/api`)
       kind: Rule
+      priority: 100
       middlewares:
         - name: truenas-media-proto
         - name: lan-only-allowlist
           namespace: monitoring
+      services:
+        - name: truenas-media
+          port: prowlarr
+    # Browser UI.
+    - match: Host(`prowlarr.646499453.xyz`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+        - name: authentik-forwardauth
+          namespace: traefik
+        - name: truenas-media-proto
       services:
         - name: truenas-media
           port: prowlarr
