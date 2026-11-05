@@ -7,3 +7,5 @@ documentations/
 docs/
 .codex/
 .tmp/
+.cache/validation-schemas/
+__pycache__/

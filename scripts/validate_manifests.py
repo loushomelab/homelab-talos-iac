@@ -14,6 +14,7 @@ except ImportError:
 
 HOMEPAGE = Path("argocd/configs/workloads/homepage/manifests")
 KUSTOMIZATION_NAMES = {"kustomization.yaml", "kustomization.yml", "Kustomization"}
+TARGETS = ("apps", "configs", "bootstrap")
 
 
 class ValidationError(Exception):
@@ -52,7 +53,7 @@ def read(path):
         raise ValidationError(f"{path}: cannot read UTF-8 input") from None
 
 
-def resource(doc, label):
+def resource(doc, label, on_resource=None):
     if not isinstance(doc, dict):
         raise ValidationError(f"{label}: resource must be a mapping")
     for field in ("apiVersion", "kind"):
@@ -63,22 +64,24 @@ def resource(doc, label):
     if doc["kind"] == "List":
         if not isinstance(doc.get("items"), list) or not doc["items"]:
             raise ValidationError(f"{label}: List requires nonempty items")
-        return sum(resource(item, f"{label}, item {i}") for i, item in enumerate(doc["items"], 1))
+        return sum(resource(item, f"{label}, item {i}", on_resource) for i, item in enumerate(doc["items"], 1))
     metadata = doc.get("metadata")
     if not isinstance(metadata, dict) or not any(
         isinstance(metadata.get(key), str) and metadata[key].strip()
         for key in ("name", "generateName")
     ):
         raise ValidationError(f"{label}: metadata requires name or generateName")
+    if on_resource:
+        on_resource(doc, label)
     return 1
 
 
-def validate(content, label):
+def validate(content, label, on_resource=None):
     docs = documents(content, label)
     if not docs:
         raise ValidationError(f"{label}: no resources found")
     try:
-        return sum(resource(doc, f"{label}, document {i}") for i, doc in enumerate(docs, 1))
+        return sum(resource(doc, f"{label}, document {i}", on_resource) for i, doc in enumerate(docs, 1))
     except RecursionError:
         raise ValidationError(f"{label}: recursive or excessively nested resource list") from None
 
@@ -102,7 +105,7 @@ def local_file(directory, value, label):
     return path
 
 
-def render_homepage(root, templates):
+def render_homepage(root, templates, on_resource=None):
     directory = root / HOMEPAGE
     path = directory / "kustomization.yaml"
     docs = documents(read(path), path)
@@ -153,14 +156,17 @@ def render_homepage(root, templates):
     if result.returncode:
         # Renderer diagnostics may include ConfigMap contents or credentials.
         raise ValidationError(f"{path}: local Kustomize render failed; check referenced input files")
-    return validate(result.stdout, f"{path} (rendered output)")
+    return validate(result.stdout, f"{path} (rendered output)", on_resource)
 
 
-def run(root, target):
+def run(root, target, on_resource=None):
     directory = root / "argocd" / target
     count = 0
     templates = []
     for path in yaml_files(directory):
+        if target == "bootstrap" and path == root / "argocd/bootstrap/values.yaml":
+            print("INPUT: argocd/bootstrap/values.yaml: Helm values, not a Kubernetes resource")
+            continue
         if target == "configs":
             if path.name in KUSTOMIZATION_NAMES:
                 if path != root / HOMEPAGE / "kustomization.yaml":
@@ -169,20 +175,31 @@ def run(root, target):
             if path.is_relative_to(root / HOMEPAGE / "config"):
                 templates.append(path)
                 continue  # Verify these are consumed before allowing opaque template data.
-        count += validate(read(path), path)
+        count += validate(read(path), path, on_resource)
     print(f"OK: {target}: {count} source resources passed YAML/basic structure checks")
     if target == "configs":
-        rendered = render_homepage(root, templates)
+        rendered = render_homepage(root, templates, on_resource)
         print(f"OK: Homepage: {rendered} rendered resources passed YAML/basic structure checks")
+
+
+def run_all(root, on_resource=None):
+    for path in yaml_files(root / "argocd"):
+        if not any(path.is_relative_to(root / "argocd" / target) for target in TARGETS):
+            raise ValidationError(f"{path}: unclassified manifest; register its validation path first")
+    for target in TARGETS:
+        run(root, target, on_resource)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("target", choices=("apps", "configs"))
+    parser.add_argument("target", choices=(*TARGETS, "all"))
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     try:
-        run(args.root.resolve(), args.target)
+        if args.target == "all":
+            run_all(args.root.resolve())
+        else:
+            run(args.root.resolve(), args.target)
     except ValidationError as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1

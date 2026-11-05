@@ -35,10 +35,12 @@ tasks:
   # 2. Offline YAML & Resource Structure Validation
   # =========================================================================
   "val:all":
-    desc: "Validate applications, rendered configs, and renovate locally without a cluster"
+    desc: "Validate manifests, rendered configs, locked schemas, and renovate without a cluster"
     cmds:
       - task: "val:apps"
       - task: "val:configs"
+      - task: "val:bootstrap"
+      - task: "val:schemas"
       - task: "val:renovate"
       - echo "✔ All local validations passed."
 
@@ -58,6 +60,21 @@ tasks:
       - echo "==> Validating renovate.json syntax..."
       - node -e 'JSON.parse(require("fs").readFileSync("renovate.json", "utf8"))'
       - echo "✔ renovate.json is valid JSON."
+
+  "val:bootstrap":
+    desc: "Validate bootstrap resources; report Helm values as non-resource input"
+    cmds:
+      - '{{.PYTHON}} scripts/validate_manifests.py bootstrap'
+
+  "val:schemas":
+    desc: "Validate all classified resources and Homepage output against locked schemas offline"
+    cmds:
+      - '{{.PYTHON}} scripts/validate_schemas.py'
+
+  "val:prepare-schemas":
+    desc: "Download reviewed checksum-locked schema sources (explicit network preparation)"
+    cmds:
+      - '{{.PYTHON}} scripts/prepare_schemas.py'
 
   # =========================================================================
   # 3. Cluster Inspection (Certs, Secrets, Ingress)

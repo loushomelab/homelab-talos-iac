@@ -1,0 +1,375 @@
+{
+  "kubernetes_version": "1.36.0",
+  "kubeconform_version": "v0.7.0",
+  "sources": [
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/deployment-apps-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/deployment-apps-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "sha256": "144c90b1d1c64ccf04b643e909803c1664f552b7d5b4b3ec3427ca577334246f"
+        }
+      ],
+      "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/statefulset-apps-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/statefulset-apps-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "apps/v1",
+          "kind": "StatefulSet",
+          "sha256": "e719586a4b804b186db6b9e259e72a72c676e7d95eefe08173a1d123b4ebac21"
+        }
+      ],
+      "sha256": "cfa6579916fc2a1be0deb6372a3c67c3747a212131d0cb7b342d645f65639987"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/job-batch-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/job-batch-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "batch/v1",
+          "kind": "Job",
+          "sha256": "49c89f794841be2d63a6bb609e52b66eb8061932e6cfc6d742e09d1c4d7e63f3"
+        }
+      ],
+      "sha256": "f49fee30367890a492146d63c3c433a7853e9088ebfe9e25cc792ec4b1400f18"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/endpointslice-discovery-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/endpointslice-discovery-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "discovery.k8s.io/v1",
+          "kind": "EndpointSlice",
+          "sha256": "b76d7ad2fdbe7164dca11dab225ca495a4cf78c328becec3100bfd4c83ea3eed"
+        }
+      ],
+      "sha256": "7a7f02e6eac0d9e82f378bfe9f0c39ab6c1fbb34986bdfb0b01c36f28b148a2c"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/ingress-networking-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/ingress-networking-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "networking.k8s.io/v1",
+          "kind": "Ingress",
+          "sha256": "32f2c5f49087bca843025f92689ef9428b431c4c4d58b56662c28f5ac9dd2663"
+        }
+      ],
+      "sha256": "4e0f63ad84c2bf22565e489d1f4b885ddaa9f6bf7cff1ddd562553760afe4d79"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/clusterrole-rbac-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/clusterrole-rbac-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "ClusterRole",
+          "sha256": "0371d5ca8356932d91966f2603227f1d3ce1d730c561891d89ff391d2a05f085"
+        }
+      ],
+      "sha256": "0777f91c4fa08bd3989b6db8c59dad0429a63dec8f59e883ff55c947a14d0d5f"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/clusterrolebinding-rbac-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/clusterrolebinding-rbac-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "ClusterRoleBinding",
+          "sha256": "719f1a5f24abf0955331caf22cfe156e401c9fcb3f64be72422fe9caf56cc18c"
+        }
+      ],
+      "sha256": "e44498f0ead69333bf1d066dec35470f8bf54898ec2647c9e60f8396aa26f04a"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/configmap-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/configmap-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "v1",
+          "kind": "ConfigMap",
+          "sha256": "2312b81ab2d35c4d6d9ebfb96d00bfc91fa016cb5aefddc562c02595b2b7d6a0"
+        }
+      ],
+      "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/namespace-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/namespace-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "v1",
+          "kind": "Namespace",
+          "sha256": "979a85c15d36baec6709a83540ccfdb659021a93a06621db3c200648d96893d5"
+        }
+      ],
+      "sha256": "324fae677b98d1a6d54340db0c334d053e8ffbafceb3f73326e41de2610d5843"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/persistentvolumeclaim-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/persistentvolumeclaim-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "v1",
+          "kind": "PersistentVolumeClaim",
+          "sha256": "2f766933b2401ece5f36ff5fd962c31c921d64bc589d91abbe1b548f6885b3bb"
+        }
+      ],
+      "sha256": "6136871ac0337f11a48da5231a2807407c7386967e3432f344141b902f6a538c"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/service-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/service-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "sha256": "310705a1374a20aefe14f76d50a6341297228001af2d8a86671607497cbf5bea"
+        }
+      ],
+      "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b"
+    },
+    {
+      "name": "yannh/kubernetes-json-schema: v1.36.0-standalone-strict/serviceaccount-v1.json",
+      "version": "Kubernetes v1.36.0 standalone-strict",
+      "url": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/86d045595d3f93b703bbf439cf9eb4bd6830d58f/v1.36.0-standalone-strict/serviceaccount-v1.json",
+      "format": "json",
+      "schemas": [
+        {
+          "apiVersion": "v1",
+          "kind": "ServiceAccount",
+          "sha256": "862119ced956cdbb41467893195a2a607eca9b7f52f8c3495ab339db57e28696"
+        }
+      ],
+      "sha256": "8193d6c3561475c6d3d5c44e1faedb1df53905373d904bc17015694326d659cf"
+    },
+    {
+      "name": "argoproj/argo-cd: manifests/crds/application-crd.yaml",
+      "version": "v3.5.3 (argo-cd chart 10.9.1)",
+      "url": "https://raw.githubusercontent.com/argoproj/argo-cd/c9c369efcc5b2a0bd720803f8d14a1c3eaddf579/manifests/crds/application-crd.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "argoproj.io/v1alpha1",
+          "kind": "Application",
+          "sha256": "c934351d2f0bc11b372846341a348f06866bcc3c915d9787c5b9ed6beeabfb04"
+        }
+      ],
+      "sha256": "5dde0e229249b6b707beb98674c1deae3949d5c319a6c45b9f5a80c99618e40c"
+    },
+    {
+      "name": "argoproj/argo-cd: manifests/crds/appproject-crd.yaml",
+      "version": "v3.5.3 (argo-cd chart 10.9.1)",
+      "url": "https://raw.githubusercontent.com/argoproj/argo-cd/c9c369efcc5b2a0bd720803f8d14a1c3eaddf579/manifests/crds/appproject-crd.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "argoproj.io/v1alpha1",
+          "kind": "AppProject",
+          "sha256": "7a403057f49fe25c7e4b39807892c39affde9048175da771456e95ddd01baf8c"
+        }
+      ],
+      "sha256": "ab225266944322750136f1198d93786e4a79a0e43c8d149abfba44da30a3eac8"
+    },
+    {
+      "name": "external-secrets/external-secrets: deploy/crds/bundle.yaml",
+      "version": "v2.10.0",
+      "url": "https://raw.githubusercontent.com/external-secrets/external-secrets/279f56c84d5d4058c3bfdeeaf5b1c2febb8851c0/deploy/crds/bundle.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "external-secrets.io/v1",
+          "kind": "ExternalSecret",
+          "sha256": "f0d9a862118ee249e1effb809ab763f0223df602ea57aa8d4eb5d67096d765ad"
+        },
+        {
+          "apiVersion": "external-secrets.io/v1",
+          "kind": "ClusterSecretStore",
+          "sha256": "76f025989ebbbdf3bf14eb17d66415f9162290e60f9028e4e087fdd21f44f316"
+        }
+      ],
+      "sha256": "948a27467c69d01db0c4d1975a1409cfeb6716aa5a3278b3de91aeb7569ec151"
+    },
+    {
+      "name": "traefik/traefik-helm-chart: traefik/crds/traefik.io_ingressroutes.yaml",
+      "version": "chart v41.5.0 (Traefik v3.7.13)",
+      "url": "https://raw.githubusercontent.com/traefik/traefik-helm-chart/80f83b63d5a229a618f1e10578edbcf852d7bee1/traefik/crds/traefik.io_ingressroutes.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "traefik.io/v1alpha1",
+          "kind": "IngressRoute",
+          "sha256": "3b660c9305cbc98a59aacb913d709c4d11c7dc742fa40fb8bfd34f991ef894b7"
+        }
+      ],
+      "sha256": "6c78d0550ca4dcce238b4a6b470f7e98b8ca834a02b5103b5c29e2dbdc05ad8a"
+    },
+    {
+      "name": "traefik/traefik-helm-chart: traefik/crds/traefik.io_ingressroutetcps.yaml",
+      "version": "chart v41.5.0 (Traefik v3.7.13)",
+      "url": "https://raw.githubusercontent.com/traefik/traefik-helm-chart/80f83b63d5a229a618f1e10578edbcf852d7bee1/traefik/crds/traefik.io_ingressroutetcps.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "traefik.io/v1alpha1",
+          "kind": "IngressRouteTCP",
+          "sha256": "6131225948b7afae65330c9a47dc7d5df1612966cb65671ce7291d775856ab23"
+        }
+      ],
+      "sha256": "c136e95e25ca2ccf9c8a9f481018ef82795a3bdb7a5e1216d4606eb87cd75bdf"
+    },
+    {
+      "name": "traefik/traefik-helm-chart: traefik/crds/traefik.io_middlewares.yaml",
+      "version": "chart v41.5.0 (Traefik v3.7.13)",
+      "url": "https://raw.githubusercontent.com/traefik/traefik-helm-chart/80f83b63d5a229a618f1e10578edbcf852d7bee1/traefik/crds/traefik.io_middlewares.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "traefik.io/v1alpha1",
+          "kind": "Middleware",
+          "sha256": "699561a957ca933903c2e38b282c726f7bda5966e3af79af0e6e85892b934233"
+        }
+      ],
+      "sha256": "2d2e097725637a7fc372fab3492db2cb94860e7d463424bd6b341f6a2a81c685"
+    },
+    {
+      "name": "traefik/traefik-helm-chart: traefik/crds/traefik.io_middlewaretcps.yaml",
+      "version": "chart v41.5.0 (Traefik v3.7.13)",
+      "url": "https://raw.githubusercontent.com/traefik/traefik-helm-chart/80f83b63d5a229a618f1e10578edbcf852d7bee1/traefik/crds/traefik.io_middlewaretcps.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "traefik.io/v1alpha1",
+          "kind": "MiddlewareTCP",
+          "sha256": "810dc8c7a52b9cdaeb565e789339cc91f6b052ba89574a8a9100ae7696837fc1"
+        }
+      ],
+      "sha256": "d9f8fba46ba6f96273de5c126175a7d222f9f9c3458b3df38d603bbf30e69bb5"
+    },
+    {
+      "name": "traefik/traefik-helm-chart: traefik/crds/traefik.io_serverstransports.yaml",
+      "version": "chart v41.5.0 (Traefik v3.7.13)",
+      "url": "https://raw.githubusercontent.com/traefik/traefik-helm-chart/80f83b63d5a229a618f1e10578edbcf852d7bee1/traefik/crds/traefik.io_serverstransports.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "traefik.io/v1alpha1",
+          "kind": "ServersTransport",
+          "sha256": "7bd21af7683bdfc2c97126ddb33550a00403e88f507596470b779e46f6e8364e"
+        }
+      ],
+      "sha256": "164d529984ce726950383a34ea38c5cfd5aedb67dc6e04dfd1ea0854f28cb954"
+    },
+    {
+      "name": "metallb/metallb: config/crd/bases/metallb.io_ipaddresspools.yaml",
+      "version": "v0.16.1",
+      "url": "https://raw.githubusercontent.com/metallb/metallb/791dfcc63ced7a6b3e869131eae75e645150fff0/config/crd/bases/metallb.io_ipaddresspools.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "metallb.io/v1beta1",
+          "kind": "IPAddressPool",
+          "sha256": "3081cd20c590aadddd780fd3107d5ae5034b707f339f4f3677902fb017ec4779"
+        }
+      ],
+      "sha256": "585d55016cb9cf1aac3ed4a63b1075051bf8c20aab28dfcd3cfbe58a632ed230"
+    },
+    {
+      "name": "metallb/metallb: config/crd/bases/metallb.io_l2advertisements.yaml",
+      "version": "v0.16.1",
+      "url": "https://raw.githubusercontent.com/metallb/metallb/791dfcc63ced7a6b3e869131eae75e645150fff0/config/crd/bases/metallb.io_l2advertisements.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "metallb.io/v1beta1",
+          "kind": "L2Advertisement",
+          "sha256": "041579b44623958ac0c622849cd10c166a3053c4af16b2b5808967601939e7c9"
+        }
+      ],
+      "sha256": "c2561949e442c8253237ef81dbfe7c4a69fd5c1bfdf30f8bc0829d74d4cd4d64"
+    },
+    {
+      "name": "cert-manager/cert-manager: deploy/crds/cert-manager.io_certificates.yaml",
+      "version": "v1.21.2",
+      "url": "https://raw.githubusercontent.com/cert-manager/cert-manager/922a06aa49ee4bb802db268ef72a174af70edd32/deploy/crds/cert-manager.io_certificates.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "cert-manager.io/v1",
+          "kind": "Certificate",
+          "sha256": "b7d115d7fad3e1b82871580d7e9871605efddd56f8a548abd203a0b89b765798"
+        }
+      ],
+      "sha256": "7ad91029c00ec959d54215b19d3b1a9b7e0247eaa60f987151c2b70d8661f8af"
+    },
+    {
+      "name": "cert-manager/cert-manager: deploy/crds/cert-manager.io_clusterissuers.yaml",
+      "version": "v1.21.2",
+      "url": "https://raw.githubusercontent.com/cert-manager/cert-manager/922a06aa49ee4bb802db268ef72a174af70edd32/deploy/crds/cert-manager.io_clusterissuers.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "cert-manager.io/v1",
+          "kind": "ClusterIssuer",
+          "sha256": "89a43a646c3588047d364ce3d6b22e8cfc840f7ca558e7997e2b8d9c173f0a61"
+        }
+      ],
+      "sha256": "30008001b78aafb8e110af61359561104b5fafc3a4dc6ac0013245d0ee3fe4ca"
+    },
+    {
+      "name": "grafana/grafana-operator: deploy/helm/grafana-operator/files/crds/grafana.integreatly.org_grafanas.yaml",
+      "version": "v5.25.0",
+      "url": "https://raw.githubusercontent.com/grafana/grafana-operator/1d8584df2127ad9341567efb2683adaf25894ebe/deploy/helm/grafana-operator/files/crds/grafana.integreatly.org_grafanas.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "grafana.integreatly.org/v1beta1",
+          "kind": "Grafana",
+          "sha256": "4f470a31b85848ec05be3bb44bd95661864363348f21155a4d3006bb60e6fbb0"
+        }
+      ],
+      "sha256": "1e6c4a7d6db9a67abc7f5dfbb5b039219667918a4a8c12cf101c31272d4a4b5c"
+    },
+    {
+      "name": "grafana/grafana-operator: deploy/helm/grafana-operator/files/crds/grafana.integreatly.org_grafanadashboards.yaml",
+      "version": "v5.25.0",
+      "url": "https://raw.githubusercontent.com/grafana/grafana-operator/1d8584df2127ad9341567efb2683adaf25894ebe/deploy/helm/grafana-operator/files/crds/grafana.integreatly.org_grafanadashboards.yaml",
+      "format": "crd",
+      "schemas": [
+        {
+          "apiVersion": "grafana.integreatly.org/v1beta1",
+          "kind": "GrafanaDashboard",
+          "sha256": "b1794ece8d9462fd465366074dd4f13ccb4dbf206ee368789148ccb15f431496"
+        }
+      ],
+      "sha256": "a3b4dd01ccf00568a7bd198e4ec4c89ab3a872cb2e962e671492a10f9595415f"
+    }
+  ]
+}
