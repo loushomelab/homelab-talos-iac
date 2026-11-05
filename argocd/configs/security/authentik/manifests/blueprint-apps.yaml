@@ -477,10 +477,12 @@ data:
           icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/hermes.svg
           meta_launch_url: https://hermes.646499453.xyz:8443/
 
-      # --- Sonarr / Radarr / Prowlarr (Forward Auth) ---
+      # --- Sonarr / Radarr / Prowlarr / Whisparr (Forward Auth) ---
       # Traefik sends only the browser UI through these providers. /api stays
       # off Forward Auth so API keys do not get a 302 login page. App
       # AuthenticationMethod stays Forms until that gate is verified.
+      # The embedded outpost does not discover Traefik hosts on its own;
+      # each provider below has to be listed on the outpost.
       - identifiers:
           name: Sonarr
         model: authentik_providers_proxy.proxyprovider
@@ -538,6 +540,25 @@ data:
           provider: !KeyOf prowlarr-provider
           icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg
           meta_launch_url: https://prowlarr.646499453.xyz:8443/
+      - identifiers:
+          name: Whisparr
+        model: authentik_providers_proxy.proxyprovider
+        id: whisparr-provider
+        attrs:
+          name: Whisparr
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          internal_host: ""
+          external_host: https://whisparr.646499453.xyz:8443
+          mode: forward_single
+      - identifiers:
+          slug: whisparr
+        model: authentik_core.application
+        attrs:
+          name: Whisparr
+          provider: !KeyOf whisparr-provider
+          icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/whisparr.svg
+          meta_launch_url: https://whisparr.646499453.xyz:8443/
 
       # --- Embedded Outpost Update ---
       # Automatically bind these proxy providers to the embedded outpost
@@ -554,3 +575,4 @@ data:
             - !KeyOf sonarr-provider
             - !KeyOf radarr-provider
             - !KeyOf prowlarr-provider
+            - !KeyOf whisparr-provider

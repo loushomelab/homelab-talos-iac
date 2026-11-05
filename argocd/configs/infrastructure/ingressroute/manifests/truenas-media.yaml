@@ -2,13 +2,17 @@
 # HTTP backends, TLS terminated here with the managed wildcard. DNS needs no
 # change: *.646499453.xyz already resolves to the Traefik VIP (192.168.50.230).
 #
-# Sonarr, Radarr, and Prowlarr browser UIs use Authentik Forward Auth
+# Sonarr, Radarr, Prowlarr, and Whisparr browser UIs use Authentik Forward Auth
 # (traefik/authentik-forwardauth, Embedded Outpost). A miss is a 302 HTML login
 # page, so each of those hosts keeps a higher-priority /api route on
 # truenas-media-proto + lan-only-allowlist only. API keys keep working for
 # Homepage and the other *arr apps. The allowlist runs before Forward Auth so
 # non-LAN clients still get 403 instead of an Authentik login page.
 # AuthenticationMethod stays Forms until that gate is verified.
+#
+# Whisparr's named port is 6969, the listen port of current Whisparr / hotio
+# latest (v2). The deprecated linuxserver/docker-whisparr image published 7878;
+# this Service follows 6969 so it matches the companion NAS compose assumption.
 #
 # Bazarr, Seerr, Plex, Lingarr, and qBittorrent stay off Forward Auth: a 302
 # breaks Seerr's Plex login and Plex clients, and the rest still rely on
@@ -27,6 +31,10 @@ spec:
     - name: radarr
       port: 7878
       targetPort: 7878
+      protocol: TCP
+    - name: whisparr
+      port: 6969
+      targetPort: 6969
       protocol: TCP
     - name: prowlarr
       port: 9696
@@ -68,6 +76,9 @@ ports:
   - name: radarr
     protocol: TCP
     port: 7878
+  - name: whisparr
+    protocol: TCP
+    port: 6969
   - name: prowlarr
     protocol: TCP
     port: 9696
@@ -217,6 +228,61 @@ spec:
       services:
         - name: truenas-media
           port: radarr
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whisparr
+  namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Whisparr"
+    gethomepage.dev/description: "Scene library automation"
+    gethomepage.dev/group: "Library"
+    gethomepage.dev/weight: "30"
+    gethomepage.dev/icon: "whisparr.png"
+    gethomepage.dev/href: "https://whisparr.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://whisparr.646499453.xyz:8443"
+    # Homepage v2.4.0 has no whisparr widget (upstream never merged one).
+    # hotio latest / Whisparr v2 is a Sonarr fork, so the sonarr client
+    # (/api/v3/series, queue, wanted/missing) is the working fallback.
+    # Whisparr v3 (Eros) is Radarr-shaped; switch this to radarr if that lands.
+    gethomepage.dev/widget.type: "sonarr"
+    # /api is not behind Forward Auth, so the widget API key works via Traefik
+    # and does not need the NAS host port.
+    gethomepage.dev/widget.url: "https://whisparr.646499453.xyz:8443"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_WHISPARR_API_KEY}}"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # API-key clients. No Forward Auth: a 302 login page breaks them.
+    - match: Host(`whisparr.646499453.xyz`) && PathPrefix(`/api`)
+      kind: Rule
+      priority: 100
+      middlewares:
+        - name: truenas-media-proto
+        - name: lan-only-allowlist
+          namespace: monitoring
+      services:
+        - name: truenas-media
+          port: whisparr
+    # Browser UI.
+    - match: Host(`whisparr.646499453.xyz`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+        - name: authentik-forwardauth
+          namespace: traefik
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: whisparr
   tls:
     secretName: wildcards-646499453-xyz-tls
 ---
