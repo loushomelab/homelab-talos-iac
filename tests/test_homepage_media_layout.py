@@ -32,12 +32,13 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         self.assertTrue(settings['useEqualHeights'])
         self.assertNotIn('Media', layout, 'Do not keep the old unstructured discovery bucket')
 
-    def test_all_eight_apps_are_discovered_once_in_task_order_without_route_changes(self):
+    def test_all_nine_apps_are_discovered_once_in_task_order_without_route_changes(self):
         expected = {
             'plex': ('Watch', 10),
             'seerr': ('Request', 10),
             'sonarr': ('Library', 10),
             'radarr': ('Library', 20),
+            'whisparr': ('Library', 30),
             'qbittorrent': ('Downloads', 10),
             'prowlarr': ('Downloads', 20),
             'bazarr': ('Subtitles', 10),
@@ -78,7 +79,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         proto = {'name': 'truenas-media-proto'}
         allow = {'name': 'lan-only-allowlist', 'namespace': 'monitoring'}
         forward = {'name': 'authentik-forwardauth', 'namespace': 'traefik'}
-        for name in ('sonarr', 'radarr', 'prowlarr'):
+        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr'):
             rules = routes[name]['spec']['routes']
             self.assertEqual(len(rules), 2)
             api, ui = rules
@@ -92,6 +93,22 @@ class HomepageMediaLayoutTests(unittest.TestCase):
                 routes[name]['metadata']['annotations']['gethomepage.dev/widget.url'],
                 f'https://{name}.646499453.xyz:8443',
             )
+        # Homepage v2.4.0 has no whisparr widget. hotio v3 (Eros) speaks the Radarr API.
+        self.assertEqual(
+            routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.type'],
+            'radarr',
+        )
+        self.assertEqual(
+            routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.key'],
+            '{{HOMEPAGE_VAR_WHISPARR_API_KEY}}',
+        )
+        service = next(resource for resource in resources if resource['kind'] == 'Service')
+        endpoint = next(resource for resource in resources if resource['kind'] == 'EndpointSlice')
+        service_port = next(port for port in service['spec']['ports'] if port['name'] == 'whisparr')
+        endpoint_port = next(port for port in endpoint['ports'] if port['name'] == 'whisparr')
+        self.assertEqual(service_port['port'], 6969)
+        self.assertEqual(service_port['targetPort'], 6969)
+        self.assertEqual(endpoint_port['port'], 6969)
         direct_urls = {
             'bazarr': 'http://192.168.50.102:6767',
             'seerr': 'http://192.168.50.102:5055',
