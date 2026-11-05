@@ -10,9 +10,9 @@
 # non-LAN clients still get 403 instead of an Authentik login page.
 # AuthenticationMethod stays Forms until that gate is verified.
 #
-# Whisparr's named port is 6969, the listen port of current Whisparr / hotio
-# latest (v2). The deprecated linuxserver/docker-whisparr image published 7878;
-# this Service follows 6969 so it matches the companion NAS compose assumption.
+# Whisparr is ghcr.io/hotio/whisparr:v3 (Eros) published on the NAS at
+# 192.168.50.102:6969. The container still listens on 6969; do not use the
+# deprecated linuxserver image port 7878.
 #
 # Bazarr, Seerr, Plex, Lingarr, and qBittorrent stay off Forward Auth: a 302
 # breaks Seerr's Plex login and Plex clients, and the rest still rely on
@@ -246,11 +246,9 @@ metadata:
     gethomepage.dev/href: "https://whisparr.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
     gethomepage.dev/siteMonitor: "https://whisparr.646499453.xyz:8443"
-    # Homepage v2.4.0 has no whisparr widget (upstream never merged one).
-    # hotio latest / Whisparr v2 is a Sonarr fork, so the sonarr client
-    # (/api/v3/series, queue, wanted/missing) is the working fallback.
-    # Whisparr v3 (Eros) is Radarr-shaped; switch this to radarr if that lands.
-    gethomepage.dev/widget.type: "sonarr"
+    # Homepage v2.4.0 has no whisparr widget. hotio v3 (Eros) is Radarr-shaped
+    # (/api/v3/movie), so the radarr client is the working fallback.
+    gethomepage.dev/widget.type: "radarr"
     # /api is not behind Forward Auth, so the widget API key works via Traefik
     # and does not need the NAS host port.
     gethomepage.dev/widget.url: "https://whisparr.646499453.xyz:8443"

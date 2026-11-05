@@ -93,10 +93,10 @@ class HomepageMediaLayoutTests(unittest.TestCase):
                 routes[name]['metadata']['annotations']['gethomepage.dev/widget.url'],
                 f'https://{name}.646499453.xyz:8443',
             )
-        # Homepage v2.4.0 has no whisparr widget. v2 speaks the Sonarr API.
+        # Homepage v2.4.0 has no whisparr widget. hotio v3 (Eros) speaks the Radarr API.
         self.assertEqual(
             routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.type'],
-            'sonarr',
+            'radarr',
         )
         self.assertEqual(
             routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.key'],
