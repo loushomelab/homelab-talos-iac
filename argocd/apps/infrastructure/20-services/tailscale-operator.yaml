@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tailscale-operator
+  namespace: argocd
+  annotations:
+    # Wave 1 inside infra-tier-2: do not install the operator until
+    # tailscale-secrets is Healthy, so the pod never starts without
+    # Secret/operator-oauth. CRDs ship with this chart (installCRDs).
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    # Stable charts only (not pkgs.tailscale.com/unstable). Renovate argocd
+    # manager tracks targetRevision; chart is in the networking-stack group.
+    repoURL: 'https://pkgs.tailscale.com/helmcharts'
+    chart: tailscale-operator
+    # Current stable chart from the index (appVersion v1.104.4, published 2026-11-02).
+    targetRevision: 1.104.4
+    helm:
+      valuesObject:
+        # Leave oauth.clientId unset so the chart does not render its own
+        # Secret. fullname stays "operator", which mounts operator-oauth.
+        installCRDs: true
+        operatorConfig:
+          hostname: talos-ts-operator
+          defaultTags:
+            - tag:k8s-operator
+          extraEnv:
+            - name: TZ
+              value: Asia/Shanghai
+        # Chart type is a comma-separated string, not a list. One tag.
+        proxyConfig:
+          defaultTags: "tag:k8s"
+        # In-process API server proxy and its impersonation RBAC stay off.
+        apiServerProxyConfig:
+          mode: "false"
+          allowImpersonation: "false"
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: tailscale
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -40,11 +40,12 @@
       "groupSlug": "observability-stack"
     },
     {
-      "description": "网络与入口基础设施成组升级 (Traefik, cert-manager, metallb)",
+      "description": "网络与入口基础设施成组升级 (Traefik, cert-manager, metallb, Tailscale)",
       "matchPackageNames": [
         "*traefik*",
         "*cert-manager*",
-        "*metallb*"
+        "*metallb*",
+        "*tailscale*"
       ],
       "groupName": "networking-stack",
       "groupSlug": "networking-stack"

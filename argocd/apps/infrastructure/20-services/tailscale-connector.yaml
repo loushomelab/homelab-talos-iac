@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tailscale-connector
+  namespace: argocd
+  annotations:
+    # Wave 2 inside infra-tier-2: Connector is applied only after
+    # tailscale-operator is Healthy, so connectors.tailscale.com exists.
+    # Same ordering as grafana (0) → monitoring-configs (1) → unpoller (2).
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infra
+  source:
+    repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
+    targetRevision: HEAD
+    path: argocd/configs/infrastructure/tailscale/connector
+  destination:
+    server: 'https://kubernetes.default.svc'
+    # Connector is cluster-scoped; destination namespace is unused for it.
+    namespace: tailscale
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
