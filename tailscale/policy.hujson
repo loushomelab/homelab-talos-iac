@@ -5,16 +5,19 @@
 	// Admins own tag:k8s-operator so the operator OAuth client can be created
 	// after this file is applied. The operator then owns proxy and router tags.
 	// Connector/langshi-ha (hostname langshi-ha-router) uses tag:ha-router
-	// and advertises only 192.168.50.120/32.
+	// and advertises the Home Assistant, DNS, and NAS host routes.
 	"tagOwners": {
 		"tag:k8s-operator": ["autogroup:admin"],
 		"tag:k8s":          ["tag:k8s-operator"],
 		"tag:ha-router":    ["tag:k8s-operator"],
+		"tag:grokbot":      ["autogroup:admin"],
 	},
 
 	"autoApprovers": {
 		"routes": {
 			"192.168.50.120/32": ["tag:ha-router"],
+			"192.168.50.231/32": ["tag:ha-router"],
+			"192.168.50.102/32": ["tag:ha-router"],
 		},
 	},
 
@@ -44,6 +47,23 @@
 				"192.168.50.120/32",
 			],
 			"ip": ["*"],
+		},
+
+		// Each destination has its own ports; do not add grokbot to broad grants.
+		{
+			"src": ["tag:grokbot"],
+			"dst": ["192.168.50.231/32"],
+			"ip":  ["tcp:53", "udp:53"],
+		},
+		{
+			"src": ["tag:grokbot"],
+			"dst": ["192.168.50.102/32"],
+			"ip":  ["tcp:445", "tcp:443"],
+		},
+		{
+			"src": ["tag:grokbot"],
+			"dst": ["192.168.50.120/32"],
+			"ip":  ["tcp:8123"],
 		},
 	],
 
@@ -80,6 +100,23 @@
 				"tb6hjbk4vr@privaterelay.appleid.com:22",
 				"100.98.102.109:22",
 			],
+		},
+		{
+			"src":   "tag:grokbot",
+			"proto": "tcp",
+			"accept": ["192.168.50.231:53", "192.168.50.102:445", "192.168.50.102:443", "192.168.50.120:8123"],
+			"deny": ["192.168.50.1:22", "192.168.50.102:22", "192.168.50.231:5380", "192.168.50.120:22", "192.168.50.120:445", "192.168.50.102:53"],
+		},
+		{
+			"src": "tag:grokbot",
+			"proto": "udp",
+			"accept": ["192.168.50.231:53"],
+			"deny": ["192.168.50.102:53", "192.168.50.231:445"],
+		},
+		{
+			"src": "tag:k8s",
+			"proto": "tcp",
+			"deny": ["tag:grokbot:22"],
 		},
 	],
 }
