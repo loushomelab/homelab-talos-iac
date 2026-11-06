@@ -1,0 +1,13 @@
+# Cluster-scoped. Applied only after the operator chart has installed
+# tailscale.com CRDs (tailscale-connector sync wave is after tailscale-operator).
+# Subnet router for Langshi Home Assistant only: 192.168.50.120/32.
+# Not an exit node and not an app connector.
+apiVersion: tailscale.com/v1alpha1
+kind: Connector
+metadata:
+  name: langshi-ha
+spec:
+  hostname: langshi-ha-router
+  tags: ["tag:ha-router"]
+  subnetRouter:
+    advertiseRoutes: ["192.168.50.120/32"]
