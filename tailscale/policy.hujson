@@ -5,7 +5,7 @@
 	// Admins own tag:k8s-operator so the operator OAuth client can be created
 	// after this file is applied. The operator then owns proxy and router tags.
 	// Connector/langshi-ha (hostname langshi-ha-router) uses tag:ha-router
-	// and advertises the Home Assistant, DNS, and NAS host routes.
+	// and advertises the Home Assistant, DNS, NAS, and Mac Studio host routes.
 	"tagOwners": {
 		"tag:k8s-operator": ["autogroup:admin"],
 		"tag:k8s":          ["tag:k8s-operator"],
@@ -18,6 +18,7 @@
 			"192.168.50.120/32": ["tag:ha-router"],
 			"192.168.50.231/32": ["tag:ha-router"],
 			"192.168.50.102/32": ["tag:ha-router"],
+			"192.168.50.79/32":  ["tag:ha-router"],
 		},
 	},
 
@@ -65,6 +66,12 @@
 			"dst": ["192.168.50.120/32"],
 			"ip":  ["tcp:80"],
 		},
+		// Mac Studio SSH jump for box relay → macmini4. Port 22 only.
+		{
+			"src": ["tag:grokbot"],
+			"dst": ["192.168.50.79/32"],
+			"ip":  ["tcp:22"],
+		},
 	],
 
 	// Define users and devices that can use Tailscale SSH.
@@ -104,8 +111,8 @@
 		{
 			"src":   "tag:grokbot",
 			"proto": "tcp",
-			"accept": ["192.168.50.231:53", "192.168.50.102:445", "192.168.50.102:443", "192.168.50.120:80"],
-			"deny": ["192.168.50.1:22", "192.168.50.102:22", "192.168.50.231:5380", "192.168.50.120:22", "192.168.50.120:445", "192.168.50.120:8123", "192.168.50.102:53"],
+			"accept": ["192.168.50.231:53", "192.168.50.102:445", "192.168.50.102:443", "192.168.50.120:80", "192.168.50.79:22"],
+			"deny": ["192.168.50.1:22", "192.168.50.102:22", "192.168.50.231:5380", "192.168.50.120:22", "192.168.50.120:445", "192.168.50.120:8123", "192.168.50.102:53", "192.168.50.79:80", "192.168.50.79:443", "192.168.50.79:445"],
 		},
 		{
 			"src": "tag:grokbot",
