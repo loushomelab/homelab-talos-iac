@@ -1,0 +1,54 @@
+name: Tailscale ACL
+
+# test: pull requests that touch the policy or this workflow.
+# apply: every push to main. The first apply after the baseline merge is a
+# no-op because tailscale/policy.hujson matches the live HuJSON ETag.
+on:
+  pull_request:
+    paths:
+      - "tailscale/**"
+      - ".github/workflows/tailscale-acl.yml"
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: Tailscale policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # OAuth client from Doppler project k8s / config prd, synced as GitHub
+      # Actions secrets of the same name:
+      #   TAILSCALE_ACL_OAUTH_CLIENT_ID
+      #   TAILSCALE_ACL_OAUTH_CLIENT_SECRET
+      # tailnet "-" is the tailnet that owns the OAuth client.
+      # Action pin is v1.5.2 plus 5962ffbb (fix the unclosed quote in the auth error).
+      - name: Test policy
+        if: github.event_name == 'pull_request'
+        uses: tailscale/gitops-acl-action@5962ffbb6284048cc28aca970237a9f586bc2a3c
+        with:
+          tailnet: "-"
+          oauth-client-id: ${{ secrets.TAILSCALE_ACL_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TAILSCALE_ACL_OAUTH_CLIENT_SECRET }}
+          policy-file: tailscale/policy.hujson
+          action: test
+
+      - name: Apply policy
+        if: github.event_name == 'push'
+        uses: tailscale/gitops-acl-action@5962ffbb6284048cc28aca970237a9f586bc2a3c
+        with:
+          tailnet: "-"
+          oauth-client-id: ${{ secrets.TAILSCALE_ACL_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TAILSCALE_ACL_OAUTH_CLIENT_SECRET }}
+          policy-file: tailscale/policy.hujson
+          action: apply
