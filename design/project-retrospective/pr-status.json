@@ -1,0 +1,289 @@
+{
+  "verified_at_utc": "2026-11-05T16:56:58Z",
+  "verified_date_shanghai": "2026-11-06",
+  "repository": "loushomelab/homelab-talos-iac",
+  "main_sha": "1cc7690082058c603632709dc259136221bd21ab",
+  "scope": "HOM-5 retrospective; no new runtime observations or deployment",
+  "issue_states": [
+    {
+      "identifier": "HOM-10",
+      "id": "01a1883b-6de6-74a9-bec7-ef867a64c61b",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-9",
+      "id": "01a1883b-69be-7113-bf9a-91885600e77b",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-8",
+      "id": "01a1883b-6588-7486-bc87-1c9b037b160b",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-7",
+      "id": "01a1883b-619e-772b-8955-e097e3c524c0",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-4",
+      "id": "01a18836-1c18-7f1b-a979-09faebb04dee",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-5",
+      "id": "01a18836-22c1-71a2-b793-68a16fd768cb",
+      "status": "in_progress"
+    },
+    {
+      "identifier": "HOM-3",
+      "id": "01a18836-162e-7690-99a1-c981a0919a0f",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-11",
+      "id": "01a1884c-7576-7e0f-a9b6-adbedd2ae218",
+      "status": "in_progress"
+    },
+    {
+      "identifier": "HOM-2",
+      "id": "01a18836-1013-725a-8969-630f3f075419",
+      "status": "done"
+    },
+    {
+      "identifier": "HOM-6",
+      "id": "01a18836-28b2-76f9-907a-f1fe2d5c0f26",
+      "status": "done"
+    }
+  ],
+  "multica_pr_links": {
+    "queried_issues": [
+      "HOM-2",
+      "HOM-3",
+      "HOM-4",
+      "HOM-7",
+      "HOM-8",
+      "HOM-9",
+      "HOM-10"
+    ],
+    "result": "all empty; explicit delivery URLs verified with GitHub CLI; integration not reconfigured"
+  },
+  "pull_requests": [
+    {
+      "number": 137,
+      "url": "https://github.com/loushomelab/homelab-talos-iac/pull/137",
+      "title": "HOM-3 / HOM-2: validate manifests and Homepage output offline",
+      "state": "OPEN",
+      "draft": false,
+      "merged_at": null,
+      "base_ref": "main",
+      "head_ref": "mika/HOM-2-offline-validation",
+      "head_sha": "4309f53fa8afa1dd70d242b4a55122054eea0e53",
+      "merge_state": "UNKNOWN",
+      "checks": [
+        {
+          "name": "YAML Syntax & Style (yamllint)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40905218193/job/123558006819"
+        },
+        {
+          "name": "Kubernetes Schema Validation (kubeconform)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40905218193/job/123558006017"
+        },
+        {
+          "name": "Renovate Config Validation",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40905218193/job/123558006679"
+        }
+      ],
+      "changed_files": [
+        "Taskfile.yaml",
+        "VALIDATION.md",
+        "scripts/requirements-validation.txt",
+        "scripts/validate_manifests.py",
+        "tests/test_validation.py"
+      ]
+    },
+    {
+      "number": 138,
+      "url": "https://github.com/loushomelab/homelab-talos-iac/pull/138",
+      "title": "HOM-7: design source-aware GitOps delivery verification",
+      "state": "OPEN",
+      "draft": false,
+      "merged_at": null,
+      "base_ref": "main",
+      "head_ref": "mika/HOM-7-safe-delivery-design",
+      "head_sha": "2ee64a9fd209abe490f3157f77183f805c4aa517",
+      "merge_state": "UNKNOWN",
+      "checks": [
+        {
+          "name": "YAML Syntax & Style (yamllint)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40907629578/job/123566622795"
+        },
+        {
+          "name": "Kubernetes Schema Validation (kubeconform)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40907629578/job/123566622415"
+        },
+        {
+          "name": "Renovate Config Validation",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40907629578/job/123566622796"
+        }
+      ],
+      "changed_files": [
+        "design/safe-delivery/README.md",
+        "design/safe-delivery/example-synthetic.json",
+        "design/safe-delivery/inventory.md",
+        "design/safe-delivery/mock_delivery.py",
+        "design/safe-delivery/observed.json",
+        "design/safe-delivery/test_mock_delivery.py",
+        "design/safe-delivery/validation.md"
+      ]
+    },
+    {
+      "number": 139,
+      "url": "https://github.com/loushomelab/homelab-talos-iac/pull/139",
+      "title": "HOM-8: document NAS gates and monitoring recovery plan",
+      "state": "OPEN",
+      "draft": false,
+      "merged_at": null,
+      "base_ref": "main",
+      "head_ref": "mika/HOM-8-monitoring-recovery",
+      "head_sha": "894ace8c0a65c2c3a25a1c388188e1f83351cded",
+      "merge_state": "UNKNOWN",
+      "checks": [
+        {
+          "name": "YAML Syntax & Style (yamllint)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40909463428/job/123573153491"
+        },
+        {
+          "name": "Kubernetes Schema Validation (kubeconform)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40909463428/job/123573153968"
+        },
+        {
+          "name": "Renovate Config Validation",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/40909463428/job/123573154063"
+        }
+      ],
+      "changed_files": [
+        "design/monitoring-recovery/README.md",
+        "design/monitoring-recovery/acceptance.md",
+        "design/monitoring-recovery/observed.json",
+        "design/monitoring-recovery/probes.json"
+      ]
+    },
+    {
+      "number": 163,
+      "url": "https://github.com/loushomelab/homelab-talos-iac/pull/163",
+      "title": "HOM-9: 补齐 Talos Day-0、故障域与备份恢复证据",
+      "state": "OPEN",
+      "draft": false,
+      "merged_at": null,
+      "base_ref": "main",
+      "head_ref": "mika/HOM-9-day0-recovery",
+      "head_sha": "2a6749d9a7adee9bdf9687dbd2c4e43fcce10614",
+      "merge_state": "CLEAN",
+      "checks": [
+        {
+          "name": "YAML Syntax & Style (yamllint)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/42065204906/job/127377288584"
+        },
+        {
+          "name": "Kubernetes Schema Validation (kubeconform)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/42065204906/job/127377289104"
+        },
+        {
+          "name": "Renovate Config Validation",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/42065204906/job/127377289025"
+        }
+      ],
+      "changed_files": [
+        "design/day0-recovery/README.md",
+        "design/day0-recovery/day0.md",
+        "design/day0-recovery/observed.json",
+        "design/day0-recovery/recovery.md"
+      ]
+    },
+    {
+      "number": 164,
+      "url": "https://github.com/loushomelab/homelab-talos-iac/pull/164",
+      "title": "HOM-10: pin Kubernetes 1.36 and CRD schemas for local and CI validation",
+      "state": "OPEN",
+      "draft": false,
+      "merged_at": null,
+      "base_ref": "main",
+      "head_ref": "mika/HOM-10-schema-alignment",
+      "head_sha": "ccd2967373b51a8b2f221ee06aded06463bd4674",
+      "merge_state": "CLEAN",
+      "checks": [
+        {
+          "name": "YAML Syntax & Style (yamllint)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/42068452231/job/127389202321"
+        },
+        {
+          "name": "Kubernetes Schema Validation (kubeconform)",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/42068452231/job/127389201738"
+        },
+        {
+          "name": "Renovate Config Validation",
+          "status": "COMPLETED",
+          "conclusion": "SUCCESS",
+          "url": "https://github.com/loushomelab/homelab-talos-iac/actions/runs/42068452231/job/127389201003"
+        }
+      ],
+      "changed_files": [
+        ".github/workflows/lint.yaml",
+        ".gitignore",
+        "Taskfile.yaml",
+        "VALIDATION.md",
+        "scripts/prepare_schemas.py",
+        "scripts/requirements-validation.txt",
+        "scripts/validate_manifests.py",
+        "scripts/validate_schemas.py",
+        "tests/test_schemas.py",
+        "tests/test_validation.py",
+        "validation/schema-lock.json"
+      ]
+    }
+  ],
+  "dependency": {
+    "parent_merge_sha": "1e02a15c59e4f57a47c95e1bc255159d34efae90",
+    "parents": [
+      "1cc7690082058c603632709dc259136221bd21ab",
+      "4309f53fa8afa1dd70d242b4a55122054eea0e53"
+    ],
+    "hom10_only_sha": "ccd2967373b51a8b2f221ee06aded06463bd4674",
+    "ancestry_check": "git merge-base --is-ancestor origin/pr-137 origin/pr-164: exit 0"
+  },
+  "sources": {
+    "issue_read": "multica issue get/list and bounded comment thread reads",
+    "pr_links": "multica issue pull-requests <issue-id> --output json",
+    "github": "gh pr view <number> --repo loushomelab/homelab-talos-iac --json ...",
+    "main": "gh api repos/loushomelab/homelab-talos-iac/commits/main --jq .sha and fresh clone"
+  }
+}
