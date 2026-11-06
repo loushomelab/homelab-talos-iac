@@ -34,22 +34,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
 
-      - name: Run kubeconform
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Prepare validation tools
         run: |
-          echo "==> Running kubeconform validation on argocd/ manifests..."
-          docker run --rm \
-            --volume "$PWD:/work" \
-            --workdir /work \
-            ghcr.io/yannh/kubeconform:v0.7.0 \
-            -summary \
-            -strict \
-            -ignore-missing-schemas \
-            -ignore-filename-pattern '(^|/)argocd/bootstrap/values\.yaml$' \
-            -ignore-filename-pattern '(^|/)argocd/configs/workloads/homepage/manifests/config/.*\.ya?ml$' \
-            -kubernetes-version 1.32.0 \
-            -schema-location default \
-            -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-            argocd/
+          python -m pip install -r scripts/requirements-validation.txt
+          mkdir -p .tmp/validation-bin
+          curl -fsSL --retry 3 https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz -o .tmp/kubeconform.tar.gz
+          echo 'c31518ddd122663b3f3aa874cfe8178cb0988de944f29c74a0b9260920d115d3  .tmp/kubeconform.tar.gz' | sha256sum -c -
+          tar -xzf .tmp/kubeconform.tar.gz -C .tmp/validation-bin kubeconform
+          curl -fsSL --retry 3 https://dl.k8s.io/release/v1.36.0/bin/linux/amd64/kubectl -o .tmp/validation-bin/kubectl
+          echo '123d8c8844f46b1244c547fffb3c17180c0c26dac9890589fe7e67763298748e  .tmp/validation-bin/kubectl' | sha256sum -c -
+          chmod +x .tmp/validation-bin/kubectl
+          echo "$PWD/.tmp/validation-bin" >> "$GITHUB_PATH"
+
+      - name: Prepare reviewed schema sources
+        run: python scripts/prepare_schemas.py
+
+      - name: Validate the same local resource set and Homepage render
+        env:
+          KUBECONFIG: /dev/null
+          KUBERNETES_MASTER: http://127.0.0.1:1
+        run: python scripts/validate_schemas.py
+
+      - name: Run validation regressions
+        run: python -m unittest discover -s tests -v
 
   renovate-lint:
     name: Renovate Config Validation
