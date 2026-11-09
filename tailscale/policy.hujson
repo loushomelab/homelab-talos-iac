@@ -12,6 +12,7 @@
 		"tag:ha-router":    ["tag:k8s-operator"],
 		"tag:grokbot":      ["autogroup:admin"],
 		"tag:codex":        ["autogroup:admin"],
+		"tag:private-web-relay": ["tag:k8s-operator"],
 	},
 
 	"autoApprovers": {
@@ -24,6 +25,11 @@
 	},
 
 	"grants": [
+		{
+			"src": ["autogroup:member"],
+			"dst": ["tag:private-web-relay"],
+			"ip":  ["tcp:443"],
+		},
 		// The only member (the owner) reaches his own devices, the cluster
 		// tags, and Langshi Home Assistant on every protocol and port.
 		{
@@ -102,7 +108,9 @@
 				"192.168.50.120:80",
 				"tag:k8s:443",
 				"tag:k8s-operator:443",
+				"tag:private-web-relay:443",
 			],
+			"deny": ["tag:private-web-relay:22"],
 		},
 		{
 			"src":   "tag:ha-router",
@@ -129,7 +137,7 @@
 		{
 			"src": "tag:k8s",
 			"proto": "tcp",
-			"deny": ["tag:grokbot:22"],
+			"deny": ["tag:grokbot:22", "tag:private-web-relay:443"],
 		},
 	],
 }
