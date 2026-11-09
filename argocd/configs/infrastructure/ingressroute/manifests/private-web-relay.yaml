@@ -48,11 +48,14 @@ spec:
       containers:
         - name: ssh
           image: docker.io/alpine/git:v2.52.0@sha256:4a0e72d49596a1f5d3701aeedafdadc5c0da4062be4657c7bdc4017387f591cc
-          command: ["/usr/bin/ssh", "-NT", "-F", "/run/relay/config", "relay-target"]
+          # The remote key forces one fixed TCP destination and disables SSH forwarding.
+          command: ["/bin/busybox", "nc", "-lk", "-p", "13080", "-e"]
+          args: ["/usr/bin/ssh", "-T", "-F", "/run/relay/config", "relay-target", "/usr/bin/false"]
           ports:
             - name: http
               containerPort: 13080
           readinessProbe:
+            periodSeconds: 30
             tcpSocket:
               port: http
           securityContext:
