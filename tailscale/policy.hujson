@@ -11,6 +11,7 @@
 		"tag:k8s":          ["tag:k8s-operator"],
 		"tag:ha-router":    ["tag:k8s-operator"],
 		"tag:grokbot":      ["autogroup:admin"],
+		"tag:codex":        ["autogroup:admin"],
 	},
 
 	"autoApprovers": {
@@ -71,6 +72,11 @@
 			"src": ["tag:grokbot"],
 			"dst": ["192.168.50.79/32"],
 			"ip":  ["tcp:22"],
+		},
+		{
+			"src": ["tag:codex"],
+			"dst": ["192.168.50.120/32"],
+			"ip":  ["tcp:80"],
 		},
 	],
 
