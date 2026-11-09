@@ -11,6 +11,13 @@ spec:
   target:
     name: private-web-relay
     creationPolicy: Owner
+    template:
+      engineVersion: v2
+      mergePolicy: Merge
+      data:
+        # OpenSSH requires the PEM footer to end with a newline.
+        id_ed25519: |
+          {{ .id_ed25519 }}
   data:
     - secretKey: id_ed25519
       remoteRef:
