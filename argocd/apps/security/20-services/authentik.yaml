@@ -18,6 +18,8 @@ spec:
         authentik:
           enabled: true
           log_level: info
+          listen:
+            trusted_proxy_cidrs: "127.0.0.0/8,::1/128,10.244.0.0/16,192.168.50.111/32,192.168.50.113/32,192.168.50.115/32"
           postgresql:
             enabled: false
           redis:
@@ -77,6 +79,7 @@ spec:
           configMaps:
           - authentik-blueprint-pve
           - authentik-blueprint-webauthn
+          - authentik-blueprint-login
           - authentik-blueprint-apps
   - repoURL: 'https://github.com/loushomelab/homelab-talos-iac.git'
     targetRevision: HEAD
