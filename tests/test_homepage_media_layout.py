@@ -11,6 +11,23 @@ ROUTES = ROOT / 'argocd/configs/infrastructure/ingressroute/manifests/truenas-me
 
 
 class HomepageMediaLayoutTests(unittest.TestCase):
+    def test_stash_secret_is_independent_and_optional(self):
+        secrets_file = ROOT / 'argocd/configs/security/external-secrets/manifests/all-external-secrets.yaml'
+        resources = [resource for resource in yaml.safe_load_all(secrets_file.read_text()) if resource]
+        secrets = {resource['metadata']['name']: resource for resource in resources
+                   if resource['kind'] == 'ExternalSecret' and resource['metadata'].get('namespace') == 'homepage'}
+        shared = secrets['homepage-secrets']['spec']
+        stash = secrets['homepage-stash-secrets']['spec']
+        key = 'HOMEPAGE_VAR_STASH_API_KEY'
+        self.assertNotIn(key, [entry['secretKey'] for entry in shared['data']])
+        self.assertEqual(stash['data'], [{'secretKey': key, 'remoteRef': {'key': key}}])
+        self.assertEqual(stash['secretStoreRef'], shared['secretStoreRef'])
+        self.assertEqual(stash['target']['name'], 'homepage-stash-secrets')
+        deployment = yaml.safe_load((CONFIG.parent / 'deployment.yaml').read_text())
+        refs = deployment['spec']['template']['spec']['containers'][0]['envFrom']
+        self.assertIn({'secretRef': {'name': 'homepage-secrets'}}, refs)
+        self.assertIn({'secretRef': {'name': 'homepage-stash-secrets', 'optional': True}}, refs)
+
     def test_media_is_a_dedicated_tab_with_two_entrypoints_and_three_tool_columns(self):
         settings = yaml.safe_load((CONFIG / 'settings.yaml').read_text())
         layout = settings['layout']
