@@ -53,9 +53,14 @@ class AuthentikLoginTests(unittest.TestCase):
         namespace = {}
         exec('def evaluate(ak_client_ip):\n' + ''.join('    ' + line + '\n' for line in expression.splitlines()), namespace)
         evaluate = namespace['evaluate']
-        for address, expected in [('192.168.50.1', False), ('192.168.50.254', False),
-                                  ('192.168.51.1', True), ('203.0.113.1', True), ('2001:db8::1', True)]:
-            self.assertEqual(evaluate(ipaddress.ip_address(address)), expected)
+        for address, expected in [('192.168.50.1', False), ('192.168.50.79', False),
+                                  ('192.168.50.67', False), ('192.168.50.254', False),
+                                  ('192.168.50.111', True), ('192.168.50.113', True),
+                                  ('192.168.50.115', True), ('192.168.51.1', True),
+                                  ('203.0.113.1', True), ('10.244.4.163', True),
+                                  ('2001:db8::1', True)]:
+            with self.subTest(address=address):
+                self.assertEqual(evaluate(ipaddress.ip_address(address)), expected)
         policy_binding = next(e for e in self.entries if e['model'] == 'authentik_policies.policybinding')
         self.assertEqual(policy_binding['identifiers'], {'order': 20, 'policy': policy['id'], 'target': binding['id']})
         self.assertTrue(policy_binding['attrs']['failure_result'])

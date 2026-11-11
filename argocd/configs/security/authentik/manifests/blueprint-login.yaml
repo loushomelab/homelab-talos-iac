@@ -33,8 +33,9 @@ data:
           name: require-mfa-outside-lan
         attrs:
           expression: |
-            from ipaddress import ip_network
-            return ak_client_ip not in ip_network("192.168.50.0/24")
+            from ipaddress import ip_address, ip_network
+            workers = {ip_address("192.168.50.111"), ip_address("192.168.50.113"), ip_address("192.168.50.115")}
+            return ak_client_ip in workers or ak_client_ip not in ip_network("192.168.50.0/24")
 
       - model: authentik_policies.policybinding
         identifiers:
