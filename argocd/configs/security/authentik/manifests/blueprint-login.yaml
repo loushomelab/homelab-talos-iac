@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-blueprint-login
+  namespace: authentik
+data:
+  login.yaml: |
+    version: 1
+    metadata:
+      name: Authentik - Login session and LAN MFA
+    entries:
+      - model: authentik_stages_user_login.userloginstage
+        identifiers:
+          name: default-authentication-login
+        attrs:
+          session_duration: weeks=520
+          remember_me_offset: weeks=52
+
+      - model: authentik_flows.flowstagebinding
+        id: default-login-mfa-binding
+        identifiers:
+          order: 30
+          stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, default-authentication-mfa-validation]]
+          target: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+        attrs:
+          policy_engine_mode: all
+          evaluate_on_plan: false
+          re_evaluate_policies: true
+
+      - model: authentik_policies_expression.expressionpolicy
+        id: require-mfa-outside-lan
+        identifiers:
+          name: require-mfa-outside-lan
+        attrs:
+          expression: |
+            from ipaddress import ip_network
+            return ak_client_ip not in ip_network("192.168.50.0/24")
+
+      - model: authentik_policies.policybinding
+        identifiers:
+          order: 20
+          policy: !KeyOf require-mfa-outside-lan
+          target: !KeyOf default-login-mfa-binding
+        attrs:
+          failure_result: true
