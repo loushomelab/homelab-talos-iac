@@ -1,0 +1,144 @@
+# Trusted clients bypass Authentik ForwardAuth on the selected hosts below.
+# Priority 110 beats the existing /api routes (100) and default auth routes.
+# Exact clients: 192.168.50.79/32 (Mac Studio) and
+# 100.102.152.24/32 (grokbot-box). The latter requires a no-SNAT subnet router.
+# Home Assistant (homeassistant.yaml), Hermes, and Homepage are deliberately excluded.
+# Recovery: if /workspace/.grokbot-tailscale-state is lost and the box rejoins,
+# rename/reassign the new node's IPv4 to 100.102.152.24 in the Tailscale admin
+# console (Machines > node > Edit IP address), then delete the old node.
+# Nothing in Traefik, ACL, or UniFi needs to change.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`traefik.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      services:
+        - name: api@internal
+          kind: TraefikService
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-sonarr
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sonarr.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      middlewares:
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: sonarr
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-radarr
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`radarr.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      middlewares:
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: radarr
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-whisparr
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`whisparr.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      middlewares:
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: whisparr
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-prowlarr
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`prowlarr.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      middlewares:
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: prowlarr
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-n8n
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`n8n.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      services:
+        - name: n8n
+          namespace: n8n
+          port: 80
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: trusted-longhorn
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`longhorn.646499453.xyz`) && (ClientIP(`192.168.50.79/32`) || ClientIP(`100.102.152.24/32`))
+      kind: Rule
+      priority: 110
+      services:
+        - name: longhorn-frontend
+          namespace: longhorn-system
+          port: 80
+  tls:
+    secretName: wildcards-646499453-xyz-tls

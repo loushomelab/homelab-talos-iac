@@ -9,8 +9,8 @@ spec:
   entryPoints:
     - websecure
   routes:
-    # Trusted home LAN clients bypass the external Authentik login.
-    - match: Host(`searxng.646499453.xyz`) && ClientIP(`192.168.50.0/24`)
+    # Trusted home LAN and grokbot-box clients bypass the external Authentik login.
+    - match: Host(`searxng.646499453.xyz`) && (ClientIP(`192.168.50.0/24`) || ClientIP(`100.102.152.24/32`))
       kind: Rule
       priority: 100
       services:
