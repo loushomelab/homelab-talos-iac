@@ -5,11 +5,11 @@
 	// Admins own tag:k8s-operator so the operator OAuth client can be created
 	// after this file is applied. The operator then owns proxy and router tags.
 	// Connector/langshi-ha (hostname langshi-ha-router) uses tag:ha-router
-	// and advertises the Home Assistant, DNS, NAS, Mac Studio, and Traefik VIP host routes.
+	// and advertises the Home Assistant, DNS, NAS, and Mac Studio host routes.
 	// Dedicated no-SNAT subnet router VM tailscale-router (192.168.50.140,
 	// homelab-pve vms/tailscale-router.tf + homelab-ansible tailscale-router role).
-	// It joins with an admin-owned OAuth client carrying only this tag and advertises
-	// only 192.168.50.230/32 so Traefik sees grokbot-box's real IP.
+	// It joins with an admin-owned OAuth client carrying only this tag.
+	// The router now carries 192.168.50.230/32 so Traefik sees grokbot-box's real IP.
 	"tagOwners": {
 		"tag:k8s-operator": ["autogroup:admin"],
 		"tag:k8s":          ["tag:k8s-operator"],
@@ -33,8 +33,7 @@
 			"192.168.50.231/32": ["tag:ha-router"],
 			"192.168.50.102/32": ["tag:ha-router"],
 			"192.168.50.79/32":  ["tag:ha-router"],
-			// Remove tag:ha-router once the new router is verified (cutover PR).
-			"192.168.50.230/32": ["tag:ha-router", "tag:subnet-router-nosnat"],
+			"192.168.50.230/32": ["tag:subnet-router-nosnat"],
 		},
 	},
 

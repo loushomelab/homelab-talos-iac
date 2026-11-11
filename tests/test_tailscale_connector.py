@@ -11,7 +11,7 @@ class TailscaleConnectorTests(unittest.TestCase):
         path = root / 'argocd/configs/infrastructure/tailscale/connector/langshi-ha.yaml'
         connector = yaml.safe_load(path.read_text())
         self.assertEqual(set(connector['spec']['subnetRouter']['advertiseRoutes']), {
-            '192.168.50.120/32', '192.168.50.231/32', '192.168.50.102/32', '192.168.50.79/32', '192.168.50.230/32',
+            '192.168.50.120/32', '192.168.50.231/32', '192.168.50.102/32', '192.168.50.79/32',
         })
 
 
