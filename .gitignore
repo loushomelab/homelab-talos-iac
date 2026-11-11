@@ -7,3 +7,5 @@ documentations/
 docs/
 .codex/
 .tmp/
+__pycache__/
+*.pyc
