@@ -28,7 +28,7 @@ class AuthentikLoginTests(unittest.TestCase):
         self.assertIn('authentik-blueprint-login', self.values['blueprints']['configMaps'])
         stage = next(e for e in self.entries if e['model'] == 'authentik_stages_user_login.userloginstage')
         self.assertEqual(stage['identifiers']['name'], 'default-authentication-login')
-        self.assertEqual(stage['attrs'], {'session_duration': 'weeks=520', 'remember_me_offset': 'weeks=52'})
+        self.assertEqual(stage['attrs'], {'session_duration': 'days=30', 'remember_me_offset': 'days=1'})
 
     def test_proxy_trust(self):
         cidrs = self.values['authentik']['listen']['trusted_proxy_cidrs'].split(',')

@@ -13,8 +13,8 @@ data:
         identifiers:
           name: default-authentication-login
         attrs:
-          session_duration: weeks=520
-          remember_me_offset: weeks=52
+          session_duration: days=30
+          remember_me_offset: days=1
 
       - model: authentik_flows.flowstagebinding
         id: default-login-mfa-binding
