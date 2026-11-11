@@ -32,13 +32,14 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         self.assertTrue(settings['useEqualHeights'])
         self.assertNotIn('Media', layout, 'Do not keep the old unstructured discovery bucket')
 
-    def test_all_nine_apps_are_discovered_once_in_task_order_without_route_changes(self):
+    def test_all_ten_apps_are_discovered_once_in_task_order_without_route_changes(self):
         expected = {
             'plex': ('Watch', 10),
             'seerr': ('Request', 10),
             'sonarr': ('Library', 10),
             'radarr': ('Library', 20),
             'whisparr': ('Library', 30),
+            'stash': ('Library', 40),
             'qbittorrent': ('Downloads', 10),
             'prowlarr': ('Downloads', 20),
             'bazarr': ('Subtitles', 10),
@@ -69,7 +70,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
             for app in expected:
                 self.assertNotRegex(configured.lower(), rf'\b{app}\b')
 
-    def test_arr_ui_uses_forward_auth_while_api_and_other_apps_do_not(self):
+    def test_arr_and_stash_ui_use_forward_auth_while_api_and_other_apps_do_not(self):
         resources = [resource for resource in yaml.safe_load_all(ROUTES.read_text()) if resource]
         routes = {
             route['metadata']['name']: route
@@ -79,11 +80,12 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         proto = {'name': 'truenas-media-proto'}
         allow = {'name': 'lan-only-allowlist', 'namespace': 'monitoring'}
         forward = {'name': 'authentik-forwardauth', 'namespace': 'traefik'}
-        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr'):
+        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr', 'stash'):
             rules = routes[name]['spec']['routes']
             self.assertEqual(len(rules), 2)
             api, ui = rules
-            self.assertEqual(api['match'], f'Host(`{name}.646499453.xyz`) && PathPrefix(`/api`)')
+            api_path = '/graphql' if name == 'stash' else '/api'
+            self.assertEqual(api['match'], f'Host(`{name}.646499453.xyz`) && PathPrefix(`{api_path}`)')
             self.assertEqual(ui['match'], f'Host(`{name}.646499453.xyz`)')
             self.assertGreater(api['priority'], ui['priority'])
             self.assertEqual(api['middlewares'], [proto, allow])
@@ -102,13 +104,22 @@ class HomepageMediaLayoutTests(unittest.TestCase):
             routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.key'],
             '{{HOMEPAGE_VAR_WHISPARR_API_KEY}}',
         )
+        self.assertEqual(
+            routes['stash']['metadata']['annotations']['gethomepage.dev/widget.type'],
+            'stash',
+        )
+        self.assertEqual(
+            routes['stash']['metadata']['annotations']['gethomepage.dev/widget.key'],
+            '{{HOMEPAGE_VAR_STASH_API_KEY}}',
+        )
         service = next(resource for resource in resources if resource['kind'] == 'Service')
         endpoint = next(resource for resource in resources if resource['kind'] == 'EndpointSlice')
-        service_port = next(port for port in service['spec']['ports'] if port['name'] == 'whisparr')
-        endpoint_port = next(port for port in endpoint['ports'] if port['name'] == 'whisparr')
-        self.assertEqual(service_port['port'], 6969)
-        self.assertEqual(service_port['targetPort'], 6969)
-        self.assertEqual(endpoint_port['port'], 6969)
+        for name, port_number in [('whisparr', 6969), ('stash', 9999)]:
+            service_port = next(port for port in service['spec']['ports'] if port['name'] == name)
+            endpoint_port = next(port for port in endpoint['ports'] if port['name'] == name)
+            self.assertEqual(service_port['port'], port_number)
+            self.assertEqual(service_port['targetPort'], port_number)
+            self.assertEqual(endpoint_port['port'], port_number)
         direct_urls = {
             'bazarr': 'http://192.168.50.102:6767',
             'seerr': 'http://192.168.50.102:5055',

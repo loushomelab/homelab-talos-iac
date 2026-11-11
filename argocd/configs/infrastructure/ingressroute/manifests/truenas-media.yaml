@@ -9,6 +9,8 @@
 # Homepage and the other *arr apps. The allowlist runs before Forward Auth so
 # non-LAN clients still get 403 instead of an Authentik login page.
 # AuthenticationMethod stays Forms until that gate is verified.
+# Stash follows the same UI gate, with /graphql (not /api) for API-key clients.
+# Keep Stash's own login/API key enabled; every rule remains lan-only.
 #
 # Whisparr is ghcr.io/hotio/whisparr:v3 (Eros) published on the NAS at
 # 192.168.50.102:6969. The container still listens on 6969; do not use the
@@ -35,6 +37,10 @@ spec:
     - name: whisparr
       port: 6969
       targetPort: 6969
+      protocol: TCP
+    - name: stash
+      port: 9999
+      targetPort: 9999
       protocol: TCP
     - name: prowlarr
       port: 9696
@@ -79,6 +85,9 @@ ports:
   - name: whisparr
     protocol: TCP
     port: 6969
+  - name: stash
+    protocol: TCP
+    port: 9999
   - name: prowlarr
     protocol: TCP
     port: 9696
@@ -281,6 +290,57 @@ spec:
       services:
         - name: truenas-media
           port: whisparr
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: stash
+  namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Stash"
+    gethomepage.dev/description: "Existing library manager"
+    gethomepage.dev/group: "Library"
+    gethomepage.dev/weight: "40"
+    gethomepage.dev/icon: "stash.png"
+    gethomepage.dev/href: "https://stash.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://stash.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "stash"
+    # /graphql is not behind Forward Auth, so the widget API key works via Traefik
+    # and does not need the NAS host port.
+    gethomepage.dev/widget.url: "https://stash.646499453.xyz:8443"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_STASH_API_KEY}}"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # API-key clients. No Forward Auth: a 302 login page breaks them.
+    - match: Host(`stash.646499453.xyz`) && PathPrefix(`/graphql`)
+      kind: Rule
+      priority: 100
+      middlewares:
+        - name: truenas-media-proto
+        - name: lan-only-allowlist
+          namespace: monitoring
+      services:
+        - name: truenas-media
+          port: stash
+    # Browser UI.
+    - match: Host(`stash.646499453.xyz`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+        - name: authentik-forwardauth
+          namespace: traefik
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: stash
   tls:
     secretName: wildcards-646499453-xyz-tls
 ---
