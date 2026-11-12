@@ -99,6 +99,13 @@
 			"dst": ["192.168.50.120/32"],
 			"ip":  ["tcp:80"],
 		},
+		// Owner SSH into the tag:grokbot box. Port 22 only. Named user, not
+		// autogroup:member, so a later additional member does not inherit this.
+		{
+			"src": ["tb6hjbk4vr@privaterelay.appleid.com"],
+			"dst": ["tag:grokbot"],
+			"ip":  ["tcp:22"],
+		},
 	],
 
 	// Define users and devices that can use Tailscale SSH.
@@ -110,6 +117,14 @@
 			"src":    ["autogroup:member"],
 			"dst":    ["autogroup:self"],
 			"users":  ["autogroup:nonroot", "root"],
+		},
+		// Owner to the tag:grokbot box user only. accept matches the
+		// requested grant; the existing self rule stays check.
+		{
+			"action": "accept",
+			"src":    ["tb6hjbk4vr@privaterelay.appleid.com"],
+			"dst":    ["tag:grokbot"],
+			"users":  ["box"],
 		},
 	],
 
@@ -123,6 +138,7 @@
 				"192.168.50.120:80",
 				"tag:k8s:443",
 				"tag:k8s-operator:443",
+				"tag:grokbot:22",
 			],
 		},
 		{
