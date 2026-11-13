@@ -1,0 +1,107 @@
+name: Tailscale split DNS
+
+# test: pull requests that touch the split-DNS file or this workflow.
+# apply: every push to main. The first apply after the baseline merge is a
+# no-op because tailscale/dns-split.json matches the live split-DNS map.
+on:
+  pull_request:
+    paths:
+      - "tailscale/dns-split.json"
+      - ".github/workflows/tailscale-dns.yml"
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  split-dns:
+    name: Tailscale split DNS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # OAuth client from Doppler project k8s / config prd, synced as GitHub
+      # Actions secrets of the same name:
+      #   TAILSCALE_DNS_OAUTH_CLIENT_ID
+      #   TAILSCALE_DNS_OAUTH_CLIENT_SECRET
+      # tailnet "-" is the tailnet that owns the OAuth client.
+      # This workflow only reads or replaces split DNS. It does not touch
+      # global nameservers, MagicDNS, or search paths.
+      - name: Validate dns-split.json
+        run: |
+          set -euo pipefail
+          jq -e 'type == "object" and all(.[]; type == "array" and all(.[]; type == "string"))' \
+            tailscale/dns-split.json >/dev/null
+          echo "dns-split.json is a valid domain-to-nameserver map"
+
+      - name: Diff live split DNS
+        if: github.event_name == 'pull_request'
+        env:
+          TS_OAUTH_CLIENT_ID: ${{ secrets.TAILSCALE_DNS_OAUTH_CLIENT_ID }}
+          TS_OAUTH_CLIENT_SECRET: ${{ secrets.TAILSCALE_DNS_OAUTH_CLIENT_SECRET }}
+        run: |
+          set -euo pipefail
+          token="$(curl -sS --fail-with-body -X POST https://api.tailscale.com/api/v2/oauth/token \
+            -d "client_id=${TS_OAUTH_CLIENT_ID}" \
+            -d "client_secret=${TS_OAUTH_CLIENT_SECRET}" \
+            -d "grant_type=client_credentials" \
+            -d "scope=dns" | jq -r '.access_token')"
+          if [[ -z "${token}" || "${token}" == "null" ]]; then
+            echo "failed to mint OAuth token" >&2
+            exit 1
+          fi
+          echo "::add-mask::${token}"
+          curl -sS --fail-with-body \
+            -H "Authorization: Bearer ${token}" \
+            -o /tmp/live-split-dns.json \
+            https://api.tailscale.com/api/v2/tailnet/-/dns/split-dns
+          if jq -e -n --slurpfile want tailscale/dns-split.json --slurpfile got /tmp/live-split-dns.json \
+            '$want[0] == $got[0]' >/dev/null; then
+            echo "no diff"
+          else
+            echo "split DNS would change:"
+            diff -u <(jq -S . tailscale/dns-split.json) <(jq -S . /tmp/live-split-dns.json) || true
+          fi
+
+      - name: Apply split DNS
+        if: github.event_name == 'push'
+        env:
+          TS_OAUTH_CLIENT_ID: ${{ secrets.TAILSCALE_DNS_OAUTH_CLIENT_ID }}
+          TS_OAUTH_CLIENT_SECRET: ${{ secrets.TAILSCALE_DNS_OAUTH_CLIENT_SECRET }}
+        run: |
+          set -euo pipefail
+          token="$(curl -sS --fail-with-body -X POST https://api.tailscale.com/api/v2/oauth/token \
+            -d "client_id=${TS_OAUTH_CLIENT_ID}" \
+            -d "client_secret=${TS_OAUTH_CLIENT_SECRET}" \
+            -d "grant_type=client_credentials" \
+            -d "scope=dns" | jq -r '.access_token')"
+          if [[ -z "${token}" || "${token}" == "null" ]]; then
+            echo "failed to mint OAuth token" >&2
+            exit 1
+          fi
+          echo "::add-mask::${token}"
+          curl -sS --fail-with-body -X PUT \
+            -H "Authorization: Bearer ${token}" \
+            -H "Content-Type: application/json" \
+            --data-binary @tailscale/dns-split.json \
+            -o /tmp/put-split-dns.json \
+            https://api.tailscale.com/api/v2/tailnet/-/dns/split-dns
+          curl -sS --fail-with-body \
+            -H "Authorization: Bearer ${token}" \
+            -o /tmp/live-split-dns.json \
+            https://api.tailscale.com/api/v2/tailnet/-/dns/split-dns
+          if jq -e -n --slurpfile want tailscale/dns-split.json --slurpfile got /tmp/live-split-dns.json \
+            '$want[0] == $got[0]' >/dev/null; then
+            echo "applied; live split DNS matches tailscale/dns-split.json"
+          else
+            echo "apply did not converge:" >&2
+            diff -u <(jq -S . tailscale/dns-split.json) <(jq -S . /tmp/live-split-dns.json) || true
+            exit 1
+          fi
