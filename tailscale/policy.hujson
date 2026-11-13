@@ -25,6 +25,13 @@
 	// Traefik trusted-client routes, this ACL and UniFi then need no change.
 	"hosts": {
 		"grokbot-box": "100.102.152.24",
+		// macmini6 is Lou's untagged member device (MagicDNS
+		// macmini6.taildc7b98.ts.net, IPv4 100.68.158.4). The alias is the
+		// IPv4 address because the destinations below are IPv4. If the node
+		// rejoins and gets a new IPv4, update this line; the grants stay
+		// the same. Do not tag this node: tagging would drop it from
+		// autogroup:member and take away existing member grants.
+		"macmini6": "100.68.158.4",
 	},
 
 	"autoApprovers": {
@@ -106,6 +113,25 @@
 			"dst": ["tag:grokbot"],
 			"ip":  ["tcp:22"],
 		},
+		// macmini6 (untagged, Lou-owned). Forgejo git SSH and Traefik
+		// websecure only; no other LAN ports. Do not use autogroup:member
+		// here: that would also open .230 to omarchy, qcloud, and the rest.
+		{
+			"src": ["macmini6"],
+			"dst": ["192.168.50.230/32"],
+			"ip":  ["tcp:8443", "tcp:22"],
+		},
+		// Split DNS for 646499453.xyz (Technitium at .231) is tailnet-wide
+		// and is not stored in this policy file. tag:grokbot already has
+		// :53. Members and tag:codex need it too, or those clients would
+		// fail to resolve the domain once split DNS is enabled. Technitium
+		// recursion stays LAN-only (192.168.50.0/23); langshi-ha SNATs
+		// tailnet queries onto the LAN.
+		{
+			"src": ["autogroup:member", "tag:codex"],
+			"dst": ["192.168.50.231/32"],
+			"ip":  ["tcp:53", "udp:53"],
+		},
 	],
 
 	// Define users and devices that can use Tailscale SSH.
@@ -178,6 +204,37 @@
 			"src": "tag:subnet-router-nosnat",
 			"proto": "tcp",
 			"deny": ["192.168.50.120:80", "192.168.50.231:53", "100.102.152.24:22"],
+		},
+		{
+			"src":   "macmini6",
+			"proto": "tcp",
+			"accept": ["192.168.50.230:22", "192.168.50.230:8443", "192.168.50.231:53"],
+			"deny": ["192.168.50.230:80", "192.168.50.230:443", "192.168.50.231:5380", "192.168.50.102:445", "192.168.50.79:22"],
+		},
+		{
+			"src":   "macmini6",
+			"proto": "udp",
+			"accept": ["192.168.50.231:53"],
+			"deny": ["192.168.50.102:53"],
+		},
+		// omarchy is an untagged member device. It gets Technitium :53 for
+		// split DNS, but not Forgejo on the Traefik VIP.
+		{
+			"src":   "100.98.102.109",
+			"proto": "tcp",
+			"accept": ["192.168.50.231:53"],
+			"deny": ["192.168.50.230:22", "192.168.50.230:8443"],
+		},
+		{
+			"src":   "tag:codex",
+			"proto": "tcp",
+			"accept": ["192.168.50.231:53", "192.168.50.120:80"],
+			"deny": ["192.168.50.230:22", "192.168.50.230:8443"],
+		},
+		{
+			"src":   "tag:codex",
+			"proto": "udp",
+			"accept": ["192.168.50.231:53"],
 		},
 	],
 }
