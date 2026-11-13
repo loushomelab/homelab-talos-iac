@@ -559,6 +559,25 @@ data:
           provider: !KeyOf whisparr-provider
           icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/whisparr.svg
           meta_launch_url: https://whisparr.646499453.xyz:8443/
+      - identifiers:
+          name: Stash
+        model: authentik_providers_proxy.proxyprovider
+        id: stash-provider
+        attrs:
+          name: Stash
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+          internal_host: ""
+          external_host: https://stash.646499453.xyz:8443
+          mode: forward_single
+      - identifiers:
+          slug: stash
+        model: authentik_core.application
+        attrs:
+          name: Stash
+          provider: !KeyOf stash-provider
+          icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/stash.svg
+          meta_launch_url: https://stash.646499453.xyz:8443/
 
       # --- Embedded Outpost Update ---
       # Automatically bind these proxy providers to the embedded outpost
@@ -576,3 +595,4 @@ data:
             - !KeyOf radarr-provider
             - !KeyOf prowlarr-provider
             - !KeyOf whisparr-provider
+            - !KeyOf stash-provider

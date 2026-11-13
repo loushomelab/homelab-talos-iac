@@ -59,6 +59,10 @@ spec:
           envFrom:
             - secretRef:
                 name: homepage-secrets
+            # Homepage may need a rollout after ESO creates this secret to read the env.
+            - secretRef:
+                name: homepage-stash-secrets
+                optional: true
           ports:
             - name: http
               containerPort: 3000
