@@ -98,6 +98,7 @@ Rollouts strictly follow sync waves (`argocd.argoproj.io/sync-wave`) to ensure z
 │       ├── monitoring/              # PVCs, ingress, middlewares
 │       └── workloads/homepage/      # Homepage YAML config files
 ├── docs/                            # Architecture specs and plans (gitignored)
+├── tailscale/                       # Tailnet GitOps: ACL policy and split DNS (source of truth)
 └── renovate.json                    # 依赖自动升级：minor/patch/pin/digest 自动合并（ignoreTests，不等 CI）；major 仅提 PR 待人工审核（无时间表限制）
 ```
 
@@ -154,10 +155,21 @@ annotations:
 
 ---
 
+## Tailscale GitOps
+
+This repo also manages the tailnet (outside Argo CD). Files under `tailscale/` are the source of truth:
+
+- `tailscale/policy.hujson` — ACL policy, tested on PR and applied on push to `main` by `.github/workflows/tailscale-acl.yml`.
+- `tailscale/dns-split.json` — split DNS map, diffed against live config on PR and PUTted in full on push to `main` by `.github/workflows/tailscale-dns.yml` (`/api/v2/tailnet/-/dns/split-dns`). Global nameservers, MagicDNS, and search paths are not managed here.
+
+OAuth clients live in Doppler (`k8s` / `prd`) and are synced to GitHub Actions secrets of the same name (`TAILSCALE_ACL_*`, `TAILSCALE_DNS_*`).
+
+---
+
 ## Git & Commit Conventions
 
 - **Conventional Commits:** `<type>(<scope>): <subject>`
   - Types: `feat`, `fix`, `chore`, `docs`, `refactor`
-  - Scopes: `homepage`, `traefik`, `forgejo`, `authentik`, `monitoring`, `metallb`, `deps`
+  - Scopes: `homepage`, `traefik`, `forgejo`, `authentik`, `monitoring`, `metallb`, `tailscale`, `deps`
   - Examples: `feat(workloads): add forgejo application with postgresql and authentik oidc`
 - **Workflow:** Branch from `main` -> Validate locally with dry-run -> Open PR -> Merge to `main` -> Verify exact commit SHA sync & live state.
