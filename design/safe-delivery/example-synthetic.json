@@ -1,0 +1,101 @@
+{
+  "now": 1000,
+  "request": {
+    "app": "n8n",
+    "action": "verify"
+  },
+  "plan": {
+    "repo_url": "https://github.com/loushomelab/homelab-talos-iac.git",
+    "local_head": "21854fdfe1083da83678ec17b3222ec621d7e061",
+    "remote_head": "21854fdfe1083da83678ec17b3222ec621d7e061",
+    "clean": true,
+    "created_at": 900,
+    "max_age_seconds": 300,
+    "applications": {
+      "n8n": {
+        "spec_digest": "synthetic-reviewed-spec-digest",
+        "source_mode": "sources",
+        "sources": [
+          {
+            "repoURL": "8gears.container-registry.com/library",
+            "chart": "n8n",
+            "targetRevision": "2.1.1"
+          },
+          {
+            "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+            "path": "argocd/configs/workloads/n8n/manifests",
+            "targetRevision": "main"
+          }
+        ],
+        "revisions": [
+          "2.1.1",
+          "21854fdfe1083da83678ec17b3222ec621d7e061"
+        ],
+        "field_checks": {
+          "reviewed-field-digest": "synthetic-match"
+        },
+        "workloads": {
+          "Deployment/n8n/n8n": 1
+        },
+        "no_workload_reason": "",
+        "endpoint": {
+          "required": true,
+          "accepted_statuses": [
+            200
+          ],
+          "not_applicable_reason": ""
+        }
+      }
+    }
+  },
+  "observed": {
+    "app": "n8n",
+    "remote_head": "21854fdfe1083da83678ec17b3222ec621d7e061",
+    "captured_at": 990,
+    "parent_revision": "21854fdfe1083da83678ec17b3222ec621d7e061",
+    "spec_digest": "synthetic-reviewed-spec-digest",
+    "source_mode": "sources",
+    "sources": [
+      {
+        "repoURL": "8gears.container-registry.com/library",
+        "chart": "n8n",
+        "targetRevision": "2.1.1"
+      },
+      {
+        "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+        "path": "argocd/configs/workloads/n8n/manifests",
+        "targetRevision": "main"
+      }
+    ],
+    "revisions": [
+      "2.1.1",
+      "21854fdfe1083da83678ec17b3222ec621d7e061"
+    ],
+    "comparison_matches": true,
+    "operation_running": false,
+    "current_target_operation_failed": false,
+    "error_conditions": [],
+    "sync": "Synced",
+    "health": "Healthy",
+    "field_checks": {
+      "reviewed-field-digest": "synthetic-match"
+    },
+    "workloads": {
+      "Deployment/n8n/n8n": {
+        "desired": 1,
+        "total": 1,
+        "updated": 1,
+        "ready": 1,
+        "generation": 2,
+        "observed_generation": 2,
+        "current_revision": "new",
+        "update_revision": "new"
+      }
+    },
+    "endpoint": {
+      "tls_verified": true,
+      "status": 200,
+      "assertion_passed": true
+    }
+  }
+}
