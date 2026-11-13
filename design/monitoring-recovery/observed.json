@@ -1,0 +1,542 @@
+{
+  "started_at": "2026-10-29T16:07:46.794534+00:00",
+  "context": "homelab-talos-lan",
+  "git_base": "21854fdfe1083da83678ec17b3222ec621d7e061",
+  "nodes": [
+    {
+      "name": "cp-01",
+      "ready": "True",
+      "collector_label": null
+    },
+    {
+      "name": "cp-02",
+      "ready": "True",
+      "collector_label": null
+    },
+    {
+      "name": "cp-03",
+      "ready": "True",
+      "collector_label": null
+    },
+    {
+      "name": "worker-01",
+      "ready": "True",
+      "collector_label": null
+    },
+    {
+      "name": "worker-02",
+      "ready": "True",
+      "collector_label": null
+    },
+    {
+      "name": "worker-03",
+      "ready": "True",
+      "collector_label": null
+    }
+  ],
+  "applications": [
+    {
+      "name": "alloy",
+      "health": "Healthy",
+      "sync": "Synced",
+      "revision": null,
+      "revisions": [
+        "1.14.3"
+      ],
+      "sources": [
+        {
+          "repoURL": "https://grafana.github.io/helm-charts",
+          "chart": "alloy",
+          "targetRevision": "1.14.3"
+        }
+      ],
+      "live_spec_matches_base": true
+    },
+    {
+      "name": "mimir",
+      "health": "Healthy",
+      "sync": "Synced",
+      "revision": null,
+      "revisions": [
+        "6.2.0"
+      ],
+      "sources": [
+        {
+          "repoURL": "ghcr.io/grafana/helm-charts",
+          "chart": "mimir-distributed",
+          "targetRevision": "6.2.0"
+        }
+      ],
+      "live_spec_matches_base": true
+    },
+    {
+      "name": "monitoring-configs",
+      "health": "Healthy",
+      "sync": "Synced",
+      "revision": "21854fdfe1083da83678ec17b3222ec621d7e061",
+      "revisions": null,
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/monitoring/manifests",
+          "targetRevision": "HEAD"
+        }
+      ]
+    },
+    {
+      "name": "monitoring-tier-3",
+      "health": "Healthy",
+      "sync": "Synced",
+      "revision": "21854fdfe1083da83678ec17b3222ec621d7e061",
+      "revisions": null,
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/monitoring",
+          "targetRevision": "HEAD"
+        }
+      ]
+    },
+    {
+      "name": "pyroscope",
+      "health": "Healthy",
+      "sync": "Synced",
+      "revision": null,
+      "revisions": [
+        "2.3.1"
+      ],
+      "sources": [
+        {
+          "repoURL": "ghcr.io/grafana/helm-charts",
+          "chart": "pyroscope",
+          "targetRevision": "2.3.1"
+        }
+      ],
+      "live_spec_matches_base": true
+    }
+  ],
+  "workloads": [
+    {
+      "kind": "Deployment",
+      "name": "mimir-distributor",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "Deployment",
+      "name": "mimir-gateway",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "docker-entrypoint-d-override",
+          "emptyDir": {}
+        },
+        {
+          "name": "tmp",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "Deployment",
+      "name": "mimir-overrides-exporter",
+      "desired": 1,
+      "ready": 1,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "Deployment",
+      "name": "mimir-querier",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "Deployment",
+      "name": "mimir-query-frontend",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "Deployment",
+      "name": "mimir-query-scheduler",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "Deployment",
+      "name": "mimir-rollout-operator",
+      "desired": 1,
+      "ready": 1,
+      "nodeSelector": {},
+      "volume_types": []
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-compactor",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-ingester-zone-a",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-ingester-zone-b",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-ingester-zone-c",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-store-gateway-zone-a",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-store-gateway-zone-b",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "mimir-store-gateway-zone-c",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "storage",
+          "emptyDir": {}
+        },
+        {
+          "name": "active-queries",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "pyroscope",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": [
+        {
+          "name": "data",
+          "emptyDir": {}
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "pyroscope-alloy",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {},
+      "volume_types": []
+    },
+    {
+      "kind": "DaemonSet",
+      "name": "alloy",
+      "desired": 0,
+      "ready": 0,
+      "nodeSelector": {
+        "homelab.louslab/allow-nas-maintenance-collector": "true"
+      },
+      "volume_types": []
+    }
+  ],
+  "alloy_HOSTNAME_env": [
+    {
+      "name": "HOSTNAME",
+      "valueFrom": {
+        "fieldRef": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.nodeName"
+        }
+      }
+    }
+  ],
+  "endpoints": [
+    {
+      "service": "alloy",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-compactor",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-distributor",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-distributor-headless",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-gateway",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-gossip-ring",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-ingester-headless",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-ingester-zone-a",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-ingester-zone-b",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-ingester-zone-c",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-overrides-exporter",
+      "total": 1,
+      "ready": 1
+    },
+    {
+      "service": "mimir-querier",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-query-frontend",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-query-scheduler",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-query-scheduler-headless",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-rollout-operator",
+      "total": 1,
+      "ready": 1
+    },
+    {
+      "service": "mimir-store-gateway-headless",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-store-gateway-zone-a",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-store-gateway-zone-b",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "mimir-store-gateway-zone-c",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "pyroscope",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "pyroscope-alloy-cluster",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "pyroscope-alloy",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "pyroscope-headless",
+      "total": 0,
+      "ready": 0
+    },
+    {
+      "service": "pyroscope-memberlist",
+      "total": 0,
+      "ready": 0
+    }
+  ],
+  "pvc_names": [
+    "pulse-pvc"
+  ],
+  "external_secrets": [
+    {
+      "name": "monitoring-secrets",
+      "refreshTime": "2026-10-29T16:07:23Z",
+      "conditions": [
+        {
+          "type": "Ready",
+          "status": "True",
+          "reason": "SecretSynced"
+        }
+      ]
+    }
+  ],
+  "monitors": [
+    {
+      "kind": "PodMonitor",
+      "namespace": "monitoring",
+      "name": "unifi-poller"
+    }
+  ],
+  "finished_at": "2026-10-29T16:07:47.339293+00:00"
+}
