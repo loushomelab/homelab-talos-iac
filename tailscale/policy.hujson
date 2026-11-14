@@ -6,12 +6,10 @@
 	// after this file is applied. The operator then owns proxy and router tags.
 	// Connector lan-router-k8s (hostname lan-router-k8s) uses tag:lan-router
 	// and advertises the Home Assistant, Technitium DNS, NAS, Mac Studio, and
-	// Traefik VIP host routes. tag:ha-router remains until a later cleanup PR
-	// after the rename has rolled out.
+	// Traefik VIP host routes.
 	"tagOwners": {
 		"tag:k8s-operator": ["autogroup:admin"],
 		"tag:k8s":          ["tag:k8s-operator"],
-		"tag:ha-router":    ["tag:k8s-operator"],
 		"tag:lan-router":   ["tag:k8s-operator"],
 		"tag:grokbot":      ["autogroup:admin"],
 		"tag:codex":        ["autogroup:admin"],
@@ -34,11 +32,11 @@
 
 	"autoApprovers": {
 		"routes": {
-			"192.168.50.120/32": ["tag:ha-router", "tag:lan-router"],
-			"192.168.50.231/32": ["tag:ha-router", "tag:lan-router"],
-			"192.168.50.102/32": ["tag:ha-router", "tag:lan-router"],
-			"192.168.50.79/32":  ["tag:ha-router", "tag:lan-router"],
-			"192.168.50.230/32": ["tag:ha-router", "tag:lan-router"],
+			"192.168.50.120/32": ["tag:lan-router"],
+			"192.168.50.231/32": ["tag:lan-router"],
+			"192.168.50.102/32": ["tag:lan-router"],
+			"192.168.50.79/32":  ["tag:lan-router"],
+			"192.168.50.230/32": ["tag:lan-router"],
 		},
 	},
 
@@ -51,7 +49,6 @@
 				"autogroup:member",
 				"tag:k8s-operator",
 				"tag:k8s",
-				"tag:ha-router",
 				"tag:lan-router",
 				"192.168.50.120/32",
 			],
@@ -61,11 +58,10 @@
 		// Tagged nodes reach each other and Home Assistant. They do not reach
 		// member devices; that is the break from the old "* -> *" grant.
 		{
-			"src": ["tag:k8s-operator", "tag:k8s", "tag:ha-router", "tag:lan-router"],
+			"src": ["tag:k8s-operator", "tag:k8s", "tag:lan-router"],
 			"dst": [
 				"tag:k8s-operator",
 				"tag:k8s",
-				"tag:ha-router",
 				"tag:lan-router",
 				"192.168.50.120/32",
 			],
@@ -171,16 +167,6 @@
 				"tag:k8s:443",
 				"tag:k8s-operator:443",
 				"tag:grokbot:22",
-			],
-		},
-		{
-			"src":   "tag:ha-router",
-			"proto": "tcp",
-			// The user expands to every device signed in as the only member.
-			// 100.98.102.109 is omarchy, an untagged member device.
-			"deny": [
-				"tb6hjbk4vr@privaterelay.appleid.com:22",
-				"100.98.102.109:22",
 			],
 		},
 		{
