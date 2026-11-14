@@ -4,17 +4,14 @@
 {
 	// Admins own tag:k8s-operator so the operator OAuth client can be created
 	// after this file is applied. The operator then owns proxy and router tags.
-	// Connector/langshi-ha (hostname langshi-ha-router) uses tag:ha-router
-	// and advertises the Home Assistant, DNS, NAS, Mac Studio, and Traefik VIP host routes.
-	// Dedicated no-SNAT subnet router VM tailscale-router (192.168.50.140,
-	// homelab-pve vms/tailscale-router.tf + homelab-ansible tailscale-router role).
-	// It joins with an admin-owned OAuth client carrying only this tag and advertises
-	// only 192.168.50.230/32 so Traefik sees grokbot-box's real IP.
+	// The live k8s Connector uses tag:ha-router; tag:lan-router is its
+	// same-privilege successor for a follow-up rename PR. Both tags may advertise
+	// the Home Assistant, DNS, NAS, Mac Studio, and Traefik VIP host routes.
 	"tagOwners": {
 		"tag:k8s-operator": ["autogroup:admin"],
 		"tag:k8s":          ["tag:k8s-operator"],
 		"tag:ha-router":    ["tag:k8s-operator"],
-		"tag:subnet-router-nosnat": ["autogroup:admin"],
+		"tag:lan-router":   ["tag:k8s-operator"],
 		"tag:grokbot":      ["autogroup:admin"],
 		"tag:codex":        ["autogroup:admin"],
 	},
@@ -36,12 +33,11 @@
 
 	"autoApprovers": {
 		"routes": {
-			"192.168.50.120/32": ["tag:ha-router"],
-			"192.168.50.231/32": ["tag:ha-router"],
-			"192.168.50.102/32": ["tag:ha-router"],
-			"192.168.50.79/32":  ["tag:ha-router"],
-			// Remove tag:ha-router once the new router is verified (cutover PR).
-			"192.168.50.230/32": ["tag:ha-router", "tag:subnet-router-nosnat"],
+			"192.168.50.120/32": ["tag:ha-router", "tag:lan-router"],
+			"192.168.50.231/32": ["tag:ha-router", "tag:lan-router"],
+			"192.168.50.102/32": ["tag:ha-router", "tag:lan-router"],
+			"192.168.50.79/32":  ["tag:ha-router", "tag:lan-router"],
+			"192.168.50.230/32": ["tag:ha-router", "tag:lan-router"],
 		},
 	},
 
@@ -55,6 +51,7 @@
 				"tag:k8s-operator",
 				"tag:k8s",
 				"tag:ha-router",
+				"tag:lan-router",
 				"192.168.50.120/32",
 			],
 			"ip": ["*"],
@@ -63,11 +60,12 @@
 		// Tagged nodes reach each other and Home Assistant. They do not reach
 		// member devices; that is the break from the old "* -> *" grant.
 		{
-			"src": ["tag:k8s-operator", "tag:k8s", "tag:ha-router"],
+			"src": ["tag:k8s-operator", "tag:k8s", "tag:ha-router", "tag:lan-router"],
 			"dst": [
 				"tag:k8s-operator",
 				"tag:k8s",
 				"tag:ha-router",
+				"tag:lan-router",
 				"192.168.50.120/32",
 			],
 			"ip": ["*"],
@@ -132,7 +130,7 @@
 		// and is not stored in this policy file. tag:grokbot already has
 		// :53. Members and tag:codex need it too, or those clients would
 		// fail to resolve the domain once split DNS is enabled. Technitium
-		// recursion stays LAN-only (192.168.50.0/23); langshi-ha SNATs
+		// recursion stays LAN-only (192.168.50.0/23); the k8s subnet router SNATs
 		// tailnet queries onto the LAN.
 		{
 			"src": ["autogroup:member", "tag:codex"],
@@ -185,6 +183,14 @@
 			],
 		},
 		{
+			"src":   "tag:lan-router",
+			"proto": "tcp",
+			"deny": [
+				"tb6hjbk4vr@privaterelay.appleid.com:22",
+				"100.98.102.109:22",
+			],
+		},
+		{
 			"src":   "tag:grokbot",
 			"proto": "tcp",
 			"accept": ["192.168.50.231:53", "192.168.50.102:445", "192.168.50.102:443", "192.168.50.120:80", "192.168.50.79:22", "192.168.50.230:8443", "192.168.50.230:22"],
@@ -206,11 +212,6 @@
 			"src": "tag:k8s",
 			"proto": "tcp",
 			"deny": ["tag:grokbot:22"],
-		},
-		{
-			"src": "tag:subnet-router-nosnat",
-			"proto": "tcp",
-			"deny": ["192.168.50.120:80", "192.168.50.231:53", "100.102.152.24:22"],
 		},
 		{
 			"src":   "macmini6",
