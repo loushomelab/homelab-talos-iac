@@ -1,14 +1,14 @@
 # Cluster-scoped. Applied only after the operator chart has installed
 # tailscale.com CRDs (tailscale-connector sync wave is after tailscale-operator).
-# Subnet router for Home Assistant, Technitium DNS, NAS, and Mac Studio host routes.
-# The Traefik VIP is a temporary hop until a dedicated no-SNAT subnet router takes it over.
+# Cluster subnet router for Home Assistant, Technitium DNS, NAS, Mac Studio,
+# and Traefik VIP host routes.
 # Not an exit node and not an app connector.
 apiVersion: tailscale.com/v1alpha1
 kind: Connector
 metadata:
-  name: langshi-ha
+  name: lan-router-k8s
 spec:
-  hostname: langshi-ha-router
-  tags: ["tag:ha-router"]
+  hostname: lan-router-k8s
+  tags: ["tag:lan-router"]
   subnetRouter:
     advertiseRoutes: ["192.168.50.120/32", "192.168.50.231/32", "192.168.50.102/32", "192.168.50.79/32", "192.168.50.230/32"]

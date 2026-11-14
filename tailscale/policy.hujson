@@ -4,9 +4,10 @@
 {
 	// Admins own tag:k8s-operator so the operator OAuth client can be created
 	// after this file is applied. The operator then owns proxy and router tags.
-	// The live k8s Connector uses tag:ha-router; tag:lan-router is its
-	// same-privilege successor for a follow-up rename PR. Both tags may advertise
-	// the Home Assistant, DNS, NAS, Mac Studio, and Traefik VIP host routes.
+	// Connector lan-router-k8s (hostname lan-router-k8s) uses tag:lan-router
+	// and advertises the Home Assistant, Technitium DNS, NAS, Mac Studio, and
+	// Traefik VIP host routes. tag:ha-router remains until a later cleanup PR
+	// after the rename has rolled out.
 	"tagOwners": {
 		"tag:k8s-operator": ["autogroup:admin"],
 		"tag:k8s":          ["tag:k8s-operator"],
