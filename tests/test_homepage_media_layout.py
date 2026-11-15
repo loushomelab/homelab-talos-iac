@@ -49,7 +49,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         self.assertTrue(settings['useEqualHeights'])
         self.assertNotIn('Media', layout, 'Do not keep the old unstructured discovery bucket')
 
-    def test_all_ten_apps_are_discovered_once_in_task_order_without_route_changes(self):
+    def test_all_media_apps_are_discovered_once_in_task_order_without_route_changes(self):
         expected = {
             'plex': ('Watch', 10),
             'seerr': ('Request', 10),
@@ -58,6 +58,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
             'whisparr': ('Library', 30),
             'stash': ('Library', 40),
             'qbittorrent': ('Downloads', 10),
+            'sabnzbd': ('Downloads', 15),
             'prowlarr': ('Downloads', 20),
             'bazarr': ('Subtitles', 10),
             'lingarr': ('Subtitles', 20),
@@ -97,7 +98,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         proto = {'name': 'truenas-media-proto'}
         allow = {'name': 'lan-only-allowlist', 'namespace': 'monitoring'}
         forward = {'name': 'authentik-forwardauth', 'namespace': 'traefik'}
-        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr', 'stash'):
+        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr', 'stash', 'sabnzbd'):
             rules = routes[name]['spec']['routes']
             self.assertEqual(len(rules), 2)
             api, ui = rules
@@ -108,10 +109,11 @@ class HomepageMediaLayoutTests(unittest.TestCase):
             self.assertEqual(api['middlewares'], [proto, allow])
             self.assertEqual(ui['middlewares'], [allow, forward, proto])
             self.assertEqual(api['services'], ui['services'])
-            self.assertEqual(
-                routes[name]['metadata']['annotations']['gethomepage.dev/widget.url'],
-                f'https://{name}.646499453.xyz:8443',
-            )
+            if name != 'sabnzbd':
+                self.assertEqual(
+                    routes[name]['metadata']['annotations']['gethomepage.dev/widget.url'],
+                    f'https://{name}.646499453.xyz:8443',
+                )
         # Homepage v2.4.0 has no whisparr widget. hotio v3 (Eros) speaks the Radarr API.
         self.assertEqual(
             routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.type'],
@@ -131,7 +133,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         )
         service = next(resource for resource in resources if resource['kind'] == 'Service')
         endpoint = next(resource for resource in resources if resource['kind'] == 'EndpointSlice')
-        for name, port_number in [('whisparr', 6969), ('stash', 9999)]:
+        for name, port_number in [('whisparr', 6969), ('stash', 9999), ('sabnzbd', 8085)]:
             service_port = next(port for port in service['spec']['ports'] if port['name'] == name)
             endpoint_port = next(port for port in endpoint['ports'] if port['name'] == name)
             self.assertEqual(service_port['port'], port_number)

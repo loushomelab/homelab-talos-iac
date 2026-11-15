@@ -2,7 +2,7 @@
 # HTTP backends, TLS terminated here with the managed wildcard. DNS needs no
 # change: *.646499453.xyz already resolves to the Traefik VIP (192.168.50.230).
 #
-# Sonarr, Radarr, Prowlarr, and Whisparr browser UIs use Authentik Forward Auth
+# Sonarr, Radarr, Prowlarr, Whisparr, and SABnzbd browser UIs use Authentik Forward Auth
 # (traefik/authentik-forwardauth, Embedded Outpost). A miss is a 302 HTML login
 # page, so each of those hosts keeps a higher-priority /api route on
 # truenas-media-proto + lan-only-allowlist only. API keys keep working for
@@ -11,6 +11,8 @@
 # AuthenticationMethod stays Forms until that gate is verified.
 # Stash follows the same UI gate, with /graphql (not /api) for API-key clients.
 # Keep Stash's own login/API key enabled; every rule remains lan-only.
+# SABnzbd is published on the NAS at 192.168.50.102:8085 and uses the same
+# Forward Auth + /api bypass pattern. Do not bind it to 8080 (qBittorrent).
 #
 # Whisparr is ghcr.io/hotio/whisparr:v3 (Eros) published on the NAS at
 # 192.168.50.102:6969. The container still listens on 6969; do not use the
@@ -41,6 +43,10 @@ spec:
     - name: stash
       port: 9999
       targetPort: 9999
+      protocol: TCP
+    - name: sabnzbd
+      port: 8085
+      targetPort: 8085
       protocol: TCP
     - name: prowlarr
       port: 9696
@@ -88,6 +94,9 @@ ports:
   - name: stash
     protocol: TCP
     port: 9999
+  - name: sabnzbd
+    protocol: TCP
+    port: 8085
   - name: prowlarr
     protocol: TCP
     port: 9696
@@ -341,6 +350,52 @@ spec:
       services:
         - name: truenas-media
           port: stash
+  tls:
+    secretName: wildcards-646499453-xyz-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sabnzbd
+  namespace: traefik
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "SABnzbd"
+    gethomepage.dev/description: "Usenet client"
+    gethomepage.dev/group: "Downloads"
+    gethomepage.dev/weight: "15"
+    gethomepage.dev/icon: "sabnzbd.png"
+    gethomepage.dev/href: "https://sabnzbd.646499453.xyz:8443"
+    gethomepage.dev/external: "true"      # runs on the NAS, not a pod
+    gethomepage.dev/siteMonitor: "https://sabnzbd.646499453.xyz:8443"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # API-key clients. No Forward Auth: a 302 login page breaks them.
+    - match: Host(`sabnzbd.646499453.xyz`) && PathPrefix(`/api`)
+      kind: Rule
+      priority: 100
+      middlewares:
+        - name: truenas-media-proto
+        - name: lan-only-allowlist
+          namespace: monitoring
+      services:
+        - name: truenas-media
+          port: sabnzbd
+    # Browser UI.
+    - match: Host(`sabnzbd.646499453.xyz`)
+      kind: Rule
+      priority: 10
+      middlewares:
+        - name: lan-only-allowlist
+          namespace: monitoring
+        - name: authentik-forwardauth
+          namespace: traefik
+        - name: truenas-media-proto
+      services:
+        - name: truenas-media
+          port: sabnzbd
   tls:
     secretName: wildcards-646499453-xyz-tls
 ---
