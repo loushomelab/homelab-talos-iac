@@ -578,25 +578,16 @@ data:
           provider: !KeyOf stash-provider
           icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/stash.svg
           meta_launch_url: https://stash.646499453.xyz:8443/
+      # SABnzbd no longer uses Forward Auth (lan-only + the app's own login).
+      # Blueprints do not prune; state: absent removes the leftover objects.
       - identifiers:
           name: SABnzbd
         model: authentik_providers_proxy.proxyprovider
-        id: sabnzbd-provider
-        attrs:
-          name: SABnzbd
-          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
-          invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
-          internal_host: ""
-          external_host: https://sabnzbd.646499453.xyz:8443
-          mode: forward_single
+        state: absent
       - identifiers:
           slug: sabnzbd
         model: authentik_core.application
-        attrs:
-          name: SABnzbd
-          provider: !KeyOf sabnzbd-provider
-          icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg
-          meta_launch_url: https://sabnzbd.646499453.xyz:8443/
+        state: absent
 
       # --- Embedded Outpost Update ---
       # Automatically bind these proxy providers to the embedded outpost
@@ -615,4 +606,3 @@ data:
             - !KeyOf prowlarr-provider
             - !KeyOf whisparr-provider
             - !KeyOf stash-provider
-            - !KeyOf sabnzbd-provider
