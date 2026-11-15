@@ -1,0 +1,40 @@
+{
+  "started_at": "2026-10-29T16:08:36.756724+00:00",
+  "vantage": "local execution host; not an in-cluster probe",
+  "probes": [
+    {
+      "name": "minio-live",
+      "url": "http://192.168.50.76:9000/minio/health/live",
+      "exit_code": 28,
+      "http_code": "000",
+      "error": "curl: (28) Failed to connect to 192.168.50.76 port 9000 after 4006 ms: Timeout was reached"
+    },
+    {
+      "name": "minio-ready",
+      "url": "http://192.168.50.76:9000/minio/health/ready",
+      "exit_code": 28,
+      "http_code": "000",
+      "error": "curl: (28) Failed to connect to 192.168.50.76 port 9000 after 4006 ms: Timeout was reached"
+    },
+    {
+      "name": "mimir-query",
+      "url": "https://mimir.646499453.xyz:8443/prometheus/api/v1/query?query=up",
+      "exit_code": 0,
+      "http_code": "503",
+      "error": ""
+    },
+    {
+      "name": "pyroscope-ready",
+      "url": "https://pyroscope.646499453.xyz:8443/ready",
+      "exit_code": 0,
+      "http_code": "503",
+      "error": ""
+    }
+  ],
+  "nas_ssh": {
+    "exit_code": 255,
+    "error": "ssh: connect to host 192.168.50.76 port 22: Host is down",
+    "state_obtained": false
+  },
+  "finished_at": "2026-10-29T16:08:44.862934+00:00"
+}
