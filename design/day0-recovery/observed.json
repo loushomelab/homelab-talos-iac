@@ -1,0 +1,2840 @@
+{
+  "scope": "Read-only, allowlisted fields; non-atomic observations. No Secret values, object contents or credentials.",
+  "talos_iac_base": "1cc7690082058c603632709dc259136221bd21ab",
+  "pve_remote_main": "0efd161a1cbcf517f8c5be53961975a4ff882868",
+  "queries": [
+    {
+      "label": "nodes",
+      "started_at": "2026-11-05T16:22:20.279995+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "nodes",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "cp-01",
+          "addresses": [
+            {
+              "address": "192.168.50.110",
+              "type": "InternalIP"
+            },
+            {
+              "address": "cp-01",
+              "type": "Hostname"
+            }
+          ],
+          "ready": [
+            {
+              "type": "Ready",
+              "status": "True"
+            }
+          ],
+          "versions": {
+            "kubeletVersion": "v1.36.0",
+            "osImage": "Talos (v1.13.8)"
+          },
+          "taints": [
+            {
+              "effect": "NoSchedule",
+              "key": "node-role.kubernetes.io/control-plane"
+            }
+          ]
+        },
+        {
+          "name": "cp-02",
+          "addresses": [
+            {
+              "address": "192.168.50.112",
+              "type": "InternalIP"
+            },
+            {
+              "address": "cp-02",
+              "type": "Hostname"
+            }
+          ],
+          "ready": [
+            {
+              "type": "Ready",
+              "status": "True"
+            }
+          ],
+          "versions": {
+            "kubeletVersion": "v1.36.0",
+            "osImage": "Talos (v1.13.8)"
+          },
+          "taints": [
+            {
+              "effect": "NoSchedule",
+              "key": "node-role.kubernetes.io/control-plane"
+            }
+          ]
+        },
+        {
+          "name": "cp-03",
+          "addresses": [
+            {
+              "address": "192.168.50.114",
+              "type": "InternalIP"
+            },
+            {
+              "address": "cp-03",
+              "type": "Hostname"
+            }
+          ],
+          "ready": [
+            {
+              "type": "Ready",
+              "status": "True"
+            }
+          ],
+          "versions": {
+            "kubeletVersion": "v1.36.0",
+            "osImage": "Talos (v1.13.8)"
+          },
+          "taints": [
+            {
+              "effect": "NoSchedule",
+              "key": "node-role.kubernetes.io/control-plane"
+            }
+          ]
+        },
+        {
+          "name": "worker-01",
+          "addresses": [
+            {
+              "address": "192.168.50.111",
+              "type": "InternalIP"
+            },
+            {
+              "address": "worker-01",
+              "type": "Hostname"
+            }
+          ],
+          "ready": [
+            {
+              "type": "Ready",
+              "status": "True"
+            }
+          ],
+          "versions": {
+            "kubeletVersion": "v1.36.0",
+            "osImage": "Talos (v1.13.8)"
+          },
+          "taints": []
+        },
+        {
+          "name": "worker-02",
+          "addresses": [
+            {
+              "address": "192.168.50.113",
+              "type": "InternalIP"
+            },
+            {
+              "address": "worker-02",
+              "type": "Hostname"
+            }
+          ],
+          "ready": [
+            {
+              "type": "Ready",
+              "status": "True"
+            }
+          ],
+          "versions": {
+            "kubeletVersion": "v1.36.0",
+            "osImage": "Talos (v1.13.8)"
+          },
+          "taints": []
+        },
+        {
+          "name": "worker-03",
+          "addresses": [
+            {
+              "address": "192.168.50.115",
+              "type": "InternalIP"
+            },
+            {
+              "address": "worker-03",
+              "type": "Hostname"
+            }
+          ],
+          "ready": [
+            {
+              "type": "Ready",
+              "status": "True"
+            }
+          ],
+          "versions": {
+            "kubeletVersion": "v1.36.0",
+            "osImage": "Talos (v1.13.8)"
+          },
+          "taints": []
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.405070+00:00"
+    },
+    {
+      "label": "dns_endpoints",
+      "started_at": "2026-11-05T16:22:20.280297+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "endpointslices",
+        "-n",
+        "kube-system",
+        "-l",
+        "kubernetes.io/service-name=kube-dns",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "kube-dns-5jc77",
+          "endpoints": [
+            {
+              "addresses": [
+                "10.244.0.2"
+              ],
+              "conditions": {
+                "ready": true,
+                "serving": true,
+                "terminating": false
+              },
+              "nodeName": "cp-01",
+              "targetRef": {
+                "kind": "Pod",
+                "name": "coredns-6748b7b8bd-f9wzd",
+                "namespace": "kube-system",
+                "uid": "285ed3f3-6482-4e92-bcf3-96ed5e45ed6e"
+              }
+            },
+            {
+              "addresses": [
+                "10.244.0.4"
+              ],
+              "conditions": {
+                "ready": true,
+                "serving": true,
+                "terminating": false
+              },
+              "nodeName": "cp-01",
+              "targetRef": {
+                "kind": "Pod",
+                "name": "coredns-6748b7b8bd-nbt2q",
+                "namespace": "kube-system",
+                "uid": "15bc6c64-d9d6-4668-989d-df9678e6130d"
+              }
+            }
+          ]
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.395555+00:00"
+    },
+    {
+      "label": "argo",
+      "started_at": "2026-11-05T16:22:20.280415+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "applications",
+        "-n",
+        "argocd",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "alertmanager",
+          "sync": {
+            "revisions": [
+              "1.43.1"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "alloy",
+          "sync": {
+            "revisions": [
+              "1.15.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "argocd-self-managed",
+          "sync": {
+            "revisions": [
+              "10.9.1",
+              "1cc7690082058c603632709dc259136221bd21ab"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "authentik",
+          "sync": {
+            "revisions": [
+              "2026.8.5",
+              "1cc7690082058c603632709dc259136221bd21ab"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "cert-manager",
+          "sync": {
+            "revision": "v1.21.2",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "cert-manager-configs",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "external-secrets",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "external-secrets-operator",
+          "sync": {
+            "revision": "2.10.0",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "forgejo",
+          "sync": {
+            "revisions": [
+              "17.1.6"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "forgejo-runner",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "grafana",
+          "sync": {
+            "revisions": [
+              "10.5.15"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "0"
+        },
+        {
+          "name": "grafana-operator",
+          "sync": {
+            "revision": "5.25.0",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "homelab-root-app",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "homepage",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "infra-tier-0-operators",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "0"
+        },
+        {
+          "name": "infra-tier-1-core",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "10"
+        },
+        {
+          "name": "infra-tier-2-services",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "20"
+        },
+        {
+          "name": "ingressroute",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "longhorn",
+          "sync": {
+            "revisions": [
+              "1.13.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "metallb",
+          "sync": {
+            "revisions": [
+              "0.16.1"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "metallb-config",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "metrics-server",
+          "sync": {
+            "revisions": [
+              "3.14.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "mimir",
+          "sync": {
+            "revisions": [
+              "6.2.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "monitoring-configs",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "1"
+        },
+        {
+          "name": "monitoring-tier-3",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "30"
+        },
+        {
+          "name": "n8n",
+          "sync": {
+            "revisions": [
+              "2.1.1",
+              "1cc7690082058c603632709dc259136221bd21ab"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "n8n-sandbox",
+          "sync": {
+            "revisions": [
+              "63e8d077cba1363e570d9530bcfdead2f255488c"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "prometheus-crds",
+          "sync": {
+            "revisions": [
+              "32.0.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "pulse",
+          "sync": {
+            "revisions": [
+              "6.7.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "pyroscope",
+          "sync": {
+            "revisions": [
+              "2.3.1"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "reflector",
+          "sync": {
+            "revision": "10.0.65",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "searxng",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "security-tier-1-core",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "10"
+        },
+        {
+          "name": "security-tier-2-services",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "25"
+        },
+        {
+          "name": "technitium",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "traefik",
+          "sync": {
+            "revisions": [
+              "41.5.0"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "umami",
+          "sync": {
+            "revisions": [
+              "2.4.4"
+            ],
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": null
+        },
+        {
+          "name": "unpoller",
+          "sync": {
+            "revision": "2.8.0",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "2"
+        },
+        {
+          "name": "workloads-tier-4",
+          "sync": {
+            "revision": "1cc7690082058c603632709dc259136221bd21ab",
+            "status": "Synced"
+          },
+          "health": {
+            "status": "Healthy"
+          },
+          "wave": "40"
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.542842+00:00"
+    },
+    {
+      "label": "argo_application_health_keys",
+      "started_at": "2026-11-05T16:22:20.282277+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "configmap",
+        "argocd-cm",
+        "-n",
+        "argocd",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": {
+        "matching_keys": [
+          "resource.customizations.ignoreDifferences.argoproj.io_Application",
+          "resource.customizations.ignoreResourceUpdates.argoproj.io_Application"
+        ]
+      },
+      "finished_at": "2026-11-05T16:22:20.393726+00:00"
+    },
+    {
+      "label": "monitoring",
+      "started_at": "2026-11-05T16:22:20.282523+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "deploy,sts,ds",
+        "-n",
+        "monitoring",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "kind": "Deployment",
+          "name": "grafana",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir",
+            "secret"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-distributor",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-gateway",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-overrides-exporter",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-querier",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-query-frontend",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-query-scheduler",
+          "status": {
+            "replicas": 2,
+            "readyReplicas": 2,
+            "availableReplicas": 2
+          },
+          "replicas": 2,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "mimir-rollout-operator",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": []
+        },
+        {
+          "kind": "Deployment",
+          "name": "pulse",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "persistentVolumeClaim"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "name": "umami-umami",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": []
+        },
+        {
+          "kind": "Deployment",
+          "name": "unpoller",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "secret"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "alertmanager",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir",
+            "secret"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-compactor",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-ingester-zone-a",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-ingester-zone-b",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-ingester-zone-c",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-store-gateway-zone-a",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-store-gateway-zone-b",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "mimir-store-gateway-zone-c",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "pyroscope",
+          "status": {
+            "replicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1
+          },
+          "replicas": 1,
+          "volume_types": [
+            "configMap",
+            "emptyDir"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "name": "pyroscope-alloy",
+          "status": {
+            "replicas": 0,
+            "availableReplicas": 0
+          },
+          "replicas": 0,
+          "volume_types": [
+            "configMap"
+          ]
+        },
+        {
+          "kind": "DaemonSet",
+          "name": "alloy",
+          "status": {
+            "desiredNumberScheduled": 3,
+            "numberReady": 3
+          },
+          "replicas": null,
+          "volume_types": [
+            "configMap"
+          ]
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.439396+00:00"
+    },
+    {
+      "label": "longhorn_volumes",
+      "started_at": "2026-11-05T16:22:20.283925+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "volumes.longhorn.io",
+        "-n",
+        "longhorn-system",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-01",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "technitium-config"
+        },
+        {
+          "name": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-03",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "runner-data-forgejo-runner-0"
+        },
+        {
+          "name": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-02",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "n8n"
+        },
+        {
+          "name": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-03",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "dind-storage-forgejo-runner-0"
+        },
+        {
+          "name": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-02",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "gitea-shared-storage"
+        },
+        {
+          "name": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-01",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "pulse-pvc"
+        },
+        {
+          "name": "pvc-dc06787a-38de-410f-8057-c90def6f0a44",
+          "spec": {
+            "numberOfReplicas": 3,
+            "nodeID": "worker-01",
+            "dataLocality": "disabled"
+          },
+          "status": {
+            "state": "attached",
+            "robustness": "healthy",
+            "lastBackup": "",
+            "lastBackupAt": ""
+          },
+          "pvc": "sandbox-api"
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.419128+00:00"
+    },
+    {
+      "label": "longhorn_replicas",
+      "started_at": "2026-11-05T16:22:20.393772+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "replicas.longhorn.io",
+        "-n",
+        "longhorn-system",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4-r-01006b1d",
+          "volumeName": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4",
+          "nodeID": "worker-02",
+          "healthyAt": "2026-10-07T14:28:18Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4-r-8862c997",
+          "volumeName": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-10-07T14:28:18Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4-r-8b30377d",
+          "volumeName": "pvc-258bf45b-00da-46f0-bcd2-1c376405d8b4",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-10-08T00:30:59Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20-r-5229c1be",
+          "volumeName": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20",
+          "nodeID": "worker-02",
+          "healthyAt": "2026-09-06T08:49:59Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20-r-9e18ddee",
+          "volumeName": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-09-11T04:34:09Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20-r-e707ccff",
+          "volumeName": "pvc-88248b2a-fc5b-45d9-890a-c8ef3ec37e20",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-09-06T08:49:59Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc-r-0117e1e3",
+          "volumeName": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-09-11T04:34:07Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc-r-6b4cd509",
+          "volumeName": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-09-07T05:39:27Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc-r-85fa44b4",
+          "volumeName": "pvc-a795b142-1bc7-4cef-909e-9a0f7d1785fc",
+          "nodeID": "worker-02",
+          "healthyAt": "2026-09-07T05:39:27Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79-r-0fd7ad35",
+          "volumeName": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-09-08T19:47:14Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79-r-cd057a73",
+          "volumeName": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-09-06T08:49:59Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79-r-f555be9d",
+          "volumeName": "pvc-aab6a5ed-1b4f-4f39-9711-00ac97fddd79",
+          "nodeID": "worker-02",
+          "healthyAt": "2026-09-06T08:49:59Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1-r-154372ed",
+          "volumeName": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-09-11T04:34:08Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1-r-4307738a",
+          "volumeName": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-08-26T12:26:33Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1-r-e8608122",
+          "volumeName": "pvc-af07afb1-30f4-446f-96fc-c9c52fcf1db1",
+          "nodeID": "worker-02",
+          "healthyAt": "2026-08-26T12:26:33Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2-r-2946c9cb",
+          "volumeName": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-09-11T03:52:38Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2-r-5b3c8751",
+          "volumeName": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-09-11T03:53:18Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2-r-908a3f6c",
+          "volumeName": "pvc-b73ce105-6164-4b94-8a9d-ac94a17270c2",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-11-01T18:08:15Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-dc06787a-38de-410f-8057-c90def6f0a44-r-215d0142",
+          "volumeName": "pvc-dc06787a-38de-410f-8057-c90def6f0a44",
+          "nodeID": "worker-03",
+          "healthyAt": "2026-09-11T04:34:12Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-dc06787a-38de-410f-8057-c90def6f0a44-r-4c25f42d",
+          "volumeName": "pvc-dc06787a-38de-410f-8057-c90def6f0a44",
+          "nodeID": "worker-01",
+          "healthyAt": "2026-09-07T05:55:42Z",
+          "failedAt": "",
+          "state": "running"
+        },
+        {
+          "name": "pvc-dc06787a-38de-410f-8057-c90def6f0a44-r-b573a454",
+          "volumeName": "pvc-dc06787a-38de-410f-8057-c90def6f0a44",
+          "nodeID": "worker-02",
+          "healthyAt": "2026-09-07T05:55:42Z",
+          "failedAt": "",
+          "state": "running"
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.482857+00:00"
+    },
+    {
+      "label": "longhorn_backups",
+      "started_at": "2026-11-05T16:22:20.395612+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "backups.longhorn.io",
+        "-n",
+        "longhorn-system",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": {
+        "count": 0
+      },
+      "finished_at": "2026-11-05T16:22:20.472904+00:00"
+    },
+    {
+      "label": "longhorn_jobs",
+      "started_at": "2026-11-05T16:22:20.405134+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "recurringjobs.longhorn.io",
+        "-n",
+        "longhorn-system",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": {
+        "count": 0
+      },
+      "finished_at": "2026-11-05T16:22:20.479979+00:00"
+    },
+    {
+      "label": "bootstrap_secret_metadata",
+      "started_at": "2026-11-05T16:22:20.419161+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "secret",
+        "doppler-token-global",
+        "-n",
+        "external-secrets",
+        "-o",
+        "jsonpath={.metadata.name}",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": {
+        "name": "doppler-token-global"
+      },
+      "finished_at": "2026-11-05T16:22:20.482951+00:00"
+    },
+    {
+      "label": "stores",
+      "started_at": "2026-11-05T16:22:20.439433+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "clustersecretstores",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "doppler-cluster-store",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-04T03:42:11Z",
+              "message": "store validated",
+              "reason": "Valid",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.503199+00:00"
+    },
+    {
+      "label": "external_secrets",
+      "started_at": "2026-11-05T16:22:20.472946+00:00",
+      "command": [
+        "kubectl",
+        "get",
+        "externalsecrets",
+        "-A",
+        "-o",
+        "json",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "argocd-secrets",
+          "namespace": "argocd",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-10-19T02:24:03Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "authentik-secrets",
+          "namespace": "authentik",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T08:36:22Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "cloudflare-api-token",
+          "namespace": "cert-manager",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-04T03:42:47Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "cloudflare-ddns-secrets",
+          "namespace": "ddns",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T02:31:56Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "forgejo-oauth-secret",
+          "namespace": "forgejo",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-04T14:40:43Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "forgejo-runner-secret",
+          "namespace": "forgejo",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-04T03:42:45Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "forgejo-secrets",
+          "namespace": "forgejo",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T12:09:15Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "homepage-secrets",
+          "namespace": "homepage",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T07:55:33Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "grafana-admin-credentials",
+          "namespace": "monitoring",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T00:56:07Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "grafana-oauth-secret",
+          "namespace": "monitoring",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T02:11:21Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "monitoring-secrets",
+          "namespace": "monitoring",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T12:45:42Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "unpoller-secrets",
+          "namespace": "monitoring",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-04T20:04:06Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "n8n-secrets",
+          "namespace": "n8n",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T11:54:41Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "searxng-secrets",
+          "namespace": "n8n",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-05T08:23:59Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        },
+        {
+          "name": "technitium-secrets",
+          "namespace": "technitium",
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-11-04T03:09:15Z",
+              "message": "secret synced",
+              "reason": "SecretSynced",
+              "status": "True",
+              "type": "Ready"
+            }
+          ]
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:20.545638+00:00"
+    },
+    {
+      "label": "kube_api_client",
+      "started_at": "2026-11-05T16:22:20.480012+00:00",
+      "command": [
+        "kubectl",
+        "config",
+        "view",
+        "--minify",
+        "-o",
+        "jsonpath={.clusters[0].cluster.server}"
+      ],
+      "exit_code": 0,
+      "result": "https://192.168.50.114:6443",
+      "finished_at": "2026-11-05T16:22:20.522500+00:00"
+    },
+    {
+      "label": "api_110",
+      "started_at": "2026-11-05T16:22:20.482899+00:00",
+      "command": [
+        "kubectl",
+        "--server=https://192.168.50.110:6443",
+        "get",
+        "--raw=/readyz",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": "ok",
+      "finished_at": "2026-11-05T16:22:20.563845+00:00"
+    },
+    {
+      "label": "api_112",
+      "started_at": "2026-11-05T16:22:20.482963+00:00",
+      "command": [
+        "kubectl",
+        "--server=https://192.168.50.112:6443",
+        "get",
+        "--raw=/readyz",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": "ok",
+      "finished_at": "2026-11-05T16:22:20.544925+00:00"
+    },
+    {
+      "label": "api_114",
+      "started_at": "2026-11-05T16:22:20.503237+00:00",
+      "command": [
+        "kubectl",
+        "--server=https://192.168.50.114:6443",
+        "get",
+        "--raw=/readyz",
+        "--request-timeout=10s"
+      ],
+      "exit_code": 0,
+      "result": "ok",
+      "finished_at": "2026-11-05T16:22:20.552509+00:00"
+    },
+    {
+      "label": "etcd_members",
+      "started_at": "2026-11-05T16:22:20.522548+00:00",
+      "command": [
+        "talosctl",
+        "-n",
+        "192.168.50.110,192.168.50.112,192.168.50.114",
+        "etcd",
+        "members"
+      ],
+      "exit_code": 0,
+      "result": "NODE             ID                 HOSTNAME   PEER URLS                     CLIENT URLS                   LEARNER\n192.168.50.112   02afd6c04591404c   cp-02      https://192.168.50.112:2380   https://192.168.50.112:2379   false\n192.168.50.112   24e5d0e19f97537b   cp-01      https://192.168.50.110:2380   https://192.168.50.110:2379   false\n192.168.50.112   f0e2ae880f3a35e5   cp-03      https://192.168.50.114:2380   https://192.168.50.114:2379   false\n192.168.50.114   02afd6c04591404c   cp-02      https://192.168.50.112:2380   https://192.168.50.112:2379   false\n192.168.50.114   24e5d0e19f97537b   cp-01      https://192.168.50.110:2380   https://192.168.50.110:2379   false\n192.168.50.114   f0e2ae880f3a35e5   cp-03      https://192.168.50.114:2380   https://192.168.50.114:2379   false\n192.168.50.110   02afd6c04591404c   cp-02      https://192.168.50.112:2380   https://192.168.50.112:2379   false\n192.168.50.110   24e5d0e19f97537b   cp-01      https://192.168.50.110:2380   https://192.168.50.110:2379   false\n192.168.50.110   f0e2ae880f3a35e5   cp-03      https://192.168.50.114:2380   https://192.168.50.114:2379   false\n",
+      "finished_at": "2026-11-05T16:22:20.780875+00:00"
+    },
+    {
+      "label": "etcd_status",
+      "started_at": "2026-11-05T16:22:20.542903+00:00",
+      "command": [
+        "talosctl",
+        "-n",
+        "192.168.50.110,192.168.50.112,192.168.50.114",
+        "etcd",
+        "status"
+      ],
+      "exit_code": 0,
+      "result": "NODE             MEMBER             DB SIZE   IN USE           LEADER             RAFT INDEX   RAFT TERM   RAFT APPLIED INDEX   LEARNER   PROTOCOL   STORAGE   ERRORS\n192.168.50.112   02afd6c04591404c   71 MB     21 MB (29.05%)   02afd6c04591404c   40577195     22          40577195             false     3.6.12     3.6.0     \n192.168.50.114   f0e2ae880f3a35e5   70 MB     21 MB (29.54%)   02afd6c04591404c   40577195     22          40577195             false     3.6.12     3.6.0     \n192.168.50.110   24e5d0e19f97537b   67 MB     21 MB (30.85%)   02afd6c04591404c   40577195     22          40577195             false     3.6.12     3.6.0     \n",
+      "finished_at": "2026-11-05T16:22:20.774764+00:00"
+    },
+    {
+      "label": "pve_guests",
+      "started_at": "2026-11-05T16:22:20.544986+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.101",
+        "pvesh get /cluster/resources --type vm --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "vmid": 110,
+          "name": "talos-cp-01",
+          "node": "r720",
+          "status": "running",
+          "type": "qemu"
+        },
+        {
+          "vmid": 111,
+          "name": "talos-worker-01",
+          "node": "r720",
+          "status": "running",
+          "type": "qemu"
+        },
+        {
+          "vmid": 112,
+          "name": "talos-cp-02",
+          "node": "1920x",
+          "status": "running",
+          "type": "qemu"
+        },
+        {
+          "vmid": 113,
+          "name": "talos-worker-02",
+          "node": "1920x",
+          "status": "running",
+          "type": "qemu"
+        },
+        {
+          "vmid": 114,
+          "name": "talos-cp-03",
+          "node": "3960x",
+          "status": "running",
+          "type": "qemu"
+        },
+        {
+          "vmid": 115,
+          "name": "talos-worker-03",
+          "node": "3960x",
+          "status": "running",
+          "type": "qemu"
+        },
+        {
+          "vmid": 125,
+          "name": "zot-registry",
+          "node": "1920x",
+          "status": "running",
+          "type": "lxc"
+        },
+        {
+          "vmid": 151,
+          "name": "auth-pg",
+          "node": "3960x",
+          "status": "running",
+          "type": "lxc",
+          "hastate": "started"
+        },
+        {
+          "vmid": 152,
+          "name": "obs-pg",
+          "node": "3960x",
+          "status": "running",
+          "type": "lxc",
+          "hastate": "started"
+        },
+        {
+          "vmid": 153,
+          "name": "auth-redis",
+          "node": "3960x",
+          "status": "running",
+          "type": "lxc",
+          "hastate": "started"
+        },
+        {
+          "vmid": 154,
+          "name": "proxmox-backup-server",
+          "node": "3960x",
+          "status": "running",
+          "type": "lxc",
+          "hastate": "started"
+        },
+        {
+          "vmid": 200,
+          "name": "tfc-agent-lxc",
+          "node": "3960x",
+          "status": "running",
+          "type": "lxc",
+          "hastate": "started"
+        },
+        {
+          "vmid": 201,
+          "name": "github-runner",
+          "node": "3960x",
+          "status": "running",
+          "type": "lxc",
+          "hastate": "started"
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:24.074082+00:00"
+    },
+    {
+      "label": "pve_backup_job",
+      "started_at": "2026-11-05T16:22:20.545661+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.105",
+        "pvesh get /cluster/backup --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "id": "pbs-daily-backup",
+          "enabled": 1,
+          "schedule": "02:00",
+          "mode": "snapshot",
+          "storage": "pbs-lxc",
+          "vmid": "100,110,111,112,113,114,115,120,125,126,151,152,153,160,180,181,200,201",
+          "prune-backups": {
+            "keep-daily": "7",
+            "keep-last": "7",
+            "keep-weekly": "4"
+          },
+          "next-run": 1793901600
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:21.691078+00:00"
+    },
+    {
+      "label": "pve_storage",
+      "started_at": "2026-11-05T16:22:20.552560+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /storage --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "storage": "local",
+          "type": "dir",
+          "content": "snippets,vztmpl,iso,backup",
+          "path": "/var/lib/vz"
+        },
+        {
+          "storage": "pbstorage",
+          "type": "nfs",
+          "server": "192.168.50.102",
+          "content": "iso,vztmpl,snippets,rootdir,backup,images",
+          "path": "/mnt/pve/pbstorage",
+          "export": "/mnt/tank/pbstorage"
+        },
+        {
+          "storage": "Ceph-pool",
+          "type": "rbd",
+          "content": "rootdir,images"
+        },
+        {
+          "storage": "local-lvm",
+          "type": "lvmthin",
+          "content": "images,rootdir",
+          "nodes": "1920x,n100x8,3960x"
+        },
+        {
+          "storage": "pbs-lxc",
+          "type": "pbs",
+          "server": "pbs.pve.646499453.xyz",
+          "datastore": "pbstorage",
+          "content": "backup"
+        },
+        {
+          "storage": "SSD",
+          "type": "zfspool",
+          "content": "images,rootdir",
+          "nodes": "3960x,r720,1920x"
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:21.841519+00:00"
+    },
+    {
+      "label": "vzdump_r720",
+      "started_at": "2026-11-05T16:22:20.563911+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.101",
+        "pvesh get /nodes/r720/tasks --typefilter vzdump --limit 4 --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "node": "r720",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793815201,
+          "endtime": 1793815282,
+          "id": ""
+        },
+        {
+          "node": "r720",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793728814,
+          "endtime": 1793728892,
+          "id": ""
+        },
+        {
+          "node": "r720",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793642402,
+          "endtime": 1793642491,
+          "id": ""
+        },
+        {
+          "node": "r720",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793556017,
+          "endtime": 1793557030,
+          "id": ""
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:23.936265+00:00"
+    },
+    {
+      "label": "vzdump_1920x",
+      "started_at": "2026-11-05T16:22:20.774801+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.105",
+        "pvesh get /nodes/1920x/tasks --typefilter vzdump --limit 4 --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "node": "1920x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793815201,
+          "endtime": 1793815322,
+          "id": ""
+        },
+        {
+          "node": "1920x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793728808,
+          "endtime": 1793728931,
+          "id": ""
+        },
+        {
+          "node": "1920x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793642401,
+          "endtime": 1793642520,
+          "id": ""
+        },
+        {
+          "node": "1920x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793556008,
+          "endtime": 1793556508,
+          "id": ""
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:21.956400+00:00"
+    },
+    {
+      "label": "vzdump_3960x",
+      "started_at": "2026-11-05T16:22:20.780913+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/tasks --typefilter vzdump --limit 4 --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "node": "3960x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793815200,
+          "endtime": 1793815556,
+          "id": ""
+        },
+        {
+          "node": "3960x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793728802,
+          "endtime": 1793729155,
+          "id": ""
+        },
+        {
+          "node": "3960x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793642401,
+          "endtime": 1793642735,
+          "id": ""
+        },
+        {
+          "node": "3960x",
+          "type": "vzdump",
+          "status": "OK",
+          "starttime": 1793556003,
+          "endtime": 1793557333,
+          "id": ""
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:21.841744+00:00"
+    },
+    {
+      "label": "pbs_recent_tasks",
+      "started_at": "2026-11-05T16:22:21.691151+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pct exec 154 -- proxmox-backup-manager task list --all true --limit 40 --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "worker_type": "garbage_collection",
+          "worker_id": "pbstorage",
+          "status": "OK",
+          "starttime": 1793894400,
+          "endtime": 1793894432
+        },
+        {
+          "worker_type": "logrotate",
+          "worker_id": null,
+          "status": "OK",
+          "starttime": 1793894400,
+          "endtime": 1793894400
+        },
+        {
+          "worker_type": "prunejob",
+          "worker_id": "pbstorage",
+          "status": "OK",
+          "starttime": 1793894400,
+          "endtime": 1793894400
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/201",
+          "status": "OK",
+          "starttime": 1793815554,
+          "endtime": 1793815554
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/201",
+          "status": "OK",
+          "starttime": 1793815521,
+          "endtime": 1793815554
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/200",
+          "status": "OK",
+          "starttime": 1793815518,
+          "endtime": 1793815518
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/200",
+          "status": "OK",
+          "starttime": 1793815495,
+          "endtime": 1793815518
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/181",
+          "status": "OK",
+          "starttime": 1793815493,
+          "endtime": 1793815493
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/181",
+          "status": "OK",
+          "starttime": 1793815461,
+          "endtime": 1793815493
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/180",
+          "status": "OK",
+          "starttime": 1793815460,
+          "endtime": 1793815460
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/180",
+          "status": "OK",
+          "starttime": 1793815355,
+          "endtime": 1793815459
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/160",
+          "status": "OK",
+          "starttime": 1793815345,
+          "endtime": 1793815345
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/160",
+          "status": "OK",
+          "starttime": 1793815332,
+          "endtime": 1793815344
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/153",
+          "status": "OK",
+          "starttime": 1793815330,
+          "endtime": 1793815330
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/153",
+          "status": "OK",
+          "starttime": 1793815317,
+          "endtime": 1793815330
+        },
+        {
+          "worker_type": "aptupdate",
+          "worker_id": null,
+          "status": "OK",
+          "starttime": 1793815325,
+          "endtime": 1793815328
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/125",
+          "status": "OK",
+          "starttime": 1793815321,
+          "endtime": 1793815321
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/125",
+          "status": "OK",
+          "starttime": 1793815227,
+          "endtime": 1793815321
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/152",
+          "status": "OK",
+          "starttime": 1793815315,
+          "endtime": 1793815315
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/152",
+          "status": "OK",
+          "starttime": 1793815299,
+          "endtime": 1793815315
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/151",
+          "status": "OK",
+          "starttime": 1793815297,
+          "endtime": 1793815297
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/151",
+          "status": "OK",
+          "starttime": 1793815279,
+          "endtime": 1793815297
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/111",
+          "status": "OK",
+          "starttime": 1793815282,
+          "endtime": 1793815282
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/111",
+          "status": "OK",
+          "starttime": 1793815239,
+          "endtime": 1793815280
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::ct/126",
+          "status": "OK",
+          "starttime": 1793815276,
+          "endtime": 1793815276
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:ct/126",
+          "status": "OK",
+          "starttime": 1793815243,
+          "endtime": 1793815276
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/120",
+          "status": "OK",
+          "starttime": 1793815242,
+          "endtime": 1793815242
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/120",
+          "status": "OK",
+          "starttime": 1793815240,
+          "endtime": 1793815241
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/115",
+          "status": "OK",
+          "starttime": 1793815240,
+          "endtime": 1793815240
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/115",
+          "status": "OK",
+          "starttime": 1793815209,
+          "endtime": 1793815239
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/110",
+          "status": "OK",
+          "starttime": 1793815238,
+          "endtime": 1793815238
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/110",
+          "status": "OK",
+          "starttime": 1793815210,
+          "endtime": 1793815237
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/113",
+          "status": "OK",
+          "starttime": 1793815226,
+          "endtime": 1793815226
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/113",
+          "status": "OK",
+          "starttime": 1793815210,
+          "endtime": 1793815226
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/112",
+          "status": "OK",
+          "starttime": 1793815210,
+          "endtime": 1793815210
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/100",
+          "status": "OK",
+          "starttime": 1793815209,
+          "endtime": 1793815209
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/112",
+          "status": "OK",
+          "starttime": 1793815201,
+          "endtime": 1793815209
+        },
+        {
+          "worker_type": "prune",
+          "worker_id": "pbstorage::vm/114",
+          "status": "OK",
+          "starttime": 1793815208,
+          "endtime": 1793815208
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/114",
+          "status": "OK",
+          "starttime": 1793815200,
+          "endtime": 1793815208
+        },
+        {
+          "worker_type": "backup",
+          "worker_id": "pbstorage:vm/100",
+          "status": "OK",
+          "starttime": 1793815205,
+          "endtime": 1793815208
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:22.471440+00:00"
+    },
+    {
+      "label": "pbs_latest_snapshots",
+      "started_at": "2026-11-05T16:22:21.841605+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/storage/pbs-lxc/content --content backup --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "vmid": 110,
+          "snapshot_count": 7,
+          "latest": {
+            "volid": "pbs-lxc:backup/vm/110/2026-11-04T18:00:10Z",
+            "ctime": 1793815210,
+            "size": 42950214683,
+            "format": "pbs-vm"
+          }
+        },
+        {
+          "vmid": 111,
+          "snapshot_count": 7,
+          "latest": {
+            "volid": "pbs-lxc:backup/vm/111/2026-11-04T18:00:38Z",
+            "ctime": 1793815238,
+            "size": 107374724126,
+            "format": "pbs-vm"
+          }
+        },
+        {
+          "vmid": 112,
+          "snapshot_count": 11,
+          "latest": {
+            "volid": "pbs-lxc:backup/vm/112/2026-11-04T18:00:01Z",
+            "ctime": 1793815201,
+            "size": 42950214683,
+            "format": "pbs-vm"
+          }
+        },
+        {
+          "vmid": 113,
+          "snapshot_count": 11,
+          "latest": {
+            "volid": "pbs-lxc:backup/vm/113/2026-11-04T18:00:10Z",
+            "ctime": 1793815210,
+            "size": 107374724128,
+            "format": "pbs-vm"
+          }
+        },
+        {
+          "vmid": 114,
+          "snapshot_count": 11,
+          "latest": {
+            "volid": "pbs-lxc:backup/vm/114/2026-11-04T18:00:00Z",
+            "ctime": 1793815200,
+            "size": 42950214682,
+            "format": "pbs-vm"
+          }
+        },
+        {
+          "vmid": 115,
+          "snapshot_count": 11,
+          "latest": {
+            "volid": "pbs-lxc:backup/vm/115/2026-11-04T18:00:08Z",
+            "ctime": 1793815208,
+            "size": 107374724133,
+            "format": "pbs-vm"
+          }
+        },
+        {
+          "vmid": 125,
+          "snapshot_count": 12,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/125/2026-11-04T18:00:26Z",
+            "ctime": 1793815226,
+            "size": 44071789333,
+            "format": "pbs-ct"
+          }
+        },
+        {
+          "vmid": 151,
+          "snapshot_count": 12,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/151/2026-11-04T18:01:18Z",
+            "ctime": 1793815278,
+            "size": 1479603543,
+            "format": "pbs-ct"
+          }
+        },
+        {
+          "vmid": 152,
+          "snapshot_count": 12,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/152/2026-11-04T18:01:38Z",
+            "ctime": 1793815298,
+            "size": 1249775224,
+            "format": "pbs-ct"
+          }
+        },
+        {
+          "vmid": 153,
+          "snapshot_count": 14,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/153/2026-11-04T18:01:56Z",
+            "ctime": 1793815316,
+            "size": 861368295,
+            "format": "pbs-ct"
+          }
+        },
+        {
+          "vmid": 154,
+          "snapshot_count": 5,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/154/2026-08-25T18:01:57Z",
+            "ctime": 1787680917,
+            "size": 1207839816,
+            "format": "pbs-ct"
+          }
+        },
+        {
+          "vmid": 200,
+          "snapshot_count": 15,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/200/2026-11-04T18:04:53Z",
+            "ctime": 1793815493,
+            "size": 3014702495,
+            "format": "pbs-ct"
+          }
+        },
+        {
+          "vmid": 201,
+          "snapshot_count": 14,
+          "latest": {
+            "volid": "pbs-lxc:backup/ct/201/2026-11-04T18:05:20Z",
+            "ctime": 1793815520,
+            "size": 3278357397,
+            "format": "pbs-ct"
+          }
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:22.827507+00:00"
+    },
+    {
+      "label": "pbs_verify_jobs",
+      "started_at": "2026-11-05T16:22:21.841756+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pct exec 154 -- proxmox-backup-manager verify-job list --output-format json"
+      ],
+      "exit_code": 0,
+      "result": {
+        "count": 0
+      },
+      "finished_at": "2026-11-05T16:22:22.631140+00:00"
+    },
+    {
+      "label": "pbs_datastore",
+      "started_at": "2026-11-05T16:22:21.956487+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pct exec 154 -- proxmox-backup-manager datastore list --output-format json"
+      ],
+      "exit_code": 0,
+      "result": [
+        {
+          "name": "pbstorage",
+          "path": "/mnt/datastore/pbstorage"
+        }
+      ],
+      "finished_at": "2026-11-05T16:22:22.732222+00:00"
+    },
+    {
+      "label": "pbs_mount",
+      "started_at": "2026-11-05T16:22:22.471507+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pct exec 154 -- findmnt -T /mnt/datastore/pbstorage -J -o SOURCE,FSTYPE,TARGET"
+      ],
+      "exit_code": 0,
+      "result": {
+        "filesystems": [
+          {
+            "source": "/dev/loop0",
+            "fstype": "ext4",
+            "target": "/mnt/datastore/pbstorage"
+          }
+        ]
+      },
+      "finished_at": "2026-11-05T16:22:23.260054+00:00"
+    },
+    {
+      "label": "lxc_151",
+      "started_at": "2026-11-05T16:22:22.631202+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/lxc/151/config --output-format json"
+      ],
+      "exit_code": 0,
+      "result": {
+        "rootfs": "Ceph-pool:vm-151-disk-0,size=4G",
+        "unprivileged": 1
+      },
+      "finished_at": "2026-11-05T16:22:23.547512+00:00"
+    },
+    {
+      "label": "lxc_152",
+      "started_at": "2026-11-05T16:22:22.732447+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/lxc/152/config --output-format json"
+      ],
+      "exit_code": 0,
+      "result": {
+        "rootfs": "Ceph-pool:vm-152-disk-0,size=4G",
+        "unprivileged": 1
+      },
+      "finished_at": "2026-11-05T16:22:23.627816+00:00"
+    },
+    {
+      "label": "lxc_154",
+      "started_at": "2026-11-05T16:22:22.827581+00:00",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/lxc/154/config --output-format json"
+      ],
+      "exit_code": 0,
+      "result": {
+        "mp0": "pbstorage:154/vm-154-disk-1.raw,mp=/mnt/datastore/pbstorage,backup=0,size=2000G",
+        "rootfs": "Ceph-pool:vm-154-disk-0,size=10G",
+        "unprivileged": 1
+      },
+      "finished_at": "2026-11-05T16:22:23.738542+00:00"
+    },
+    {
+      "label": "vm_disks_110",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.101",
+        "pvesh get /nodes/r720/qemu/110/config --output-format json"
+      ],
+      "started_at": "2026-11-05T16:28:27.181404+00:00",
+      "exit_code": 0,
+      "result": {
+        "agent": "enabled=1,fstrim_cloned_disks=0,type=virtio",
+        "boot": "order=scsi0;ide2",
+        "efidisk0": "SSD:vm-110-disk-0,efitype=4m,pre-enrolled-keys=0,size=1M",
+        "ide2": "local:iso/talos-v1.13.8-nocloud-qga-amd64.iso,media=cdrom,size=332108K",
+        "scsi0": "SSD:vm-110-disk-1,aio=io_uring,backup=1,cache=writethrough,discard=on,iothread=0,replicate=1,size=40G,ssd=1"
+      },
+      "finished_at": "2026-11-05T16:28:30.482026+00:00"
+    },
+    {
+      "label": "vm_disks_111",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.101",
+        "pvesh get /nodes/r720/qemu/111/config --output-format json"
+      ],
+      "started_at": "2026-11-05T16:28:30.482087+00:00",
+      "exit_code": 0,
+      "result": {
+        "agent": "enabled=1,fstrim_cloned_disks=0,type=virtio",
+        "boot": "order=scsi0;ide2",
+        "efidisk0": "SSD:vm-111-disk-0,efitype=4m,pre-enrolled-keys=0,size=1M",
+        "ide2": "local:iso/talos-v1.13.8-nocloud-qga-amd64.iso,media=cdrom,size=332108K",
+        "scsi0": "SSD:vm-111-disk-1,aio=io_uring,backup=1,cache=writethrough,discard=on,iothread=0,replicate=1,size=100G,ssd=1"
+      },
+      "finished_at": "2026-11-05T16:28:32.559070+00:00"
+    },
+    {
+      "label": "vm_disks_112",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.105",
+        "pvesh get /nodes/1920x/qemu/112/config --output-format json"
+      ],
+      "started_at": "2026-11-05T16:28:32.559128+00:00",
+      "exit_code": 0,
+      "result": {
+        "agent": "enabled=1,fstrim_cloned_disks=0,type=virtio",
+        "boot": "order=scsi0;ide2",
+        "efidisk0": "SSD:vm-112-disk-0,efitype=4m,pre-enrolled-keys=0,size=1M",
+        "ide2": "local:iso/talos-v1.13.8-nocloud-qga-amd64.iso,media=cdrom,size=332108K",
+        "scsi0": "SSD:vm-112-disk-1,aio=io_uring,backup=1,cache=writethrough,discard=on,iothread=0,replicate=1,size=40G,ssd=1"
+      },
+      "finished_at": "2026-11-05T16:28:33.713501+00:00"
+    },
+    {
+      "label": "vm_disks_113",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.105",
+        "pvesh get /nodes/1920x/qemu/113/config --output-format json"
+      ],
+      "started_at": "2026-11-05T16:28:33.713666+00:00",
+      "exit_code": 0,
+      "result": {
+        "agent": "enabled=1,fstrim_cloned_disks=0,type=virtio",
+        "boot": "order=scsi0;ide2",
+        "efidisk0": "SSD:vm-113-disk-0,efitype=4m,pre-enrolled-keys=0,size=1M",
+        "ide2": "local:iso/talos-v1.13.8-nocloud-qga-amd64.iso,media=cdrom,size=332108K",
+        "scsi0": "SSD:vm-113-disk-1,aio=io_uring,backup=1,cache=writethrough,discard=on,iothread=0,replicate=1,size=100G,ssd=1"
+      },
+      "finished_at": "2026-11-05T16:28:34.838694+00:00"
+    },
+    {
+      "label": "vm_disks_114",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/qemu/114/config --output-format json"
+      ],
+      "started_at": "2026-11-05T16:28:34.838848+00:00",
+      "exit_code": 0,
+      "result": {
+        "agent": "enabled=1,fstrim_cloned_disks=0,type=virtio",
+        "boot": "order=scsi0;ide2",
+        "efidisk0": "SSD:vm-114-disk-0,efitype=4m,pre-enrolled-keys=0,size=1M",
+        "ide2": "local:iso/talos-v1.13.8-nocloud-qga-amd64.iso,media=cdrom,size=332108K",
+        "scsi0": "SSD:vm-114-disk-1,aio=io_uring,backup=1,cache=writethrough,discard=on,iothread=0,replicate=1,size=40G,ssd=1"
+      },
+      "finished_at": "2026-11-05T16:28:36.079682+00:00"
+    },
+    {
+      "label": "vm_disks_115",
+      "command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "ConnectTimeout=5",
+        "root@192.168.50.104",
+        "pvesh get /nodes/3960x/qemu/115/config --output-format json"
+      ],
+      "started_at": "2026-11-05T16:28:36.079826+00:00",
+      "exit_code": 0,
+      "result": {
+        "agent": "enabled=1,fstrim_cloned_disks=0,type=virtio",
+        "boot": "order=scsi0;ide2",
+        "efidisk0": "SSD:vm-115-disk-0,efitype=4m,pre-enrolled-keys=0,size=1M",
+        "ide2": "local:iso/talos-v1.13.8-nocloud-qga-amd64.iso,media=cdrom,size=332108K",
+        "scsi0": "SSD:vm-115-disk-1,aio=io_uring,backup=1,cache=writethrough,discard=on,iothread=0,replicate=1,size=100G,ssd=1"
+      },
+      "finished_at": "2026-11-05T16:28:36.972002+00:00"
+    }
+  ]
+}
