@@ -1,0 +1,1892 @@
+{
+  "started_at_utc": "2026-10-29T15:57:17.995671+00:00",
+  "finished_at_utc": "2026-10-29T15:57:18.302909+00:00",
+  "baseline": "21854fdfe1083da83678ec17b3222ec621d7e061",
+  "context": "homelab-talos-lan",
+  "commands": [
+    "kubectl --request-timeout=15s -n argocd get applications -o json",
+    "kubectl --request-timeout=15s get deployments,statefulsets,daemonsets -A -o json"
+  ],
+  "redaction": "Only source coordinates, revision/status, resource identities, replica counts and image references retained; no valuesObject, ConfigMap data, Secret, environment or messages retained.",
+  "applications": [
+    {
+      "app": "alertmanager",
+      "declaration": "argocd/apps/monitoring/alertmanager.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/prometheus-community/charts",
+          "chart": "alertmanager",
+          "targetRevision": "1.43.1"
+        }
+      ],
+      "observed_revisions": [
+        "1.43.1"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:50Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "alertmanager",
+          "generation": 5,
+          "observedGeneration": 5,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": "alertmanager-57c8d8f94b",
+          "updateRevision": "alertmanager-57c8d8f94b",
+          "images": [
+            "quay.io/prometheus/alertmanager:v0.34.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "alloy",
+      "declaration": "argocd/apps/monitoring/alloy.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://grafana.github.io/helm-charts",
+          "chart": "alloy",
+          "targetRevision": "1.14.3"
+        }
+      ],
+      "observed_revisions": [
+        "1.14.3"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:44Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "DaemonSet",
+          "namespace": "monitoring",
+          "name": "alloy",
+          "generation": 11,
+          "observedGeneration": 11,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/alloy:v1.21.2",
+            "quay.io/prometheus-operator/prometheus-config-reloader:v0.94.2@sha256:a1897c67478bc23434534e91ad3855280771196b1daf17144db9dbcb655bef71"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "argocd-self-managed",
+      "declaration": "argocd/apps/infrastructure/10-core/argocd-helm.yaml",
+      "parents": [
+        "infra-tier-1-core"
+      ],
+      "namespace": "argocd",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/argoproj/argo-helm",
+          "chart": "argo-cd",
+          "targetRevision": "10.9.1"
+        },
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "ref": "values",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "10.9.1",
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:42Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "argocd",
+          "name": "argocd-applicationset-controller",
+          "generation": 10,
+          "observedGeneration": 10,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/argoproj/argocd:v3.5.3"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "argocd",
+          "name": "argocd-dex-server",
+          "generation": 14,
+          "observedGeneration": 14,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/dexidp/dex:v2.45.1"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "argocd",
+          "name": "argocd-notifications-controller",
+          "generation": 10,
+          "observedGeneration": 10,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/argoproj/argocd:v3.5.3"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "argocd",
+          "name": "argocd-redis",
+          "generation": 11,
+          "observedGeneration": 11,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ecr-public.aws.com/docker/library/redis:8.6.4-alpine"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "argocd",
+          "name": "argocd-repo-server",
+          "generation": 17,
+          "observedGeneration": 17,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/argoproj/argocd:v3.5.3"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "argocd",
+          "name": "argocd-server",
+          "generation": 12,
+          "observedGeneration": 12,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/argoproj/argocd:v3.5.3"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "argocd",
+          "name": "argocd-application-controller",
+          "generation": 13,
+          "observedGeneration": 13,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": "argocd-application-controller-764fb84db4",
+          "updateRevision": "argocd-application-controller-764fb84db4",
+          "images": [
+            "quay.io/argoproj/argocd:v3.5.3"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "authentik",
+      "declaration": "argocd/apps/security/20-services/authentik.yaml",
+      "parents": [
+        "security-tier-2-services"
+      ],
+      "namespace": "authentik",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://charts.goauthentik.io",
+          "chart": "authentik",
+          "targetRevision": "2026.8.5"
+        },
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/security/authentik/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "2026.8.5",
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:53:50Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "authentik",
+          "name": "authentik-server",
+          "generation": 19,
+          "observedGeneration": 19,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/goauthentik/server:2026.8.5"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "authentik",
+          "name": "authentik-worker",
+          "generation": 23,
+          "observedGeneration": 23,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/goauthentik/server:2026.8.5"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "cert-manager",
+      "declaration": "argocd/apps/infrastructure/00-operators/cert-manager.yaml",
+      "parents": [
+        "infra-tier-0-operators"
+      ],
+      "namespace": "cert-manager",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "quay.io/jetstack/charts",
+          "chart": "cert-manager",
+          "targetRevision": "v1.21.2"
+        }
+      ],
+      "observed_revisions": [
+        "v1.21.2"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:10Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "cert-manager",
+          "name": "cert-manager",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/jetstack/cert-manager-controller:v1.21.2"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cert-manager",
+          "name": "cert-manager-cainjector",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/jetstack/cert-manager-cainjector:v1.21.2"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cert-manager",
+          "name": "cert-manager-webhook",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/jetstack/cert-manager-webhook:v1.21.2"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "cert-manager-configs",
+      "declaration": "argocd/apps/infrastructure/10-core/cert-manager-configs.yaml",
+      "parents": [
+        "infra-tier-1-core"
+      ],
+      "namespace": "cert-manager",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/infrastructure/cert-manager/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:28Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "external-secrets",
+      "declaration": "argocd/apps/security/10-core/external-secrets.yaml",
+      "parents": [
+        "security-tier-1-core"
+      ],
+      "namespace": "external-secrets",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/security/external-secrets/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:07Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "external-secrets-operator",
+      "declaration": "argocd/apps/infrastructure/00-operators/external-secrets-operator.yaml",
+      "parents": [
+        "infra-tier-0-operators"
+      ],
+      "namespace": "external-secrets",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/external-secrets/charts",
+          "chart": "external-secrets",
+          "targetRevision": "2.10.0"
+        }
+      ],
+      "observed_revisions": [
+        "2.10.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:45Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "external-secrets",
+          "name": "external-secrets-operator",
+          "generation": 3,
+          "observedGeneration": 3,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/external-secrets/external-secrets:v2.10.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "external-secrets",
+          "name": "external-secrets-operator-cert-controller",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/external-secrets/external-secrets:v2.10.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "external-secrets",
+          "name": "external-secrets-operator-webhook",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/external-secrets/external-secrets:v2.10.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "forgejo",
+      "declaration": "argocd/apps/workloads/forgejo.yaml",
+      "parents": [
+        "workloads-tier-4"
+      ],
+      "namespace": "forgejo",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "code.forgejo.org/forgejo-helm",
+          "chart": "forgejo",
+          "targetRevision": "17.1.6"
+        }
+      ],
+      "observed_revisions": [
+        "17.1.6"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:55Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "forgejo",
+          "name": "forgejo",
+          "generation": 6,
+          "observedGeneration": 6,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "code.forgejo.org/forgejo/forgejo:15.0.8-rootless"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "forgejo-runner",
+      "declaration": "argocd/apps/workloads/forgejo-runner.yaml",
+      "parents": [
+        "workloads-tier-4"
+      ],
+      "namespace": "forgejo",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/workloads/forgejo-runner/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:54:07Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "StatefulSet",
+          "namespace": "forgejo",
+          "name": "forgejo-runner",
+          "generation": 8,
+          "observedGeneration": 8,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": "forgejo-runner-65668dd55c",
+          "updateRevision": "forgejo-runner-65668dd55c",
+          "images": [
+            "docker:28-dind",
+            "code.forgejo.org/forgejo/runner:13"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "grafana",
+      "declaration": "argocd/apps/monitoring/grafana.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/grafana/helm-charts",
+          "chart": "grafana",
+          "targetRevision": "10.5.15"
+        }
+      ],
+      "observed_revisions": [
+        "10.5.15"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:43Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "grafana",
+          "generation": 39,
+          "observedGeneration": 39,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/grafana:12.3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "grafana-operator",
+      "declaration": "argocd/apps/infrastructure/00-operators/grafana-operator.yaml",
+      "parents": [
+        "infra-tier-0-operators"
+      ],
+      "namespace": "grafana-operator",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/grafana/helm-charts",
+          "chart": "grafana-operator",
+          "targetRevision": "5.25.0"
+        }
+      ],
+      "observed_revisions": [
+        "5.25.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:22Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "grafana-operator",
+          "name": "grafana-operator",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/grafana/grafana-operator:v5.25.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "homelab-root-app",
+      "declaration": "argocd/bootstrap/root-app.yaml",
+      "parents": [],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/bootstrap/init",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:54:04Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "homepage",
+      "declaration": "argocd/apps/workloads/homepage.yaml",
+      "parents": [
+        "workloads-tier-4"
+      ],
+      "namespace": "homepage",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/workloads/homepage/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:00Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "homepage",
+          "name": "homepage",
+          "generation": 70,
+          "observedGeneration": 70,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/gethomepage/homepage:v2.4.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "infra-tier-0-operators",
+      "declaration": "argocd/bootstrap/init/tiers/infra-tier-0-operators.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/infrastructure/00-operators",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:27Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "infra-tier-1-core",
+      "declaration": "argocd/bootstrap/init/tiers/infra-tier-1-core.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/infrastructure/10-core",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:54:12Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "infra-tier-2-services",
+      "declaration": "argocd/bootstrap/init/tiers/infra-tier-2-services.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/infrastructure/20-services",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:53:39Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "ingressroute",
+      "declaration": "argocd/apps/infrastructure/20-services/ingressroute.yaml",
+      "parents": [
+        "infra-tier-2-services"
+      ],
+      "namespace": "traefik",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/infrastructure/ingressroute/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:53:40Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "longhorn",
+      "declaration": "argocd/apps/infrastructure/10-core/longhorn.yaml",
+      "parents": [
+        "infra-tier-1-core"
+      ],
+      "namespace": "longhorn-system",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://charts.longhorn.io",
+          "chart": "longhorn",
+          "targetRevision": "1.13.0"
+        }
+      ],
+      "observed_revisions": [
+        "1.13.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:24Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "DaemonSet",
+          "namespace": "longhorn-system",
+          "name": "longhorn-manager",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 3,
+          "ready": 3,
+          "updated": 3,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/longhornio/longhorn-manager:v1.13.0",
+            "docker.io/longhornio/longhorn-share-manager:v1.13.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "longhorn-system",
+          "name": "longhorn-driver-deployer",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/longhornio/longhorn-manager:v1.13.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "longhorn-system",
+          "name": "longhorn-global-manager",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 3,
+          "ready": 3,
+          "updated": 3,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/longhornio/longhorn-manager:v1.13.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "longhorn-system",
+          "name": "longhorn-ui",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 2,
+          "ready": 2,
+          "updated": 2,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/longhornio/longhorn-ui:v1.13.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "metallb",
+      "declaration": "argocd/apps/infrastructure/10-core/metallb.yaml",
+      "parents": [
+        "infra-tier-1-core"
+      ],
+      "namespace": "metallb-system",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://metallb.github.io/metallb",
+          "chart": "metallb",
+          "targetRevision": "0.16.1"
+        }
+      ],
+      "observed_revisions": [
+        "0.16.1"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:44Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "DaemonSet",
+          "namespace": "metallb-system",
+          "name": "metallb-frr-k8s",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 6,
+          "ready": 6,
+          "updated": 6,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/metallb/frr-k8s:v0.0.25",
+            "quay.io/frrouting/frr:10.4.3",
+            "quay.io/frrouting/frr:10.4.3",
+            "quay.io/frrouting/frr:10.4.3",
+            "quay.io/frrouting/frr:10.4.3"
+          ]
+        },
+        {
+          "kind": "DaemonSet",
+          "namespace": "metallb-system",
+          "name": "metallb-speaker",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 6,
+          "ready": 6,
+          "updated": 6,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/metallb/speaker:v0.16.1"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "metallb-system",
+          "name": "metallb-controller",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/metallb/controller:v0.16.1"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "metallb-system",
+          "name": "metallb-frr-k8s-statuscleaner",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "quay.io/metallb/frr-k8s:v0.0.25"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "metallb-config",
+      "declaration": "argocd/apps/infrastructure/10-core/metallb-config.yaml",
+      "parents": [
+        "infra-tier-1-core"
+      ],
+      "namespace": "metallb-system",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/infrastructure/metallb/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:34Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "metrics-server",
+      "declaration": "argocd/apps/infrastructure/10-core/metrics-server.yaml",
+      "parents": [
+        "infra-tier-1-core"
+      ],
+      "namespace": "kube-system",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://kubernetes-sigs.github.io/metrics-server/",
+          "chart": "metrics-server",
+          "targetRevision": "3.14.0"
+        }
+      ],
+      "observed_revisions": [
+        "3.14.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:09Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "kube-system",
+          "name": "metrics-server",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "registry.k8s.io/metrics-server/metrics-server:v0.9.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "mimir",
+      "declaration": "argocd/apps/monitoring/mimir.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/grafana/helm-charts",
+          "chart": "mimir-distributed",
+          "targetRevision": "6.2.0"
+        }
+      ],
+      "observed_revisions": [
+        "6.2.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:42Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-distributor",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-gateway",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/nginxinc/nginx-unprivileged:1.29-alpine"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-overrides-exporter",
+          "generation": 3,
+          "observedGeneration": 3,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-querier",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-query-frontend",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-query-scheduler",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "mimir-rollout-operator",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/grafana/rollout-operator:v0.38.1"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-compactor",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-compactor-5fdf9456cf",
+          "updateRevision": "mimir-compactor-5fdf9456cf",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-ingester-zone-a",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-ingester-zone-a-6d4b7d6996",
+          "updateRevision": "mimir-ingester-zone-a-6d4b7d6996",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-ingester-zone-b",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-ingester-zone-b-7d889b5c7f",
+          "updateRevision": "mimir-ingester-zone-b-7d889b5c7f",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-ingester-zone-c",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-ingester-zone-c-7d9959c85d",
+          "updateRevision": "mimir-ingester-zone-c-7d9959c85d",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-store-gateway-zone-a",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-store-gateway-zone-a-66fbd7b55f",
+          "updateRevision": "mimir-store-gateway-zone-a-66fbd7b55f",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-store-gateway-zone-b",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-store-gateway-zone-b-8c99797db",
+          "updateRevision": "mimir-store-gateway-zone-b-8c99797db",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "mimir-store-gateway-zone-c",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "mimir-store-gateway-zone-c-5f9cbcc69",
+          "updateRevision": "mimir-store-gateway-zone-c-5f9cbcc69",
+          "images": [
+            "docker.io/grafana/mimir:3.2.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "monitoring-configs",
+      "declaration": "argocd/apps/monitoring/monitoring-configs.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/monitoring/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:12Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "monitoring-tier-3",
+      "declaration": "argocd/bootstrap/init/tiers/monitoring-tier-3.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/monitoring",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:53:45Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "n8n",
+      "declaration": "argocd/apps/workloads/n8n.yaml",
+      "parents": [
+        "workloads-tier-4"
+      ],
+      "namespace": "n8n",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "8gears.container-registry.com/library",
+          "chart": "n8n",
+          "targetRevision": "2.1.1"
+        },
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/workloads/n8n/manifests",
+          "targetRevision": "main"
+        }
+      ],
+      "observed_revisions": [
+        "2.1.1",
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:16Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "n8n",
+          "name": "n8n",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "n8nio/n8n:2.36.8"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "n8n-sandbox",
+      "declaration": "argocd/apps/workloads/n8n-sandbox.yaml",
+      "parents": [
+        "workloads-tier-4"
+      ],
+      "namespace": "n8n",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://github.com/n8n-io/n8n-sandbox-service.git",
+          "path": "charts/n8n-sandbox-service",
+          "targetRevision": "service/v1.3.2"
+        }
+      ],
+      "observed_revisions": [
+        "63e8d077cba1363e570d9530bcfdead2f255488c"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:54:03Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "n8n",
+          "name": "sandbox-api",
+          "generation": 1,
+          "observedGeneration": 1,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "n8nio/n8n-sandbox-service-api:1.3.2"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "n8n",
+          "name": "sandbox-privileged-runner",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": "sandbox-privileged-runner-6b764b4978",
+          "updateRevision": "sandbox-privileged-runner-6b764b4978",
+          "images": [
+            "n8nio/n8n-sandbox-service-runner-dind:1.3.2"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "prometheus-crds",
+      "declaration": "argocd/apps/infrastructure/00-operators/prometheus-crds.yaml",
+      "parents": [
+        "infra-tier-0-operators"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/prometheus-community/charts",
+          "chart": "prometheus-operator-crds",
+          "targetRevision": "32.0.0"
+        }
+      ],
+      "observed_revisions": [
+        "32.0.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:54:05Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "pulse",
+      "declaration": "argocd/apps/monitoring/pulse.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://rcourtman.github.io/Pulse",
+          "chart": "pulse",
+          "targetRevision": "6.6.0"
+        }
+      ],
+      "observed_revisions": [
+        "6.6.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:53:57Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "pulse",
+          "generation": 23,
+          "observedGeneration": 23,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "rcourtman/pulse:6.6.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "pyroscope",
+      "declaration": "argocd/apps/monitoring/pyroscope.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/grafana/helm-charts",
+          "chart": "pyroscope",
+          "targetRevision": "2.3.1"
+        }
+      ],
+      "observed_revisions": [
+        "2.3.1"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:06Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "pyroscope",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "pyroscope-5698bf467c",
+          "updateRevision": "pyroscope-5698bf467c",
+          "images": [
+            "grafana/pyroscope:2.3.1"
+          ]
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "monitoring",
+          "name": "pyroscope-alloy",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 0,
+          "ready": 0,
+          "updated": 0,
+          "currentRevision": "pyroscope-alloy-56c557c6d9",
+          "updateRevision": "pyroscope-alloy-56c557c6d9",
+          "images": [
+            "docker.io/grafana/alloy:v1.12.2",
+            "quay.io/prometheus-operator/prometheus-config-reloader:v0.81.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "reflector",
+      "declaration": "argocd/apps/infrastructure/00-operators/reflector.yaml",
+      "parents": [
+        "infra-tier-0-operators"
+      ],
+      "namespace": "kube-system",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/emberstack/helm-charts",
+          "chart": "reflector",
+          "targetRevision": "10.0.65"
+        }
+      ],
+      "observed_revisions": [
+        "10.0.65"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:30Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "kube-system",
+          "name": "reflector",
+          "generation": 3,
+          "observedGeneration": 3,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/emberstack/kubernetes-reflector:10.0.65"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "searxng",
+      "declaration": "argocd/apps/workloads/searxng.yaml",
+      "parents": [
+        "workloads-tier-4"
+      ],
+      "namespace": "n8n",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/workloads/searxng/manifests",
+          "targetRevision": "main"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:29Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "n8n",
+          "name": "searxng",
+          "generation": 2,
+          "observedGeneration": 2,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/searxng/searxng:latest"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "security-tier-1-core",
+      "declaration": "argocd/bootstrap/init/tiers/security-tier-1-core.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/security/10-core",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:42Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "security-tier-2-services",
+      "declaration": "argocd/bootstrap/init/tiers/security-tier-2-services.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/security/20-services",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:11Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    },
+    {
+      "app": "technitium",
+      "declaration": "argocd/apps/infrastructure/20-services/technitium.yaml",
+      "parents": [
+        "infra-tier-2-services"
+      ],
+      "namespace": "technitium",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/configs/infrastructure/technitium/manifests",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:54:03Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "technitium",
+          "name": "technitium",
+          "generation": 3,
+          "observedGeneration": 3,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "technitium/dns-server:15.6.2"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "traefik",
+      "declaration": "argocd/apps/infrastructure/20-services/traefik.yaml",
+      "parents": [
+        "infra-tier-2-services"
+      ],
+      "namespace": "traefik",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/traefik/helm",
+          "chart": "traefik",
+          "targetRevision": "41.5.0"
+        }
+      ],
+      "observed_revisions": [
+        "41.5.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:23Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "DaemonSet",
+          "namespace": "traefik",
+          "name": "traefik",
+          "generation": 9,
+          "observedGeneration": 9,
+          "desired": 3,
+          "ready": 3,
+          "updated": 3,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "docker.io/traefik:v3.7.13"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "umami",
+      "declaration": "argocd/apps/monitoring/umami.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "sources",
+      "sources": [
+        {
+          "repoURL": "https://repo.helmforge.dev",
+          "chart": "umami",
+          "targetRevision": "2.4.4"
+        }
+      ],
+      "observed_revisions": [
+        "2.4.4"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:55:41Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "umami-umami",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/umami-software/umami:3.4.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "unpoller",
+      "declaration": "argocd/apps/monitoring/unpoller.yaml",
+      "parents": [
+        "monitoring-tier-3"
+      ],
+      "namespace": "monitoring",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "ghcr.io/unpoller/helm-chart",
+          "chart": "unpoller",
+          "targetRevision": "2.8.0"
+        }
+      ],
+      "observed_revisions": [
+        "2.8.0"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:56:12Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": [
+        {
+          "kind": "Deployment",
+          "namespace": "monitoring",
+          "name": "unpoller",
+          "generation": 4,
+          "observedGeneration": 4,
+          "desired": 1,
+          "ready": 1,
+          "updated": 1,
+          "currentRevision": null,
+          "updateRevision": null,
+          "images": [
+            "ghcr.io/unpoller/unpoller:v5.1.0"
+          ]
+        }
+      ]
+    },
+    {
+      "app": "workloads-tier-4",
+      "declaration": "argocd/bootstrap/init/tiers/workloads-tier-4.yaml",
+      "parents": [
+        "homelab-root-app"
+      ],
+      "namespace": "argocd",
+      "source_mode": "source",
+      "sources": [
+        {
+          "repoURL": "https://github.com/loushomelab/homelab-talos-iac.git",
+          "path": "argocd/apps/workloads",
+          "targetRevision": "HEAD"
+        }
+      ],
+      "observed_revisions": [
+        "21854fdfe1083da83678ec17b3222ec621d7e061"
+      ],
+      "sync": "Synced",
+      "health": "Healthy",
+      "reconciledAt": "2026-10-29T15:57:14Z",
+      "operation_phase": "Succeeded",
+      "condition_types": [],
+      "workloads": []
+    }
+  ]
+}
