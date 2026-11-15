@@ -98,7 +98,7 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         proto = {'name': 'truenas-media-proto'}
         allow = {'name': 'lan-only-allowlist', 'namespace': 'monitoring'}
         forward = {'name': 'authentik-forwardauth', 'namespace': 'traefik'}
-        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr', 'stash', 'sabnzbd'):
+        for name in ('sonarr', 'radarr', 'prowlarr', 'whisparr', 'stash'):
             rules = routes[name]['spec']['routes']
             self.assertEqual(len(rules), 2)
             api, ui = rules
@@ -109,11 +109,10 @@ class HomepageMediaLayoutTests(unittest.TestCase):
             self.assertEqual(api['middlewares'], [proto, allow])
             self.assertEqual(ui['middlewares'], [allow, forward, proto])
             self.assertEqual(api['services'], ui['services'])
-            if name != 'sabnzbd':
-                self.assertEqual(
-                    routes[name]['metadata']['annotations']['gethomepage.dev/widget.url'],
-                    f'https://{name}.646499453.xyz:8443',
-                )
+            self.assertEqual(
+                routes[name]['metadata']['annotations']['gethomepage.dev/widget.url'],
+                f'https://{name}.646499453.xyz:8443',
+            )
         # Homepage v2.4.0 has no whisparr widget. hotio v3 (Eros) speaks the Radarr API.
         self.assertEqual(
             routes['whisparr']['metadata']['annotations']['gethomepage.dev/widget.type'],
@@ -130,6 +129,29 @@ class HomepageMediaLayoutTests(unittest.TestCase):
         self.assertEqual(
             routes['stash']['metadata']['annotations']['gethomepage.dev/widget.key'],
             '{{HOMEPAGE_VAR_STASH_API_KEY}}',
+        )
+        self.assertEqual(
+            routes['sabnzbd']['metadata']['annotations']['gethomepage.dev/widget.type'],
+            'sabnzbd',
+        )
+        self.assertEqual(
+            routes['sabnzbd']['metadata']['annotations']['gethomepage.dev/widget.url'],
+            'https://sabnzbd.646499453.xyz:8443',
+        )
+        self.assertEqual(
+            routes['sabnzbd']['metadata']['annotations']['gethomepage.dev/widget.key'],
+            '{{HOMEPAGE_VAR_SABNZBD_API_KEY}}',
+        )
+        sab_rules = routes['sabnzbd']['spec']['routes']
+        self.assertEqual(len(sab_rules), 1)
+        self.assertEqual(sab_rules[0]['match'], 'Host(`sabnzbd.646499453.xyz`)')
+        self.assertNotIn(
+            'authentik-forwardauth',
+            [middleware['name'] for middleware in sab_rules[0]['middlewares']],
+        )
+        self.assertIn(
+            allow,
+            sab_rules[0]['middlewares'],
         )
         service = next(resource for resource in resources if resource['kind'] == 'Service')
         endpoint = next(resource for resource in resources if resource['kind'] == 'EndpointSlice')

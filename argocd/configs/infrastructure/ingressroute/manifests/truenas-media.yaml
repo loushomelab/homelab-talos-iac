@@ -2,7 +2,7 @@
 # HTTP backends, TLS terminated here with the managed wildcard. DNS needs no
 # change: *.646499453.xyz already resolves to the Traefik VIP (192.168.50.230).
 #
-# Sonarr, Radarr, Prowlarr, Whisparr, and SABnzbd browser UIs use Authentik Forward Auth
+# Sonarr, Radarr, Prowlarr, and Whisparr browser UIs use Authentik Forward Auth
 # (traefik/authentik-forwardauth, Embedded Outpost). A miss is a 302 HTML login
 # page, so each of those hosts keeps a higher-priority /api route on
 # truenas-media-proto + lan-only-allowlist only. API keys keep working for
@@ -11,15 +11,16 @@
 # AuthenticationMethod stays Forms until that gate is verified.
 # Stash follows the same UI gate, with /graphql (not /api) for API-key clients.
 # Keep Stash's own login/API key enabled; every rule remains lan-only.
-# SABnzbd is published on the NAS at 192.168.50.102:8085 and uses the same
-# Forward Auth + /api bypass pattern. Do not bind it to 8080 (qBittorrent).
+# SABnzbd is published on the NAS at 192.168.50.102:8085. It stays off
+# Forward Auth and uses lan-only plus SABnzbd's own username/password login.
+# Do not bind it to 8080 (qBittorrent).
 #
 # Whisparr is ghcr.io/hotio/whisparr:v3 (Eros) published on the NAS at
 # 192.168.50.102:6969. The container still listens on 6969; do not use the
 # deprecated linuxserver image port 7878.
 #
-# Bazarr, Seerr, Plex, Lingarr, and qBittorrent stay off Forward Auth: a 302
-# breaks Seerr's Plex login and Plex clients, and the rest still rely on
+# Bazarr, Seerr, Plex, Lingarr, qBittorrent, and SABnzbd stay off Forward Auth:
+# a 302 breaks Seerr's Plex login and Plex clients, and the rest still rely on
 # lan-only plus each app's own auth.
 apiVersion: v1
 kind: Service
@@ -368,30 +369,22 @@ metadata:
     gethomepage.dev/href: "https://sabnzbd.646499453.xyz:8443"
     gethomepage.dev/external: "true"      # runs on the NAS, not a pod
     gethomepage.dev/siteMonitor: "https://sabnzbd.646499453.xyz:8443"
+    gethomepage.dev/widget.type: "sabnzbd"
+    # /api is lan-only (not public). The widget API key works via Traefik
+    # and does not need the NAS host port.
+    gethomepage.dev/widget.url: "https://sabnzbd.646499453.xyz:8443"
+    gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SABNZBD_API_KEY}}"
 spec:
   entryPoints:
     - websecure
   routes:
-    # API-key clients. No Forward Auth: a 302 login page breaks them.
-    - match: Host(`sabnzbd.646499453.xyz`) && PathPrefix(`/api`)
-      kind: Rule
-      priority: 100
-      middlewares:
-        - name: truenas-media-proto
-        - name: lan-only-allowlist
-          namespace: monitoring
-      services:
-        - name: truenas-media
-          port: sabnzbd
-    # Browser UI.
+    # LAN-only, no Forward Auth. SABnzbd's own login protects the UI;
+    # the widget uses the API key on /api.
     - match: Host(`sabnzbd.646499453.xyz`)
       kind: Rule
-      priority: 10
       middlewares:
         - name: lan-only-allowlist
           namespace: monitoring
-        - name: authentik-forwardauth
-          namespace: traefik
         - name: truenas-media-proto
       services:
         - name: truenas-media
