@@ -18,7 +18,7 @@ spec:
     repoURL: 'https://pkgs.tailscale.com/helmcharts'
     chart: tailscale-operator
     # Current stable chart from the index (appVersion v1.104.4, published 2026-11-02).
-    targetRevision: 1.104.4
+    targetRevision: 1.104.7
     helm:
       valuesObject:
         # Leave oauth.clientId unset so the chart does not render its own
