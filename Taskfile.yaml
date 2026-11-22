@@ -1,6 +1,7 @@
 version: '3'
 
 vars:
+  PYTHON: python3
   VIP_DOMAIN: 646499453.xyz
   VIP_PORT: 8443
 
@@ -31,10 +32,10 @@ tasks:
         kubectl rollout status deployment/{{.app}} -n {{.app}} --timeout=90s || true
 
   # =========================================================================
-  # 2. Local Dry-Run Validation & Manifest Linting
+  # 2. Offline YAML & Resource Structure Validation
   # =========================================================================
   "val:all":
-    desc: "Run client-side dry-run validation on all applications, configs, and renovate"
+    desc: "Validate applications, rendered configs, and renovate locally without a cluster"
     cmds:
       - task: "val:apps"
       - task: "val:configs"
@@ -42,16 +43,14 @@ tasks:
       - echo "✔ All local validations passed."
 
   "val:apps":
-    desc: "Dry-run validate all Argo CD application CRDs"
+    desc: "Validate Argo CD application YAML and basic resource structure offline"
     cmds:
-      - echo "==> Dry-run validating argocd/apps/..."
-      - kubectl apply --dry-run=client --request-timeout=5s -R -f argocd/apps/
+      - '{{.PYTHON}} scripts/validate_manifests.py apps'
 
   "val:configs":
-    desc: "Dry-run validate all native manifests in argocd/configs/..."
+    desc: "Validate native configs and existing Homepage Kustomize output offline"
     cmds:
-      - echo "==> Dry-run validating argocd/configs/..."
-      - kubectl apply --dry-run=client --request-timeout=5s -R -f argocd/configs/
+      - '{{.PYTHON}} scripts/validate_manifests.py configs'
 
   "val:renovate":
     desc: "Validate renovate.json JSON syntax"
